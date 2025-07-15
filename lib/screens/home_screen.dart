@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final healthService = context.read<HealthService>();
       final sheetsService = context.read<SheetsService>();
 
-      // 並行初始化服務
+      // Initialize services in parallel
       await Future.wait([
         healthService.initialize(),
         sheetsService.initialize(),
@@ -300,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: Text(l10n.notificationSettings),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      // 導航到通知設定頁面
+                      // Navigate to notification settings page
                     },
                   ),
                   const Divider(height: 1),
@@ -358,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              // 儲存目標邏輯
+              // Save goal logic
             },
             child: Text(l10n.confirm),
           ),

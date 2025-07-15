@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserData() async {
-    // TODO: 從SharedPreferences或資料庫載入用戶資料
+    // Load user data from SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _nicknameController.text = prefs.getString('nickname') ?? '';
@@ -96,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       try {
         final prefs = await SharedPreferences.getInstance();
         
-        // 儲存基本資料
+        // Save basic profile data
         await prefs.setString('nickname', _nicknameController.text);
         if (_selectedGender != null) {
           await prefs.setString('gender', _selectedGender!);
@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           await prefs.setString('birthDate', _birthDate!.toIso8601String());
         }
 
-        // TODO: 上傳頭像並儲存路徑
+        // TODO: Upload avatar and save path
         
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
@@ -155,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // 頭像選擇
+            // Avatar selection
             Center(
               child: Stack(
                 children: [
@@ -199,7 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             const SizedBox(height: 32),
             
-            // 暱稱
+            // Nickname field
             TextFormField(
               controller: _nicknameController,
               decoration: InputDecoration(
@@ -217,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             const SizedBox(height: 16),
             
-            // 性別選擇
+            // Gender selection
             DropdownButtonFormField<String>(
               value: _selectedGender,
               decoration: InputDecoration(
@@ -240,7 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             const SizedBox(height: 16),
             
-            // 出生年月日
+            // Birth date selection
             InkWell(
               onTap: _selectBirthDate,
               child: InputDecorator(
@@ -262,7 +262,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             const SizedBox(height: 16),
             
-            // 身高
+            // Height and weight fields
             Row(
               children: [
                 Expanded(
@@ -287,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                // 體重
+                // Weight field
                 Expanded(
                   child: TextFormField(
                     controller: _weightController,
@@ -314,7 +314,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             const SizedBox(height: 32),
             
-            // 儲存按鈕
+            // Save button
             ElevatedButton(
               onPressed: _saveProfile,
               style: ElevatedButton.styleFrom(
