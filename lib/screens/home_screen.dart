@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:step_challenge_app/l10n/app_localizations.dart';
 import '../services/health_service.dart';
 import '../services/sheets_service.dart';
-import '../services/notification_service.dart';
 import '../widgets/step_counter_card.dart';
 import '../widgets/weekly_chart_card.dart';
 import '../widgets/goal_progress_card.dart';
 import '../widgets/challenge_list_card.dart';
+import 'profile_screen.dart';
+import 'language_settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,13 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final healthService = context.read<HealthService>();
       final sheetsService = context.read<SheetsService>();
-      final notificationService = context.read<NotificationService>();
 
       // 並行初始化服務
       await Future.wait([
         healthService.initialize(),
         sheetsService.initialize(),
-        notificationService.completeInitialization(),
       ]);
 
       setState(() {
@@ -51,15 +51,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (_isLoading) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('正在初始化應用...'),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(l10n.initializingApp),
             ],
           ),
         ),
@@ -81,18 +83,18 @@ class _HomeScreenState extends State<HomeScreen> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '首頁',
+            icon: const Icon(Icons.home),
+            label: l10n.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events),
-            label: '挑戰',
+            icon: const Icon(Icons.emoji_events),
+            label: l10n.challenges,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '個人',
+            icon: const Icon(Icons.person),
+            label: l10n.profile,
           ),
         ],
       ),
@@ -132,27 +134,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildGreetingHeader() {
+    final l10n = AppLocalizations.of(context)!;
     final hour = DateTime.now().hour;
     String greeting;
     
     if (hour < 12) {
-      greeting = '早安';
+      greeting = l10n.goodMorning;
     } else if (hour < 18) {
-      greeting = '午安';
+      greeting = l10n.goodAfternoon;
     } else {
-      greeting = '晚安';
+      greeting = l10n.goodEvening;
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '$greeting！',
+          greeting,
           style: Theme.of(context).textTheme.headlineLarge,
         ),
         const SizedBox(height: 4),
         Text(
-          '今天也要保持活力喔！',
+          l10n.stayActive,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             color: Colors.grey[600],
           ),
@@ -162,11 +165,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildQuickActions() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '快速操作',
+          l10n.quickActions,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(height: 12),
@@ -175,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildActionCard(
                 icon: Icons.sync,
-                title: '同步數據',
+                title: l10n.syncData,
                 onTap: _syncHealthData,
               ),
             ),
@@ -183,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildActionCard(
                 icon: Icons.settings,
-                title: '設定目標',
+                title: l10n.setGoal,
                 onTap: _setDailyGoal,
               ),
             ),
@@ -225,6 +230,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildChallengesTab() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -232,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '挑戰活動',
+              l10n.challengeActivities,
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: 16),
@@ -244,6 +251,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildProfileTab() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -251,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '個人設定',
+              l10n.personalSettings,
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: 16),
@@ -260,16 +269,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   ListTile(
                     leading: const Icon(Icons.person),
-                    title: const Text('個人資料'),
+                    title: Text(l10n.personalProfile),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      // 導航到個人資料頁面
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.language),
+                    title: Text(l10n.language),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LanguageSettingsScreen(),
+                        ),
+                      );
                     },
                   ),
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.notifications),
-                    title: const Text('通知設定'),
+                    title: Text(l10n.notificationSettings),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       // 導航到通知設定頁面
@@ -278,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.health_and_safety),
-                    title: const Text('健康數據權限'),
+                    title: Text(l10n.healthDataPermission),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: _checkHealthPermissions,
                   ),
@@ -297,40 +325,42 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _syncHealthData() async {
+    final l10n = AppLocalizations.of(context)!;
     final healthService = context.read<HealthService>();
     await healthService.syncHealthData();
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('數據同步完成！')),
+        SnackBar(content: Text(l10n.dataSyncComplete)),
       );
     }
   }
 
   void _setDailyGoal() {
-    // 顯示設定每日目標對話框
+    final l10n = AppLocalizations.of(context)!;
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('設定每日步數目標'),
-        content: const TextField(
+        title: Text(l10n.setDailyStepGoal),
+        content: TextField(
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
-            labelText: '目標步數',
-            suffixText: '步',
+            labelText: l10n.goalSteps,
+            suffixText: l10n.steps,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('取消'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               // 儲存目標邏輯
             },
-            child: const Text('確定'),
+            child: Text(l10n.confirm),
           ),
         ],
       ),
@@ -338,13 +368,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _createNewChallenge() {
-    // 導航到創建挑戰頁面
+    final l10n = AppLocalizations.of(context)!;
+    
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('創建挑戰功能開發中...')),
+      SnackBar(content: Text(l10n.createChallengeInDevelopment)),
     );
   }
 
   void _checkHealthPermissions() async {
+    final l10n = AppLocalizations.of(context)!;
     final healthService = context.read<HealthService>();
     final isAuthorized = await healthService.initialize();
     
@@ -352,7 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            isAuthorized ? '健康數據權限已授權' : '請在設定中開啟健康數據權限',
+            isAuthorized ? l10n.healthDataAuthorized : l10n.pleaseEnableHealthData,
           ),
         ),
       );

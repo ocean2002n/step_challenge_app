@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:health/health.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../models/daily_steps_model.dart';
 
 class HealthService extends ChangeNotifier {
@@ -48,9 +47,9 @@ class HealthService extends ChangeNotifier {
       final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
 
       List<HealthDataPoint> healthData = await _health.getHealthDataFromTypes(
-        startOfDay,
-        endOfDay,
-        types,
+        types: types,
+        startTime: startOfDay,
+        endTime: endOfDay,
       );
 
       if (healthData.isNotEmpty) {
@@ -80,9 +79,9 @@ class HealthService extends ChangeNotifier {
         final endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
 
         List<HealthDataPoint> healthData = await _health.getHealthDataFromTypes(
-          startOfDay,
-          endOfDay,
-          types,
+          types: types,
+          startTime: startOfDay,
+          endTime: endOfDay,
         );
 
         int daySteps = 0;
@@ -123,9 +122,9 @@ class HealthService extends ChangeNotifier {
         final endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
 
         List<HealthDataPoint> healthData = await _health.getHealthDataFromTypes(
-          startOfDay,
-          endOfDay,
-          types,
+          types: types,
+          startTime: startOfDay,
+          endTime: endOfDay,
         );
 
         int daySteps = 0;

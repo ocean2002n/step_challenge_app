@@ -6,6 +6,12 @@ class User {
   final DateTime createdDate;
   final DateTime lastSync;
   final String timezone;
+  final String? nickname;
+  final String? avatarPath;
+  final String? gender;
+  final double? height;
+  final double? weight;
+  final DateTime? birthDate;
 
   User({
     required this.id,
@@ -15,6 +21,12 @@ class User {
     required this.createdDate,
     required this.lastSync,
     required this.timezone,
+    this.nickname,
+    this.avatarPath,
+    this.gender,
+    this.height,
+    this.weight,
+    this.birthDate,
   });
 
   Map<String, dynamic> toJson() {
@@ -26,6 +38,12 @@ class User {
       'created_date': createdDate.toIso8601String(),
       'last_sync': lastSync.toIso8601String(),
       'timezone': timezone,
+      'nickname': nickname,
+      'avatar_path': avatarPath,
+      'gender': gender,
+      'height': height,
+      'weight': weight,
+      'birth_date': birthDate?.toIso8601String(),
     };
   }
 
@@ -38,6 +56,12 @@ class User {
       createdDate: DateTime.parse(json['created_date']),
       lastSync: DateTime.parse(json['last_sync']),
       timezone: json['timezone'],
+      nickname: json['nickname'],
+      avatarPath: json['avatar_path'],
+      gender: json['gender'],
+      height: json['height']?.toDouble(),
+      weight: json['weight']?.toDouble(),
+      birthDate: json['birth_date'] != null ? DateTime.parse(json['birth_date']) : null,
     );
   }
 
@@ -49,6 +73,12 @@ class User {
     DateTime? createdDate,
     DateTime? lastSync,
     String? timezone,
+    String? nickname,
+    String? avatarPath,
+    String? gender,
+    double? height,
+    double? weight,
+    DateTime? birthDate,
   }) {
     return User(
       id: id ?? this.id,
@@ -58,6 +88,12 @@ class User {
       createdDate: createdDate ?? this.createdDate,
       lastSync: lastSync ?? this.lastSync,
       timezone: timezone ?? this.timezone,
+      nickname: nickname ?? this.nickname,
+      avatarPath: avatarPath ?? this.avatarPath,
+      gender: gender ?? this.gender,
+      height: height ?? this.height,
+      weight: weight ?? this.weight,
+      birthDate: birthDate ?? this.birthDate,
     );
   }
 }

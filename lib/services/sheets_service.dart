@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:googleapis/sheets/v4.dart';
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 import '../models/daily_steps_model.dart';
 import '../models/challenge_model.dart';

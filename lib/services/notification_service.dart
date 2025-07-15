@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService extends ChangeNotifier {
   static final FlutterLocalNotificationsPlugin _localNotifications = 
@@ -138,7 +139,7 @@ class NotificationService extends ChangeNotifier {
         1, // notification ID
         '步數目標提醒',
         '今天還沒達成步數目標，加油走起來！',
-        _nextInstanceOfTime(hour, minute),
+        tz.TZDateTime.from(_nextInstanceOfTime(hour, minute), tz.local),
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'daily_reminder_channel',

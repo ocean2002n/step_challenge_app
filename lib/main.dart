@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/home_screen.dart';
 import 'services/health_service.dart';
 import 'services/sheets_service.dart';
-import 'services/notification_service.dart';
+import 'services/locale_service.dart';
 import 'utils/app_theme.dart';
+import 'package:step_challenge_app/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Firebase
-  await Firebase.initializeApp();
+  final localeService = LocaleService();
+  await localeService.loadSavedLanguage();
   
-  // Initialize services
-  await NotificationService.initialize();
-  
-  runApp(const StepChallengeApp());
+  runApp(StepChallengeApp(localeService: localeService));
 }
 
 class StepChallengeApp extends StatelessWidget {
-  const StepChallengeApp({super.key});
+  final LocaleService localeService;
+  
+  const StepChallengeApp({super.key, required this.localeService});
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +28,25 @@ class StepChallengeApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => HealthService()),
         ChangeNotifierProvider(create: (_) => SheetsService()),
-        ChangeNotifierProvider(create: (_) => NotificationService()),
+        ChangeNotifierProvider.value(value: localeService),
       ],
-      child: MaterialApp(
-        title: 'Step Challenge',
-        theme: AppTheme.lightTheme,
-        home: const HomeScreen(),
-        debugShowCheckedModeBanner: false,
+      child: Consumer<LocaleService>(
+        builder: (context, localeService, child) {
+          return MaterialApp(
+            title: 'Step Challenge',
+            theme: AppTheme.lightTheme,
+            home: const HomeScreen(),
+            debugShowCheckedModeBanner: false,
+            locale: localeService.locale,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: localeService.supportedLocales,
+          );
+        },
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   // 清新活潑的配色
   static const Color primaryGreen = Color(0xFF4CAF50);
+  static const Color primaryColor = primaryGreen;
   static const Color secondaryBlue = Color(0xFF2196F3);
   static const Color accentOrange = Color(0xFFFF9800);
   static const Color lightGreen = Color(0xFFE8F5E8);
@@ -12,7 +13,6 @@ class AppTheme {
     primarySwatch: Colors.green,
     primaryColor: primaryGreen,
     scaffoldBackgroundColor: Colors.grey[50],
-    fontFamily: 'Poppins',
     
     appBarTheme: const AppBarTheme(
       backgroundColor: primaryGreen,
@@ -20,14 +20,13 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
       titleTextStyle: TextStyle(
-        fontFamily: 'Poppins',
         fontSize: 20,
         fontWeight: FontWeight.w600,
         color: Colors.white,
       ),
     ),
     
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -47,7 +46,6 @@ class AppTheme {
         textStyle: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          fontFamily: 'Poppins',
         ),
       ),
     ),
@@ -63,25 +61,21 @@ class AppTheme {
         fontSize: 32,
         fontWeight: FontWeight.bold,
         color: darkGreen,
-        fontFamily: 'Poppins',
       ),
       headlineMedium: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: darkGreen,
-        fontFamily: 'Poppins',
       ),
       bodyLarge: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.normal,
         color: Colors.black87,
-        fontFamily: 'Poppins',
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.normal,
         color: Colors.black54,
-        fontFamily: 'Poppins',
       ),
     ),
     

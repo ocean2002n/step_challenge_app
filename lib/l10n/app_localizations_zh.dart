@@ -1,0 +1,169 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Chinese (`zh`).
+class AppLocalizationsZh extends AppLocalizations {
+  AppLocalizationsZh([String locale = 'zh']) : super(locale);
+
+  @override
+  String get appTitle => '步數挑戰';
+
+  @override
+  String get home => '首頁';
+
+  @override
+  String get challenges => '挑戰';
+
+  @override
+  String get profile => '個人';
+
+  @override
+  String get goodMorning => '早安！';
+
+  @override
+  String get goodAfternoon => '午安！';
+
+  @override
+  String get goodEvening => '晚安！';
+
+  @override
+  String get stayActive => '今天也要保持活力喔！';
+
+  @override
+  String get todaySteps => '今日步數';
+
+  @override
+  String get weeklyProgress => '週進度';
+
+  @override
+  String get goalProgress => '目標進度';
+
+  @override
+  String get quickActions => '快速操作';
+
+  @override
+  String get syncData => '同步數據';
+
+  @override
+  String get setGoal => '設定目標';
+
+  @override
+  String get challengeActivities => '挑戰活動';
+
+  @override
+  String get personalSettings => '個人設定';
+
+  @override
+  String get personalProfile => '個人資料';
+
+  @override
+  String get notificationSettings => '通知設定';
+
+  @override
+  String get healthDataPermission => '健康數據權限';
+
+  @override
+  String get dataSyncComplete => '數據同步完成！';
+
+  @override
+  String get setDailyStepGoal => '設定每日步數目標';
+
+  @override
+  String get goalSteps => '目標步數';
+
+  @override
+  String get steps => '步';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get confirm => '確定';
+
+  @override
+  String get createChallengeInDevelopment => '創建挑戰功能開發中...';
+
+  @override
+  String get healthDataAuthorized => '健康數據權限已授權';
+
+  @override
+  String get pleaseEnableHealthData => '請在設定中開啟健康數據權限';
+
+  @override
+  String get initializingApp => '正在初始化應用...';
+
+  @override
+  String get save => '儲存';
+
+  @override
+  String get nickname => '暱稱';
+
+  @override
+  String get pleaseEnterNickname => '請輸入暱稱';
+
+  @override
+  String get gender => '性別';
+
+  @override
+  String get male => '男性';
+
+  @override
+  String get female => '女性';
+
+  @override
+  String get other => '其他';
+
+  @override
+  String get birthDate => '出生年月日';
+
+  @override
+  String get pleaseSelectBirthDate => '請選擇出生年月日';
+
+  @override
+  String get height => '身高';
+
+  @override
+  String get weight => '體重';
+
+  @override
+  String get enterValidHeight => '請輸入有效的身高(1-300cm)';
+
+  @override
+  String get enterValidWeight => '請輸入有效的體重(1-500kg)';
+
+  @override
+  String get savePersonalProfile => '儲存個人資料';
+
+  @override
+  String get personalProfileSaved => '個人資料已儲存';
+
+  @override
+  String get saveFailed => '儲存失敗';
+
+  @override
+  String get imageSelectionError => '選擇圖片時發生錯誤';
+
+  @override
+  String get language => '語言';
+
+  @override
+  String get english => '英文';
+
+  @override
+  String get traditionalChinese => '繁體中文';
+
+  @override
+  String get khmer => '柬文';
+
+  @override
+  String get languageSettings => '語言設定';
+
+  @override
+  String get selectLanguage => '選擇語言';
+
+  @override
+  String get restartRequired => '需要重新啟動應用程式以套用語言變更';
+}
