@@ -19,47 +19,152 @@ class HealthService extends ChangeNotifier {
 
   static const List<HealthDataType> types = [
     HealthDataType.STEPS,
+    HealthDataType.DISTANCE_WALKING_RUNNING,
+    HealthDataType.ACTIVE_ENERGY_BURNED,
+    HealthDataType.HEART_RATE,
+    HealthDataType.WORKOUT,
   ];
 
   static const List<HealthDataAccess> permissions = [
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
     HealthDataAccess.READ,
   ];
 
   /// 初始化健康數據權限
   Future<bool> initialize() async {
     try {
-      debugPrint('Starting health data authorization...');
+      debugPrint('🏃‍♂️ Starting health data authorization...');
       
-      // 檢查平台是否支持 HealthKit
-      final hasPermissions = await Health().hasPermissions(types, permissions: permissions);
-      if (hasPermissions != true) {
-        debugPrint('Health permissions not granted, requesting...');
+      // 檢查 HealthKit 是否可用（iOS 設備默認支援）
+      try {
+        // 嘗試檢查權限來驗證 HealthKit 是否可用
+        await Health().hasPermissions([HealthDataType.STEPS], permissions: [HealthDataAccess.READ]);
+        debugPrint('✅ HealthKit available on this device');
+      } catch (e) {
+        debugPrint('❌ HealthKit not available on this device: $e');
+        _generateMockData();
+        notifyListeners();
+        return false;
       }
       
+      debugPrint('✅ HealthKit available, checking permissions...');
+      
+      // 檢查現有權限
+      final hasPermissions = await Health().hasPermissions(types, permissions: permissions);
+      debugPrint('📋 Current permissions status: $hasPermissions');
+      
       // 請求健康數據權限
+      debugPrint('📝 Requesting health data permissions...');
       _isAuthorized = await _health.requestAuthorization(types, permissions: permissions);
       
-      debugPrint('Health authorization result: $_isAuthorized');
+      debugPrint('🔐 Health authorization result: $_isAuthorized');
       
       if (_isAuthorized) {
-        debugPrint('Health data authorized, loading data...');
-        await _loadTodaySteps();
-        await _loadWeeklySteps();
-        _generateMockMonthlyData();
+        debugPrint('✅ Health data authorized, loading real data...');
+        
+        // 嘗試讀取實際的健康數據
+        await _loadRealHealthData();
+        
+        debugPrint('📊 Health data loaded successfully');
       } else {
-        debugPrint('Health data not authorized, using mock data');
-        // Generate mock data for demo purposes when health access is not available
+        debugPrint('❌ Health data not authorized, using mock data');
         _generateMockData();
       }
       
       notifyListeners();
       return _isAuthorized;
     } catch (e) {
-      debugPrint('Health initialization error: $e');
-      // 如果發生錯誤，使用模擬數據
+      debugPrint('💥 Health initialization error: $e');
       _generateMockData();
       notifyListeners();
       return false;
+    }
+  }
+
+  /// 讀取真實的健康數據
+  Future<void> _loadRealHealthData() async {
+    try {
+      // 並行讀取所有健康數據
+      await Future.wait([
+        _loadTodaySteps(),
+        _loadWeeklySteps(),
+        _loadMonthlySteps(),
+        _loadHeartRateData(),
+      ]);
+    } catch (e) {
+      debugPrint('Error loading real health data: $e');
+      // 如果讀取失敗，使用模擬數據
+      _generateMockData();
+    }
+  }
+
+  /// 讀取真實的月度步數數據
+  Future<void> _loadMonthlySteps() async {
+    try {
+      final now = DateTime.now();
+      final startOfMonth = DateTime(now.year, now.month, 1);
+      final endOfMonth = DateTime(now.year, now.month + 1, 1).subtract(const Duration(days: 1));
+      
+      final lastMonthStart = DateTime(now.year, now.month - 1, 1);
+      final lastMonthEnd = DateTime(now.year, now.month, 1).subtract(const Duration(days: 1));
+      
+      // 讀取本月步數
+      final thisMonthData = await _health.getHealthDataFromTypes(
+        types: [HealthDataType.STEPS],
+        startTime: startOfMonth,
+        endTime: endOfMonth,
+      );
+      
+      _monthlySteps = thisMonthData
+          .where((point) => point.type == HealthDataType.STEPS)
+          .map((point) => (point.value as NumericHealthValue).numericValue.toInt())
+          .fold(0, (sum, steps) => sum + steps);
+      
+      // 讀取上月步數
+      final lastMonthData = await _health.getHealthDataFromTypes(
+        types: [HealthDataType.STEPS],
+        startTime: lastMonthStart,
+        endTime: lastMonthEnd,
+      );
+      
+      _lastMonthSteps = lastMonthData
+          .where((point) => point.type == HealthDataType.STEPS)
+          .map((point) => (point.value as NumericHealthValue).numericValue.toInt())
+          .fold(0, (sum, steps) => sum + steps);
+      
+      debugPrint('📊 Monthly steps loaded: This month: $_monthlySteps, Last month: $_lastMonthSteps');
+    } catch (e) {
+      debugPrint('Error loading monthly steps: $e');
+      _generateMockMonthlyData();
+    }
+  }
+
+  /// 讀取心率數據
+  Future<void> _loadHeartRateData() async {
+    try {
+      final now = DateTime.now();
+      final startOfDay = DateTime(now.year, now.month, now.day);
+      final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+      
+      final heartRateData = await _health.getHealthDataFromTypes(
+        types: [HealthDataType.HEART_RATE],
+        startTime: startOfDay,
+        endTime: endOfDay,
+      );
+      
+      if (heartRateData.isNotEmpty) {
+        final averageHeartRate = heartRateData
+            .where((point) => point.type == HealthDataType.HEART_RATE)
+            .map((point) => (point.value as NumericHealthValue).numericValue.toInt())
+            .fold(0, (sum, hr) => sum + hr) / heartRateData.length;
+        
+        debugPrint('❤️ Average heart rate today: ${averageHeartRate.toInt()} bpm');
+      }
+    } catch (e) {
+      debugPrint('Error loading heart rate data: $e');
     }
   }
 
@@ -177,20 +282,50 @@ class HealthService extends ChangeNotifier {
 
   /// 重新同步健康數據
   Future<void> syncHealthData() async {
-    debugPrint('Syncing health data...');
+    debugPrint('🔄 Starting health data sync...');
     
     if (!_isAuthorized) {
-      debugPrint('Not authorized, reinitializing...');
+      debugPrint('📝 Not authorized, reinitializing...');
       await initialize();
       return;
     }
 
     try {
-      await _loadTodaySteps();
-      await _loadWeeklySteps();
-      debugPrint('Health data sync completed');
+      debugPrint('📱 Syncing health data from Apple Health...');
+      
+      // 強制重新讀取所有健康數據
+      await _loadRealHealthData();
+      
+      debugPrint('✅ Health data sync completed successfully');
+      notifyListeners();
     } catch (e) {
-      debugPrint('Health sync error: $e');
+      debugPrint('💥 Health sync error: $e');
+      
+      // 如果同步失敗，嘗試重新初始化
+      await initialize();
+    }
+  }
+
+  /// 強制重新授權並同步
+  Future<bool> forceReauthorizeAndSync() async {
+    debugPrint('🔐 Force reauthorizing health data...');
+    
+    try {
+      // 重新請求權限
+      _isAuthorized = await _health.requestAuthorization(types, permissions: permissions);
+      
+      if (_isAuthorized) {
+        debugPrint('✅ Reauthorization successful, syncing data...');
+        await _loadRealHealthData();
+        notifyListeners();
+        return true;
+      } else {
+        debugPrint('❌ Reauthorization failed');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('💥 Force reauthorization error: $e');
+      return false;
     }
   }
 

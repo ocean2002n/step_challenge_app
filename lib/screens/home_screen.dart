@@ -10,6 +10,7 @@ import '../widgets/challenge_list_card.dart';
 import 'profile_screen.dart';
 import 'language_settings_screen.dart';
 import 'friends_screen.dart';
+import 'health_settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -314,7 +315,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     leading: const Icon(Icons.health_and_safety),
                     title: Text(l10n.healthDataPermission),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: _checkHealthPermissions,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HealthSettingsScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -333,12 +341,98 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _syncHealthData() async {
     final l10n = AppLocalizations.of(context)!;
     final healthService = context.read<HealthService>();
-    await healthService.syncHealthData();
     
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.dataSyncComplete)),
-      );
+    // 顯示同步進度
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.sync, color: Colors.blue),
+            const SizedBox(width: 12),
+            Text(l10n.syncData),
+          ],
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('正在從 Apple Health 同步數據...'),
+          ],
+        ),
+      ),
+    );
+    
+    try {
+      await healthService.syncHealthData();
+      
+      if (mounted) {
+        Navigator.of(context).pop(); // 關閉進度對話框
+        
+        // 顯示同步結果
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.green),
+                const SizedBox(width: 12),
+                const Text('同步完成'),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('✅ 今日步數：${healthService.todaySteps}'),
+                const SizedBox(height: 8),
+                Text('📊 本月步數：${healthService.monthlySteps}'),
+                const SizedBox(height: 8),
+                Text('📈 本週平均：${healthService.getWeeklyAverageSteps().toInt()}'),
+                const SizedBox(height: 8),
+                Text('🎯 目標達成：${healthService.getWeeklyGoalsAchieved(10000)} 天'),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('確定'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context).pop(); // 關閉進度對話框
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 12),
+                Text('同步失敗：$e'),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: '查看設定',
+              textColor: Colors.white,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HealthSettingsScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      }
     }
   }
 

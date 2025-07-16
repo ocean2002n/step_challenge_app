@@ -6,7 +6,13 @@
 	<key>com.apple.developer.healthkit</key>
 	<true/>
 	<key>com.apple.developer.healthkit.access</key>
-	<array/>
+	<array>
+		<string>health-records</string>
+	</array>
+	
+	<!-- Background App Refresh for health data -->
+	<key>com.apple.developer.healthkit.background-delivery</key>
+	<true/>
 	
 	<!-- App Groups (if needed for sharing data) -->
 	<key>com.apple.security.application-groups</key>
