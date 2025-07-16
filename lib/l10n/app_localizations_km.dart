@@ -322,4 +322,95 @@ class AppLocalizationsKm extends AppLocalizations {
   String remainingStepsToGoal(Object remaining) {
     return 'ត្រូវការ $remaining ជំហានទៀតដើម្បីសម្រេចគោលដៅ';
   }
+
+  @override
+  String get friends => 'មិត្តភក្តិ';
+
+  @override
+  String get addFriends => 'បន្ថែមមិត្តភក្តិ';
+
+  @override
+  String get myQrCode => 'QR កូដរបស់ខ្ញុំ';
+
+  @override
+  String get shareInviteLink => 'ចែករំលែកតំណភ្ជាប់អញ្ជើញ';
+
+  @override
+  String get scanQrCode => 'ស្កេន QR កូដ';
+
+  @override
+  String get friendsList => 'បញ្ជីមិត្តភក្តិ';
+
+  @override
+  String get monthlySteps => 'ជំហានប្រចាំខែ';
+
+  @override
+  String get friendsStepsThisMonth => 'ជំហានមិត្តភក្តិខែនេះ';
+
+  @override
+  String get noFriendsYet => 'មិនទាន់មានមិត្តភក្តិទេ';
+
+  @override
+  String get addFriendsPrompt =>
+      'បន្ថែមមិត្តភក្តិដើម្បីមើលការឈើនទៅមុខជំហានរបស់ពួកគេ និងប្រកួតជាមួយគ្នា!';
+
+  @override
+  String get scanToAddFriend =>
+      'ស្កេន QR កូដនេះ ឬចែករំលែកតំណភ្ជាប់ដើម្បីបន្ថែមខ្ញុំជាមិត្តភក្តិ';
+
+  @override
+  String get friendInviteTitle => 'ចូលរួមជាមួយខ្ញុំនៅលើ Step Challenge!';
+
+  @override
+  String get friendInviteMessage =>
+      'សួស្តី! ខ្ញុំកំពុងប្រើ Step Challenge ដើម្បីតាមដានជំហានប្រចាំថ្ងៃរបស់ខ្ញុំ។ ចូលរួមជាមួយខ្ញុំ ហើយតោះគ្នាជំរុញឱ្យគ្នាទៅគ្នាឱ្យនៅសកម្ម!';
+
+  @override
+  String get addFriend => 'បន្ថែមមិត្តភក្តិ';
+
+  @override
+  String get removeFriend => 'លុបមិត្តភក្តិ';
+
+  @override
+  String get friendAdded => 'បានបន្ថែមមិត្តភក្តិដោយជោគជ័យ!';
+
+  @override
+  String get friendRemoved => 'មិត្តភក្តិត្រូវបានលុប';
+
+  @override
+  String get friendAddError => 'មានកំហុសក្នុងការបន្ថែមមិត្តភក្តិ';
+
+  @override
+  String get invalidQrCode => 'QR កូដមិនត្រឹមត្រូវ';
+
+  @override
+  String get shareLink => 'ចែករំលែកតំណភ្ជាប់';
+
+  @override
+  String get copyLink => 'ចម្លងតំណភ្ជាប់';
+
+  @override
+  String get linkCopied => 'តំណភ្ជាប់ត្រូវបានចម្លងទៅក្លីបបត';
+
+  @override
+  String get thisMonth => 'ខែនេះ';
+
+  @override
+  String get lastMonth => 'ខែមុន';
+
+  @override
+  String stepsThisMonth(Object steps) {
+    return '$steps ជំហានខែនេះ';
+  }
+
+  @override
+  String rank(Object rank) {
+    return 'ចំណាត់ថ្នាក់ទី $rank';
+  }
+
+  @override
+  String get you => 'អ្នក';
+
+  @override
+  String get friendsRanking => 'ចំណាត់ថ្នាក់មិត្តភក្តិ';
 }

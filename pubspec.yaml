@@ -28,6 +28,11 @@ dependencies:
   fl_chart: ^0.65.0
   cupertino_icons: ^1.0.6
   
+  # QR Code and sharing
+  qr_flutter: ^4.1.0
+  qr_code_scanner: ^1.0.1
+  share_plus: ^7.2.1
+  
   # State management
   provider: ^6.1.1
   shared_preferences: ^2.2.2

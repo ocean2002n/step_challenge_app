@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/home_screen.dart';
+import 'screens/friend_qr_screen.dart';
+import 'screens/qr_scanner_screen.dart';
 import 'services/health_service.dart';
 import 'services/sheets_service.dart';
 import 'services/locale_service.dart';
+import 'services/friend_service.dart';
 import 'utils/app_theme.dart';
 import 'package:step_challenge_app/l10n/app_localizations.dart';
 
@@ -28,6 +31,7 @@ class StepChallengeApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => HealthService()),
         ChangeNotifierProvider(create: (_) => SheetsService()),
+        ChangeNotifierProvider(create: (_) => FriendService()..initialize()),
         ChangeNotifierProvider.value(value: localeService),
       ],
       child: Consumer<LocaleService>(
@@ -37,6 +41,10 @@ class StepChallengeApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             home: const HomeScreen(),
             debugShowCheckedModeBanner: false,
+            routes: {
+              '/friend_qr': (context) => const FriendQrScreen(),
+              '/scan_qr': (context) => const QrScannerScreen(),
+            },
             locale: localeService.locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,

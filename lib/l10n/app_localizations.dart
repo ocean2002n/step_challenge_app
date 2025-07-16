@@ -681,6 +681,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Need {remaining} more steps to reach goal'**
   String remainingStepsToGoal(Object remaining);
+
+  /// No description provided for @friends.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get friends;
+
+  /// No description provided for @addFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Friends'**
+  String get addFriends;
+
+  /// No description provided for @myQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'My QR Code'**
+  String get myQrCode;
+
+  /// No description provided for @shareInviteLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Invite Link'**
+  String get shareInviteLink;
+
+  /// No description provided for @scanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR Code'**
+  String get scanQrCode;
+
+  /// No description provided for @friendsList.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends List'**
+  String get friendsList;
+
+  /// No description provided for @monthlySteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Steps'**
+  String get monthlySteps;
+
+  /// No description provided for @friendsStepsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends\' Steps This Month'**
+  String get friendsStepsThisMonth;
+
+  /// No description provided for @noFriendsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No friends yet'**
+  String get noFriendsYet;
+
+  /// No description provided for @addFriendsPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Add friends to see their step progress and compete together!'**
+  String get addFriendsPrompt;
+
+  /// No description provided for @scanToAddFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan this QR code or share the link to add me as a friend'**
+  String get scanToAddFriend;
+
+  /// No description provided for @friendInviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join me on Step Challenge!'**
+  String get friendInviteTitle;
+
+  /// No description provided for @friendInviteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi! I\'m using Step Challenge to track my daily steps. Join me and let\'s motivate each other to stay active!'**
+  String get friendInviteMessage;
+
+  /// No description provided for @addFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Friend'**
+  String get addFriend;
+
+  /// No description provided for @removeFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Friend'**
+  String get removeFriend;
+
+  /// No description provided for @friendAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend added successfully!'**
+  String get friendAdded;
+
+  /// No description provided for @friendRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend removed'**
+  String get friendRemoved;
+
+  /// No description provided for @friendAddError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error adding friend'**
+  String get friendAddError;
+
+  /// No description provided for @invalidQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid QR code'**
+  String get invalidQrCode;
+
+  /// No description provided for @shareLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Link'**
+  String get shareLink;
+
+  /// No description provided for @copyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Link'**
+  String get copyLink;
+
+  /// No description provided for @linkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied to clipboard'**
+  String get linkCopied;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get thisMonth;
+
+  /// No description provided for @lastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Month'**
+  String get lastMonth;
+
+  /// No description provided for @stepsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{steps} steps this month'**
+  String stepsThisMonth(Object steps);
+
+  /// No description provided for @rank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank #{rank}'**
+  String rank(Object rank);
+
+  /// No description provided for @you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get you;
+
+  /// No description provided for @friendsRanking.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends Ranking'**
+  String get friendsRanking;
 }
 
 class _AppLocalizationsDelegate

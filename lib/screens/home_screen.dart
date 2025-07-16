@@ -9,6 +9,7 @@ import '../widgets/goal_progress_card.dart';
 import '../widgets/challenge_list_card.dart';
 import 'profile_screen.dart';
 import 'language_settings_screen.dart';
+import 'friends_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -74,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _buildHomeTab(),
           _buildChallengesTab(),
+          const FriendsScreen(),
           _buildProfileTab(),
         ],
       ),
@@ -91,6 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: const Icon(Icons.emoji_events),
             label: l10n.challenges,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.people),
+            label: l10n.friends,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.person),

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:health/health.dart';
 import '../models/daily_steps_model.dart';
@@ -7,10 +8,14 @@ class HealthService extends ChangeNotifier {
   bool _isAuthorized = false;
   int _todaySteps = 0;
   List<DailySteps> _weeklySteps = [];
+  int _monthlySteps = 0;
+  int _lastMonthSteps = 0;
   
   bool get isAuthorized => _isAuthorized;
   int get todaySteps => _todaySteps;
   List<DailySteps> get weeklySteps => _weeklySteps;
+  int get monthlySteps => _monthlySteps;
+  int get lastMonthSteps => _lastMonthSteps;
 
   static const List<HealthDataType> types = [
     HealthDataType.STEPS,
@@ -29,6 +34,10 @@ class HealthService extends ChangeNotifier {
       if (_isAuthorized) {
         await _loadTodaySteps();
         await _loadWeeklySteps();
+        _generateMockMonthlyData();
+      } else {
+        // Generate mock data for demo purposes when health access is not available
+        _generateMockData();
       }
       
       notifyListeners();
@@ -192,5 +201,39 @@ class HealthService extends ChangeNotifier {
   /// 獲取本週達成目標天數
   int getWeeklyGoalsAchieved(int dailyGoal) {
     return _weeklySteps.where((day) => day.steps >= dailyGoal).length;
+  }
+
+  /// Generate mock monthly steps data for demo purposes
+  void _generateMockMonthlyData() {
+    final random = Random();
+    _monthlySteps = random.nextInt(40000) + 20000; // 20K-60K steps this month
+    _lastMonthSteps = random.nextInt(35000) + 25000; // 25K-60K steps last month
+  }
+
+  /// Generate all mock data for demo when health access is not available
+  void _generateMockData() {
+    final random = Random();
+    
+    // Generate today's steps
+    _todaySteps = random.nextInt(8000) + 2000; // 2K-10K steps
+    
+    // Generate weekly steps
+    final weeklyData = <DailySteps>[];
+    for (int i = 6; i >= 0; i--) {
+      final date = DateTime.now().subtract(Duration(days: i));
+      final steps = random.nextInt(12000) + 3000; // 3K-15K steps per day
+      weeklyData.add(DailySteps(
+        userId: 'current_user',
+        date: date,
+        steps: steps,
+        goalAchieved: steps >= 10000,
+        syncTime: DateTime.now(),
+        deviceType: 'Demo Device',
+      ));
+    }
+    _weeklySteps = weeklyData;
+    
+    // Generate monthly data
+    _generateMockMonthlyData();
   }
 }

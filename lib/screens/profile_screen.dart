@@ -312,6 +312,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
             
+            const SizedBox(height: 24),
+            
+            // Friend sharing section
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.people,
+                          color: AppTheme.primaryColor,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.addFriends,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/friend_qr');
+                            },
+                            icon: const Icon(Icons.qr_code),
+                            label: Text(l10n.myQrCode),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppTheme.primaryColor,
+                              side: BorderSide(color: AppTheme.primaryColor),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/scan_qr');
+                            },
+                            icon: const Icon(Icons.qr_code_scanner),
+                            label: Text(l10n.scanQrCode),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppTheme.primaryColor,
+                              side: BorderSide(color: AppTheme.primaryColor),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
             const SizedBox(height: 32),
             
             // Save button

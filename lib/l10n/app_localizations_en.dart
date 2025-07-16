@@ -320,4 +320,95 @@ class AppLocalizationsEn extends AppLocalizations {
   String remainingStepsToGoal(Object remaining) {
     return 'Need $remaining more steps to reach goal';
   }
+
+  @override
+  String get friends => 'Friends';
+
+  @override
+  String get addFriends => 'Add Friends';
+
+  @override
+  String get myQrCode => 'My QR Code';
+
+  @override
+  String get shareInviteLink => 'Share Invite Link';
+
+  @override
+  String get scanQrCode => 'Scan QR Code';
+
+  @override
+  String get friendsList => 'Friends List';
+
+  @override
+  String get monthlySteps => 'Monthly Steps';
+
+  @override
+  String get friendsStepsThisMonth => 'Friends\' Steps This Month';
+
+  @override
+  String get noFriendsYet => 'No friends yet';
+
+  @override
+  String get addFriendsPrompt =>
+      'Add friends to see their step progress and compete together!';
+
+  @override
+  String get scanToAddFriend =>
+      'Scan this QR code or share the link to add me as a friend';
+
+  @override
+  String get friendInviteTitle => 'Join me on Step Challenge!';
+
+  @override
+  String get friendInviteMessage =>
+      'Hi! I\'m using Step Challenge to track my daily steps. Join me and let\'s motivate each other to stay active!';
+
+  @override
+  String get addFriend => 'Add Friend';
+
+  @override
+  String get removeFriend => 'Remove Friend';
+
+  @override
+  String get friendAdded => 'Friend added successfully!';
+
+  @override
+  String get friendRemoved => 'Friend removed';
+
+  @override
+  String get friendAddError => 'Error adding friend';
+
+  @override
+  String get invalidQrCode => 'Invalid QR code';
+
+  @override
+  String get shareLink => 'Share Link';
+
+  @override
+  String get copyLink => 'Copy Link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
+  String get thisMonth => 'This Month';
+
+  @override
+  String get lastMonth => 'Last Month';
+
+  @override
+  String stepsThisMonth(Object steps) {
+    return '$steps steps this month';
+  }
+
+  @override
+  String rank(Object rank) {
+    return 'Rank #$rank';
+  }
+
+  @override
+  String get you => 'You';
+
+  @override
+  String get friendsRanking => 'Friends Ranking';
 }
