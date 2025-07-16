@@ -169,4 +169,157 @@ class AppLocalizationsKm extends AppLocalizations {
   @override
   String get restartRequired =>
       'ត្រូវការចាប់ផ្តើមឡើងវិញដើម្បីអនុវត្តការផ្លាស់ប្តូរភាសា';
+
+  @override
+  String get weekendWalkingChallenge => 'បញ្ហាប្រកួតដើរចុងសប្តាហ៍';
+
+  @override
+  String get weekendWalkingDescription =>
+      'តោះដើរជាមួយគ្នានៅចុងសប្តាហ៍នេះ គោលដៅ៨០០០ជំហានក្នុងមួយថ្ងៃ!';
+
+  @override
+  String get tenThousandStepChallenge => 'បញ្ហាប្រកួត១០,០០០ជំហាន';
+
+  @override
+  String get tenThousandStepDescription =>
+      'ដើរ១០,០០០ជំហានជារៀងរាល់ថ្ងៃរយៈពេលមួយខែ។ តើអ្នកហ៊ានប្រកួតមែនទេ?';
+
+  @override
+  String get oneMillionStepChallenge => 'បញ្ហាប្រកួត១លានជំហាន';
+
+  @override
+  String get oneMillionStepDescription =>
+      'ធ្វើការជាក្រុមដើម្បីឈានដល់គោលដៅ១លានជំហាន!';
+
+  @override
+  String get noActiveChallenges =>
+      'បច្ចុប្បន្នមិនមានបញ្ហាប្រកួតកំពុងដំណើរការទេ';
+
+  @override
+  String get createNewChallengePrompt =>
+      'បង្កើតបញ្ហាប្រកួតថ្មីនិងអញ្ជើញមិត្តភ័ក្តិឱ្យធ្វើលំហាត់ប្រាណជាមួយគ្នា!';
+
+  @override
+  String get remainingTime => 'ពេលវេលានៅសល់';
+
+  @override
+  String get ended => 'បានបញ្ចប់';
+
+  @override
+  String get days => 'ថ្ងៃ';
+
+  @override
+  String get challengeProgress => 'ការឈើនទៅមុខនៃបញ្ហាប្រកួត';
+
+  @override
+  String get participants => 'អ្នកចូលរួម';
+
+  @override
+  String get join => 'ចូលរួម';
+
+  @override
+  String get endingSoon => 'ជិតបញ្ចប់';
+
+  @override
+  String get inProgress => 'កំពុងដំណើរការ';
+
+  @override
+  String get dailyGoal => 'គោលដៅប្រចាំថ្ងៃ';
+
+  @override
+  String get totalGoal => 'គោលដៅសរុប';
+
+  @override
+  String get duration => 'រយៈពេល';
+
+  @override
+  String get stepsUnit => 'ជំហាន';
+
+  @override
+  String get achieved => 'បានសម្រេច';
+
+  @override
+  String get goalAchieved => 'បានសម្រេចគោលដៅ!';
+
+  @override
+  String get keepGoing => 'បន្តខិតខំ';
+
+  @override
+  String get exceededGoal => 'លើសគោលដៅ';
+
+  @override
+  String get remainingSteps => 'ជំហាននៅសល់';
+
+  @override
+  String get goalAchievedCongrats =>
+      'ល្អណាស់! អ្នកបានសម្រេចគោលដៅថ្ងៃនេះ បន្តរក្សាទម្លាប់រស់នៅដ៏សុខភាព!';
+
+  @override
+  String get nearGoalMessage => 'ជិតដល់គោលដៅហើយ! ដើរបន្តិចទៀតនិងនឹងជោគជ័យ!';
+
+  @override
+  String get halfwayMessage =>
+      'បានបញ្ចប់ពាក់កណ្តាលហើយ! បន្តប្រឹងប្រែង គោលដៅនៅមុខភ្នែក!';
+
+  @override
+  String get goodStartMessage =>
+      'ការចាប់ផ្តើមល្អ! រាល់ជំហានធ្វើឱ្យអ្នកកាន់តែជិតគោលដៅសុខភាព។';
+
+  @override
+  String get newDayMessage =>
+      'ថ្ងៃថ្មីចាប់ផ្តើមហើយ! ដើរជំហានដំបូងឆ្ពោះទៅរកគោលដៅ!';
+
+  @override
+  String get thisWeekWalkingRecord => 'កំណត់ត្រាដើរប្រចាំសប្តាហ៍នេះ';
+
+  @override
+  String get noDataAvailable => 'មិនមានទិន្នន័យ';
+
+  @override
+  String get weeklyTotal => 'សរុបប្រចាំសប្តាហ៍';
+
+  @override
+  String get dailyAverageSteps => 'ជំហានជាមធ្យមប្រចាំថ្ងៃ';
+
+  @override
+  String get daysGoalAchieved => 'ថ្ងៃដែលសម្រេចគោលដៅ';
+
+  @override
+  String get stepGoalReminder => 'ការរំលឹកគោលដៅជំហាន';
+
+  @override
+  String get stepGoalReminderBody =>
+      'អ្នកមិនទាន់សម្រេចគោលដៅជំហានថ្ងៃនេះទេ តោះដើរ!';
+
+  @override
+  String get challengeInvitation => 'ការអញ្ជើញចូលរួមបញ្ហាប្រកួត';
+
+  @override
+  String get challengeProgressUpdate =>
+      'បច្ចុប្បន្នភាពការឈើនទៅមុខនៃបញ្ហាប្រកួត';
+
+  @override
+  String clickedChallenge(Object challengeTitle) {
+    return 'បានជ្រើសរើសបញ្ហាប្រកួត៖ $challengeTitle';
+  }
+
+  @override
+  String joinedChallenge(Object challengeTitle) {
+    return 'បានចូលរួមបញ្ហាប្រកួត៖ $challengeTitle';
+  }
+
+  @override
+  String shareChallenge(Object challengeTitle) {
+    return 'ចែករំលែកបញ្ហាប្រកួត៖ $challengeTitle';
+  }
+
+  @override
+  String goalWith(Object goal) {
+    return 'គោលដៅ៖ $goal ជំហាន';
+  }
+
+  @override
+  String remainingStepsToGoal(Object remaining) {
+    return 'ត្រូវការ $remaining ជំហានទៀតដើម្បីសម្រេចគោលដៅ';
+  }
 }

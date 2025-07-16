@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../models/challenge_model.dart';
 import '../utils/app_theme.dart';
+import 'package:step_challenge_app/l10n/app_localizations.dart';
 
 class ChallengeListCard extends StatefulWidget {
   const ChallengeListCard({super.key});

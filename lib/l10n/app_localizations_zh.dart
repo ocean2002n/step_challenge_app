@@ -166,4 +166,278 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get restartRequired => '需要重新啟動應用程式以套用語言變更';
+
+  @override
+  String get weekendWalkingChallenge => '週末健走挑戰';
+
+  @override
+  String get weekendWalkingDescription => '這個週末讓我們一起走路，目標是每天8000步！';
+
+  @override
+  String get tenThousandStepChallenge => '萬步達人月挑戰';
+
+  @override
+  String get tenThousandStepDescription => '一整個月每天都要達到10000步，你敢挑戰嗎？';
+
+  @override
+  String get oneMillionStepChallenge => '100萬步總挑戰';
+
+  @override
+  String get oneMillionStepDescription => '團隊合作達成100萬步總目標！';
+
+  @override
+  String get noActiveChallenges => '目前沒有進行中的挑戰';
+
+  @override
+  String get createNewChallengePrompt => '創建一個新挑戰邀請朋友一起運動吧！';
+
+  @override
+  String get remainingTime => '剩餘時間';
+
+  @override
+  String get ended => '已結束';
+
+  @override
+  String get days => '天';
+
+  @override
+  String get challengeProgress => '挑戰進度';
+
+  @override
+  String get participants => '位參與者';
+
+  @override
+  String get join => '加入';
+
+  @override
+  String get endingSoon => '即將結束';
+
+  @override
+  String get inProgress => '進行中';
+
+  @override
+  String get dailyGoal => '每日目標';
+
+  @override
+  String get totalGoal => '總計目標';
+
+  @override
+  String get duration => '持續時間';
+
+  @override
+  String get stepsUnit => '步';
+
+  @override
+  String get achieved => '已達成';
+
+  @override
+  String get goalAchieved => '目標達成！';
+
+  @override
+  String get keepGoing => '繼續加油';
+
+  @override
+  String get exceededGoal => '超出目標';
+
+  @override
+  String get remainingSteps => '剩餘步數';
+
+  @override
+  String get goalAchievedCongrats => '太棒了！您已經達成今日目標，繼續保持健康的生活習慣！';
+
+  @override
+  String get nearGoalMessage => '快要達成目標了！再走一點就成功了，加油！';
+
+  @override
+  String get halfwayMessage => '已經完成一半了！繼續努力，目標就在眼前！';
+
+  @override
+  String get goodStartMessage => '好的開始！每一步都讓您更接近健康目標。';
+
+  @override
+  String get newDayMessage => '新的一天開始了！走出第一步，向目標邁進！';
+
+  @override
+  String get thisWeekWalkingRecord => '本週走路紀錄';
+
+  @override
+  String get noDataAvailable => '暫無數據';
+
+  @override
+  String get weeklyTotal => '本週總計';
+
+  @override
+  String get dailyAverageSteps => '日均步數';
+
+  @override
+  String get daysGoalAchieved => '達標天數';
+
+  @override
+  String get stepGoalReminder => '步數目標提醒';
+
+  @override
+  String get stepGoalReminderBody => '今天還沒達成步數目標，加油走起來！';
+
+  @override
+  String get challengeInvitation => '挑戰邀請';
+
+  @override
+  String get challengeProgressUpdate => '挑戰進度更新';
+
+  @override
+  String clickedChallenge(Object challengeTitle) => '點選了挑戰: $challengeTitle';
+
+  @override
+  String joinedChallenge(Object challengeTitle) => '已加入挑戰: $challengeTitle';
+
+  @override
+  String shareChallenge(Object challengeTitle) => '分享挑戰: $challengeTitle';
+
+  @override
+  String goalWith(Object goal) => '目標: $goal 步';
+
+  @override
+  String remainingStepsToGoal(Object remaining) => '還差 $remaining 步達成目標';
+
+  @override
+  String get weekendWalkingChallenge => '週末健走挑戰';
+
+  @override
+  String get weekendWalkingDescription => '這個週末讓我們一起走路，目標是每天8000步！';
+
+  @override
+  String get tenThousandStepChallenge => '萬步達人月挑戰';
+
+  @override
+  String get tenThousandStepDescription => '一整個月每天都要達到10000步，你敢挑戰嗎？';
+
+  @override
+  String get oneMillionStepChallenge => '100萬步總挑戰';
+
+  @override
+  String get oneMillionStepDescription => '團隊合作達成100萬步總目標！';
+
+  @override
+  String get noActiveChallenges => '目前沒有進行中的挑戰';
+
+  @override
+  String get createNewChallengePrompt => '創建一個新挑戰邀請朋友一起運動吧！';
+
+  @override
+  String get remainingTime => '剩餘時間';
+
+  @override
+  String get ended => '已結束';
+
+  @override
+  String get days => '天';
+
+  @override
+  String get challengeProgress => '挑戰進度';
+
+  @override
+  String get participants => '位參與者';
+
+  @override
+  String get join => '加入';
+
+  @override
+  String get endingSoon => '即將結束';
+
+  @override
+  String get inProgress => '進行中';
+
+  @override
+  String get dailyGoal => '每日目標';
+
+  @override
+  String get totalGoal => '總計目標';
+
+  @override
+  String get duration => '持續時間';
+
+  @override
+  String get stepsUnit => '步';
+
+  @override
+  String get achieved => '已達成';
+
+  @override
+  String get goalAchieved => '目標達成！';
+
+  @override
+  String get keepGoing => '繼續加油';
+
+  @override
+  String get exceededGoal => '超出目標';
+
+  @override
+  String get remainingSteps => '剩餘步數';
+
+  @override
+  String get goalAchievedCongrats => '太棒了！您已經達成今日目標，繼續保持健康的生活習慣！';
+
+  @override
+  String get nearGoalMessage => '快要達成目標了！再走一點就成功了，加油！';
+
+  @override
+  String get halfwayMessage => '已經完成一半了！繼續努力，目標就在眼前！';
+
+  @override
+  String get goodStartMessage => '好的開始！每一步都讓您更接近健康目標。';
+
+  @override
+  String get newDayMessage => '新的一天開始了！走出第一步，向目標邁進！';
+
+  @override
+  String get thisWeekWalkingRecord => '本週走路紀錄';
+
+  @override
+  String get noDataAvailable => '暫無數據';
+
+  @override
+  String get weeklyTotal => '本週總計';
+
+  @override
+  String get dailyAverageSteps => '日均步數';
+
+  @override
+  String get daysGoalAchieved => '達標天數';
+
+  @override
+  String get stepGoalReminder => '步數目標提醒';
+
+  @override
+  String get stepGoalReminderBody => '今天還沒達成步數目標，加油走起來！';
+
+  @override
+  String get challengeInvitation => '挑戰邀請';
+
+  @override
+  String get challengeProgressUpdate => '挑戰進度更新';
+
+  @override
+  String clickedChallenge(Object challengeTitle) {
+    return '點選了挑戰: $challengeTitle';
+  }
+
+  @override
+  String joinedChallenge(Object challengeTitle) {
+    return '已加入挑戰: $challengeTitle';
+  }
+
+  @override
+  String shareChallenge(Object challengeTitle) {
+    return '分享挑戰: $challengeTitle';
+  }
+
+  @override
+  String goalWith(Object goal) {
+    return '目標: $goal 步';
+  }
+
+  @override
+  String remainingStepsToGoal(Object remaining) {
+    return '還差 $remaining 步達成目標';
+  }
 }

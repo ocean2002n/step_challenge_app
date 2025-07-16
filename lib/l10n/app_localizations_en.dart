@@ -168,4 +168,156 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restartRequired => 'Restart required to apply language changes';
+
+  @override
+  String get weekendWalkingChallenge => 'Weekend Walking Challenge';
+
+  @override
+  String get weekendWalkingDescription =>
+      'Let\'s walk together this weekend, aiming for 8000 steps daily!';
+
+  @override
+  String get tenThousandStepChallenge => '10K Steps Master Challenge';
+
+  @override
+  String get tenThousandStepDescription =>
+      'Reach 10,000 steps every day for a whole month. Do you dare to challenge?';
+
+  @override
+  String get oneMillionStepChallenge => '1 Million Steps Team Challenge';
+
+  @override
+  String get oneMillionStepDescription =>
+      'Work together as a team to reach the goal of 1 million steps!';
+
+  @override
+  String get noActiveChallenges => 'No active challenges currently';
+
+  @override
+  String get createNewChallengePrompt =>
+      'Create a new challenge and invite friends to exercise together!';
+
+  @override
+  String get remainingTime => 'Remaining time';
+
+  @override
+  String get ended => 'Ended';
+
+  @override
+  String get days => 'days';
+
+  @override
+  String get challengeProgress => 'Challenge Progress';
+
+  @override
+  String get participants => 'participants';
+
+  @override
+  String get join => 'Join';
+
+  @override
+  String get endingSoon => 'Ending soon';
+
+  @override
+  String get inProgress => 'In progress';
+
+  @override
+  String get dailyGoal => 'Daily goal';
+
+  @override
+  String get totalGoal => 'Total goal';
+
+  @override
+  String get duration => 'Duration';
+
+  @override
+  String get stepsUnit => 'steps';
+
+  @override
+  String get achieved => 'Achieved';
+
+  @override
+  String get goalAchieved => 'Goal achieved!';
+
+  @override
+  String get keepGoing => 'Keep going';
+
+  @override
+  String get exceededGoal => 'Exceeded goal';
+
+  @override
+  String get remainingSteps => 'Remaining steps';
+
+  @override
+  String get goalAchievedCongrats =>
+      'Excellent! You\'ve achieved today\'s goal. Keep up the healthy lifestyle!';
+
+  @override
+  String get nearGoalMessage =>
+      'Almost there! Just a little more walking and you\'ll succeed. Keep it up!';
+
+  @override
+  String get halfwayMessage =>
+      'You\'re halfway there! Keep pushing, the goal is within reach!';
+
+  @override
+  String get goodStartMessage =>
+      'Great start! Every step brings you closer to your health goal.';
+
+  @override
+  String get newDayMessage =>
+      'A new day begins! Take the first step towards your goal!';
+
+  @override
+  String get thisWeekWalkingRecord => 'This Week\'s Walking Record';
+
+  @override
+  String get noDataAvailable => 'No data available';
+
+  @override
+  String get weeklyTotal => 'Weekly total';
+
+  @override
+  String get dailyAverageSteps => 'Daily average steps';
+
+  @override
+  String get daysGoalAchieved => 'Days goal achieved';
+
+  @override
+  String get stepGoalReminder => 'Step Goal Reminder';
+
+  @override
+  String get stepGoalReminderBody =>
+      'You haven\'t reached your step goal today. Let\'s get walking!';
+
+  @override
+  String get challengeInvitation => 'Challenge Invitation';
+
+  @override
+  String get challengeProgressUpdate => 'Challenge Progress Update';
+
+  @override
+  String clickedChallenge(Object challengeTitle) {
+    return 'Selected challenge: $challengeTitle';
+  }
+
+  @override
+  String joinedChallenge(Object challengeTitle) {
+    return 'Joined challenge: $challengeTitle';
+  }
+
+  @override
+  String shareChallenge(Object challengeTitle) {
+    return 'Share challenge: $challengeTitle';
+  }
+
+  @override
+  String goalWith(Object goal) {
+    return 'Goal: $goal steps';
+  }
+
+  @override
+  String remainingStepsToGoal(Object remaining) {
+    return 'Need $remaining more steps to reach goal';
+  }
 }

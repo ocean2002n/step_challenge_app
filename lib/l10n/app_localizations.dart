@@ -417,6 +417,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restart required to apply language changes'**
   String get restartRequired;
+
+  /// No description provided for @weekendWalkingChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekend Walking Challenge'**
+  String get weekendWalkingChallenge;
+
+  /// No description provided for @weekendWalkingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s walk together this weekend, aiming for 8000 steps daily!'**
+  String get weekendWalkingDescription;
+
+  /// No description provided for @tenThousandStepChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'10K Steps Master Challenge'**
+  String get tenThousandStepChallenge;
+
+  /// No description provided for @tenThousandStepDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach 10,000 steps every day for a whole month. Do you dare to challenge?'**
+  String get tenThousandStepDescription;
+
+  /// No description provided for @oneMillionStepChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Million Steps Team Challenge'**
+  String get oneMillionStepChallenge;
+
+  /// No description provided for @oneMillionStepDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Work together as a team to reach the goal of 1 million steps!'**
+  String get oneMillionStepDescription;
+
+  /// No description provided for @noActiveChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'No active challenges currently'**
+  String get noActiveChallenges;
+
+  /// No description provided for @createNewChallengePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new challenge and invite friends to exercise together!'**
+  String get createNewChallengePrompt;
+
+  /// No description provided for @remainingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining time'**
+  String get remainingTime;
+
+  /// No description provided for @ended.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get ended;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
+
+  /// No description provided for @challengeProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge Progress'**
+  String get challengeProgress;
+
+  /// No description provided for @participants.
+  ///
+  /// In en, this message translates to:
+  /// **'participants'**
+  String get participants;
+
+  /// No description provided for @join.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get join;
+
+  /// No description provided for @endingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Ending soon'**
+  String get endingSoon;
+
+  /// No description provided for @inProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get inProgress;
+
+  /// No description provided for @dailyGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily goal'**
+  String get dailyGoal;
+
+  /// No description provided for @totalGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total goal'**
+  String get totalGoal;
+
+  /// No description provided for @duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get duration;
+
+  /// No description provided for @stepsUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'steps'**
+  String get stepsUnit;
+
+  /// No description provided for @achieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Achieved'**
+  String get achieved;
+
+  /// No description provided for @goalAchieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal achieved!'**
+  String get goalAchieved;
+
+  /// No description provided for @keepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going'**
+  String get keepGoing;
+
+  /// No description provided for @exceededGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceeded goal'**
+  String get exceededGoal;
+
+  /// No description provided for @remainingSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining steps'**
+  String get remainingSteps;
+
+  /// No description provided for @goalAchievedCongrats.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent! You\'ve achieved today\'s goal. Keep up the healthy lifestyle!'**
+  String get goalAchievedCongrats;
+
+  /// No description provided for @nearGoalMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost there! Just a little more walking and you\'ll succeed. Keep it up!'**
+  String get nearGoalMessage;
+
+  /// No description provided for @halfwayMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re halfway there! Keep pushing, the goal is within reach!'**
+  String get halfwayMessage;
+
+  /// No description provided for @goodStartMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Great start! Every step brings you closer to your health goal.'**
+  String get goodStartMessage;
+
+  /// No description provided for @newDayMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A new day begins! Take the first step towards your goal!'**
+  String get newDayMessage;
+
+  /// No description provided for @thisWeekWalkingRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week\'s Walking Record'**
+  String get thisWeekWalkingRecord;
+
+  /// No description provided for @noDataAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available'**
+  String get noDataAvailable;
+
+  /// No description provided for @weeklyTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly total'**
+  String get weeklyTotal;
+
+  /// No description provided for @dailyAverageSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily average steps'**
+  String get dailyAverageSteps;
+
+  /// No description provided for @daysGoalAchieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Days goal achieved'**
+  String get daysGoalAchieved;
+
+  /// No description provided for @stepGoalReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Step Goal Reminder'**
+  String get stepGoalReminder;
+
+  /// No description provided for @stepGoalReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t reached your step goal today. Let\'s get walking!'**
+  String get stepGoalReminderBody;
+
+  /// No description provided for @challengeInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge Invitation'**
+  String get challengeInvitation;
+
+  /// No description provided for @challengeProgressUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge Progress Update'**
+  String get challengeProgressUpdate;
+
+  /// No description provided for @clickedChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected challenge: {challengeTitle}'**
+  String clickedChallenge(Object challengeTitle);
+
+  /// No description provided for @joinedChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined challenge: {challengeTitle}'**
+  String joinedChallenge(Object challengeTitle);
+
+  /// No description provided for @shareChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Share challenge: {challengeTitle}'**
+  String shareChallenge(Object challengeTitle);
+
+  /// No description provided for @goalWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal: {goal} steps'**
+  String goalWith(Object goal);
+
+  /// No description provided for @remainingStepsToGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Need {remaining} more steps to reach goal'**
+  String remainingStepsToGoal(Object remaining);
 }
 
 class _AppLocalizationsDelegate
