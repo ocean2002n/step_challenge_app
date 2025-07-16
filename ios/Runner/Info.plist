@@ -51,6 +51,8 @@
 	<!-- Privacy permissions -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>此應用可能會使用位置服務來提供更準確的步數追蹤</string>
+	<key>NSCameraUsageDescription</key>
+	<string>此應用需要使用相機來掃描QR碼以添加好友</string>
 	
 	<!-- Notification permissions -->
 	<key>UIBackgroundModes</key>
@@ -63,5 +65,32 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- Deep Link URL Scheme -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>stepchallenge.deeplink</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>stepchallenge</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>stepchallenge.universallink</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>https</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- Associated Domains for Universal Links -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:stepchallenge.app</string>
+	</array>
 </dict>
 </plist>

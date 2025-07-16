@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:step_challenge_app/l10n/app_localizations.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../services/friend_service.dart';
 import '../utils/app_theme.dart';
 
@@ -12,259 +13,238 @@ class QrScannerScreen extends StatefulWidget {
 }
 
 class _QrScannerScreenState extends State<QrScannerScreen> {
-  final TextEditingController _codeController = TextEditingController();
-  bool _isProcessing = false;
+  QRViewController? controller;
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  bool isProcessing = false;
 
-  Future<void> _addFriendByCode(String code) async {
-    if (_isProcessing || code.trim().isEmpty) return;
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
+    }
+    controller!.resumeCamera();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Scan QR Code'),
+        backgroundColor: AppTheme.primaryColor,
+        foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.flash_on),
+            onPressed: () async {
+              await controller?.toggleFlash();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.flip_camera_ios),
+            onPressed: () async {
+              await controller?.flipCamera();
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            flex: 4,
+            child: _buildQrView(context),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              color: Colors.black,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  if (isProcessing)
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(color: Colors.white),
+                        SizedBox(width: 16),
+                        Text(
+                          'Adding friend...',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ],
+                    )
+                  else
+                    const Text(
+                      'Point your camera at a QR code',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ElevatedButton(
+                    onPressed: isProcessing ? null : () => _showManualEntry(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppTheme.primaryColor,
+                    ),
+                    child: const Text('Enter Code Manually'),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQrView(BuildContext context) {
+    var scanArea = (MediaQuery.of(context).size.width < 400 ||
+            MediaQuery.of(context).size.height < 400)
+        ? 250.0
+        : 300.0;
+
+    return QRView(
+      key: qrKey,
+      onQRViewCreated: _onQRViewCreated,
+      overlay: QrScannerOverlayShape(
+        borderColor: AppTheme.primaryColor,
+        borderRadius: 10,
+        borderLength: 30,
+        borderWidth: 10,
+        cutOutSize: scanArea,
+      ),
+      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
+    );
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    setState(() {
+      this.controller = controller;
+    });
+    
+    controller.scannedDataStream.listen((scanData) {
+      if (!isProcessing && scanData.code != null) {
+        _processQRCode(scanData.code!);
+      }
+    });
+  }
+
+  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
+    if (!p) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Need camera permission to scan QR codes'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _processQRCode(String code) async {
+    if (isProcessing) return;
     
     setState(() {
-      _isProcessing = true;
+      isProcessing = true;
     });
 
-    final l10n = AppLocalizations.of(context)!;
-    final friendService = context.read<FriendService>();
+    // Pause camera during processing
+    await controller?.pauseCamera();
 
     try {
-      final success = await friendService.addFriendByInviteCode(code.trim());
+      final friendService = context.read<FriendService>();
+      
+      // Extract invite code from various formats
+      String inviteCode = code.trim();
+      if (inviteCode.startsWith('stepchallenge://') || inviteCode.startsWith('https://')) {
+        final uri = Uri.parse(inviteCode);
+        inviteCode = uri.queryParameters['code'] ?? 
+                   uri.queryParameters['invite'] ?? 
+                   uri.pathSegments.last;
+      }
+
+      final success = await friendService.addFriendByInviteCode(inviteCode);
       
       if (mounted) {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.friendAdded),
+            const SnackBar(
+              content: Text('Friend added successfully!'),
               backgroundColor: Colors.green,
             ),
           );
           Navigator.pop(context);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.invalidQrCode),
+            const SnackBar(
+              content: Text('Invalid QR code or already friends'),
               backgroundColor: Colors.red,
             ),
           );
+          // Resume camera for next scan
+          await controller?.resumeCamera();
+          setState(() {
+            isProcessing = false;
+          });
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.friendAddError),
+          const SnackBar(
+            content: Text('Error processing QR code'),
             backgroundColor: Colors.red,
           ),
         );
-      }
-    } finally {
-      if (mounted) {
+        // Resume camera for next scan
+        await controller?.resumeCamera();
         setState(() {
-          _isProcessing = false;
+          isProcessing = false;
         });
       }
     }
   }
 
-  @override
-  void dispose() {
-    _codeController.dispose();
-    super.dispose();
+  void _showManualEntry() {
+    final codeController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Enter Invite Code'),
+        content: TextField(
+          controller: codeController,
+          decoration: const InputDecoration(
+            labelText: 'Invite Code',
+            hintText: 'FRIEND01-123',
+            border: OutlineInputBorder(),
+          ),
+          textCapitalization: TextCapitalization.characters,
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              if (codeController.text.isNotEmpty) {
+                _processQRCode(codeController.text);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add Friend'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.scanQrCode),
-        backgroundColor: AppTheme.primaryColor,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Instructions
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.qr_code_scanner,
-                      size: 48,
-                      color: AppTheme.primaryColor,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Enter your friend\'s invite code to add them',
-                      style: Theme.of(context).textTheme.titleMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // Mock camera view (since we can't use real camera in simulator)
-            Container(
-              height: 300,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey[400]!),
-              ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.camera_alt,
-                          size: 64,
-                          color: Colors.grey[600],
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Camera View\n(Simulator Mode)',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Scanning overlay
-                  Center(
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppTheme.primaryColor,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // Manual code entry
-            Text(
-              'Or enter invite code manually:',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            
-            const SizedBox(height: 16),
-            
-            TextField(
-              controller: _codeController,
-              decoration: InputDecoration(
-                labelText: 'Invite Code',
-                hintText: 'Enter friend\'s invite code',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.code),
-                suffixIcon: _isProcessing
-                    ? const Padding(
-                        padding: EdgeInsets.all(12),
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      )
-                    : IconButton(
-                        onPressed: () => _addFriendByCode(_codeController.text),
-                        icon: const Icon(Icons.add),
-                      ),
-              ),
-              textCapitalization: TextCapitalization.characters,
-              onSubmitted: _addFriendByCode,
-            ),
-            
-            const SizedBox(height: 16),
-            
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isProcessing 
-                    ? null 
-                    : () => _addFriendByCode(_codeController.text),
-                icon: _isProcessing
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : const Icon(Icons.person_add),
-                label: Text(l10n.addFriend),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
-            
-            const Spacer(),
-            
-            // Demo codes for testing
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.orange.shade200),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: Colors.orange.shade700,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Demo Codes for Testing:',
-                        style: TextStyle(
-                          color: Colors.orange.shade700,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Try: FRIEND01-123, FRIEND02-456, FRIEND03-789',
-                    style: TextStyle(
-                      color: Colors.orange.shade600,
-                      fontSize: 12,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 }

@@ -85,11 +85,17 @@ class FriendService extends ChangeNotifier {
     return '$_currentUserId-$timestamp';
   }
 
-  // Generate invite link
+  // Generate invite link with app store fallback
   String generateInviteLink() {
     final inviteCode = generateInviteCode();
-    // In a real app, this would be your app's deep link URL
-    return 'https://stepchallenge.app/invite/$inviteCode';
+    // Universal link that redirects to app store if app not installed
+    return 'https://stepchallenge.app/invite?code=$inviteCode&fallback=store';
+  }
+
+  // Generate deep link for app-to-app sharing
+  String generateDeepLink() {
+    final inviteCode = generateInviteCode();
+    return 'stepchallenge://invite?code=$inviteCode';
   }
 
   // Parse invite code and extract user ID

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-// import 'package:qr_flutter/qr_flutter.dart';
-// import 'package:share_plus/share_plus.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:step_challenge_app/l10n/app_localizations.dart';
 import '../services/friend_service.dart';
 import '../utils/app_theme.dart';
@@ -36,17 +36,16 @@ class _FriendQrScreenState extends State<FriendQrScreen> {
     final l10n = AppLocalizations.of(context)!;
     if (_inviteLink != null) {
       try {
-        // Simulated sharing for demo - in real app would use Share.share()
+        await Share.share(
+          '${l10n.friendInviteMessage}\n\n$_inviteLink',
+          subject: l10n.friendInviteTitle,
+        );
+      } catch (e) {
+        // Fallback to copying to clipboard if sharing fails
         await Clipboard.setData(ClipboardData(text: '${l10n.friendInviteMessage}\n\n$_inviteLink'));
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('${l10n.linkCopied} (Demo mode)')),
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error sharing: $e')),
+            SnackBar(content: Text('${l10n.linkCopied} (Share fallback)')),
           );
         }
       }
@@ -127,39 +126,13 @@ class _FriendQrScreenState extends State<FriendQrScreen> {
                     ),
                   ],
                 ),
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.qr_code,
-                        size: 80,
-                        color: Colors.grey[600],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'QR Code',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '(Demo Mode)',
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
+                child: QrImageView(
+                  data: _inviteLink ?? _inviteCode ?? '',
+                  version: QrVersions.auto,
+                  size: 200,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  errorCorrectionLevel: QrErrorCorrectLevel.M,
                 ),
               ),
               
