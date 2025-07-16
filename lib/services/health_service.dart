@@ -4,7 +4,7 @@ import 'package:health/health.dart';
 import '../models/daily_steps_model.dart';
 
 class HealthService extends ChangeNotifier {
-  Health _health = Health();
+  final Health _health = Health();
   bool _isAuthorized = false;
   int _todaySteps = 0;
   List<DailySteps> _weeklySteps = [];
@@ -31,7 +31,8 @@ class HealthService extends ChangeNotifier {
       debugPrint('Starting health data authorization...');
       
       // 檢查平台是否支持 HealthKit
-      if (!await Health().hasPermissions(types, permissions: permissions)) {
+      final hasPermissions = await Health().hasPermissions(types, permissions: permissions);
+      if (hasPermissions != true) {
         debugPrint('Health permissions not granted, requesting...');
       }
       
@@ -92,7 +93,6 @@ class HealthService extends ChangeNotifier {
   Future<void> _loadWeeklySteps() async {
     try {
       final now = DateTime.now();
-      final oneWeekAgo = now.subtract(const Duration(days: 7));
       
       List<DailySteps> weeklyData = [];
 
@@ -201,7 +201,7 @@ class HealthService extends ChangeNotifier {
       final isAuthorized = await _health.requestAuthorization(types, permissions: permissions);
       
       return {
-        'hasPermissions': hasPermissions,
+        'hasPermissions': hasPermissions ?? false,
         'isAuthorized': isAuthorized,
         'currentAuthStatus': _isAuthorized,
         'supportedTypes': types.map((type) => type.name).toList(),

@@ -1,18 +1,13 @@
 import 'package:flutter/foundation.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService extends ChangeNotifier {
   static final FlutterLocalNotificationsPlugin _localNotifications = 
       FlutterLocalNotificationsPlugin();
   
-  static FirebaseMessaging? _firebaseMessaging;
   bool _isInitialized = false;
-  String? _fcmToken;
   
   bool get isInitialized => _isInitialized;
-  String? get fcmToken => _fcmToken;
 
   /// 初始化通知服務
   static Future<void> initialize() async {
@@ -32,11 +27,7 @@ class NotificationService extends ChangeNotifier {
       
       await _localNotifications.initialize(initSettings);
       
-      // 初始化 Firebase Messaging
-      _firebaseMessaging = FirebaseMessaging.instance;
-      
-      // 請求通知權限
-      await _requestNotificationPermissions();
+      debugPrint('Local notifications initialized');
     } catch (e) {
       debugPrint('Notification initialization error: $e');
     }
@@ -45,62 +36,12 @@ class NotificationService extends ChangeNotifier {
   /// 完成初始化設置
   Future<void> completeInitialization() async {
     try {
-      if (_firebaseMessaging != null) {
-        // 獲取 FCM Token
-        _fcmToken = await _firebaseMessaging!.getToken();
-        debugPrint('FCM Token: $_fcmToken');
-        
-        // 監聽前台消息
-        FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
-        
-        // 監聽後台消息點擊
-        FirebaseMessaging.onMessageOpenedApp.listen(_handleBackgroundMessage);
-        
-        _isInitialized = true;
-        notifyListeners();
-      }
+      _isInitialized = true;
+      notifyListeners();
+      debugPrint('Notification service initialization completed');
     } catch (e) {
       debugPrint('Complete initialization error: $e');
     }
-  }
-
-  /// 請求通知權限
-  static Future<void> _requestNotificationPermissions() async {
-    try {
-      if (_firebaseMessaging != null) {
-        NotificationSettings settings = await _firebaseMessaging!.requestPermission(
-          alert: true,
-          badge: true,
-          sound: true,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-          announcement: false,
-        );
-        
-        debugPrint('Notification permission status: ${settings.authorizationStatus}');
-      }
-    } catch (e) {
-      debugPrint('Request notification permissions error: $e');
-    }
-  }
-
-  /// 處理前台消息
-  static void _handleForegroundMessage(RemoteMessage message) {
-    debugPrint('Foreground message: ${message.notification?.title}');
-    
-    if (message.notification != null) {
-      _showLocalNotification(
-        message.notification!.title ?? '',
-        message.notification!.body ?? '',
-      );
-    }
-  }
-
-  /// 處理後台消息點擊
-  static void _handleBackgroundMessage(RemoteMessage message) {
-    debugPrint('Background message clicked: ${message.notification?.title}');
-    // 這裡可以處理特定的導航邏輯
   }
 
   /// 顯示本地通知
@@ -130,38 +71,6 @@ class NotificationService extends ChangeNotifier {
       body,
       details,
     );
-  }
-
-  /// 發送每日目標提醒
-  Future<void> scheduleDailyGoalReminder(int hour, int minute) async {
-    try {
-      await _localNotifications.zonedSchedule(
-        1, // notification ID
-        '步數目標提醒',
-        '今天還沒達成步數目標，加油走起來！',
-        tz.TZDateTime.from(_nextInstanceOfTime(hour, minute), tz.local),
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'daily_reminder_channel',
-            'Daily Goal Reminder',
-            channelDescription: 'Daily step goal reminders',
-            importance: Importance.high,
-            priority: Priority.high,
-          ),
-          iOS: DarwinNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-          ),
-        ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time,
-      );
-    } catch (e) {
-      debugPrint('Schedule daily reminder error: $e');
-    }
   }
 
   /// 發送目標達成通知
@@ -205,29 +114,5 @@ class NotificationService extends ChangeNotifier {
   /// 取消特定通知
   Future<void> cancelNotification(int id) async {
     await _localNotifications.cancel(id);
-  }
-
-  /// 計算下次指定時間
-  static DateTime _nextInstanceOfTime(int hour, int minute) {
-    final now = DateTime.now();
-    DateTime scheduledDate = DateTime(now.year, now.month, now.day, hour, minute);
-    
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-    
-    return scheduledDate;
-  }
-
-  /// 更新 FCM Token
-  Future<void> updateFcmToken() async {
-    try {
-      if (_firebaseMessaging != null) {
-        _fcmToken = await _firebaseMessaging!.getToken();
-        notifyListeners();
-      }
-    } catch (e) {
-      debugPrint('Update FCM token error: $e');
-    }
   }
 }
