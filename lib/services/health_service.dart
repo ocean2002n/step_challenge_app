@@ -28,14 +28,25 @@ class HealthService extends ChangeNotifier {
   /// 初始化健康數據權限
   Future<bool> initialize() async {
     try {
+      debugPrint('Starting health data authorization...');
+      
+      // 檢查平台是否支持 HealthKit
+      if (!await Health().hasPermissions(types, permissions: permissions)) {
+        debugPrint('Health permissions not granted, requesting...');
+      }
+      
       // 請求健康數據權限
       _isAuthorized = await _health.requestAuthorization(types, permissions: permissions);
       
+      debugPrint('Health authorization result: $_isAuthorized');
+      
       if (_isAuthorized) {
+        debugPrint('Health data authorized, loading data...');
         await _loadTodaySteps();
         await _loadWeeklySteps();
         _generateMockMonthlyData();
       } else {
+        debugPrint('Health data not authorized, using mock data');
         // Generate mock data for demo purposes when health access is not available
         _generateMockData();
       }
@@ -44,6 +55,9 @@ class HealthService extends ChangeNotifier {
       return _isAuthorized;
     } catch (e) {
       debugPrint('Health initialization error: $e');
+      // 如果發生錯誤，使用模擬數據
+      _generateMockData();
+      notifyListeners();
       return false;
     }
   }
@@ -163,13 +177,44 @@ class HealthService extends ChangeNotifier {
 
   /// 重新同步健康數據
   Future<void> syncHealthData() async {
+    debugPrint('Syncing health data...');
+    
     if (!_isAuthorized) {
+      debugPrint('Not authorized, reinitializing...');
       await initialize();
       return;
     }
 
-    await _loadTodaySteps();
-    await _loadWeeklySteps();
+    try {
+      await _loadTodaySteps();
+      await _loadWeeklySteps();
+      debugPrint('Health data sync completed');
+    } catch (e) {
+      debugPrint('Health sync error: $e');
+    }
+  }
+
+  /// 檢查健康數據權限狀態
+  Future<Map<String, dynamic>> checkHealthPermissions() async {
+    try {
+      final hasPermissions = await Health().hasPermissions(types, permissions: permissions);
+      final isAuthorized = await _health.requestAuthorization(types, permissions: permissions);
+      
+      return {
+        'hasPermissions': hasPermissions,
+        'isAuthorized': isAuthorized,
+        'currentAuthStatus': _isAuthorized,
+        'supportedTypes': types.map((type) => type.name).toList(),
+      };
+    } catch (e) {
+      debugPrint('Error checking health permissions: $e');
+      return {
+        'hasPermissions': false,
+        'isAuthorized': false,
+        'currentAuthStatus': false,
+        'error': e.toString(),
+      };
+    }
   }
 
   /// 檢查是否達成今日目標

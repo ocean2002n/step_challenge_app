@@ -384,14 +384,63 @@ class _HomeScreenState extends State<HomeScreen> {
   void _checkHealthPermissions() async {
     final l10n = AppLocalizations.of(context)!;
     final healthService = context.read<HealthService>();
-    final isAuthorized = await healthService.initialize();
+    
+    // 顯示載入對話框
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.healthDataPermission),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('檢查健康數據權限...'),
+          ],
+        ),
+      ),
+    );
+
+    final permissionStatus = await healthService.checkHealthPermissions();
     
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            isAuthorized ? l10n.healthDataAuthorized : l10n.pleaseEnableHealthData,
+      Navigator.of(context).pop(); // 關閉載入對話框
+      
+      // 顯示詳細的權限狀態
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(l10n.healthDataPermission),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('權限狀態: ${permissionStatus['hasPermissions'] ? '已授權' : '未授權'}'),
+              const SizedBox(height: 8),
+              Text('認證狀態: ${permissionStatus['isAuthorized'] ? '已認證' : '未認證'}'),
+              const SizedBox(height: 8),
+              Text('支援的數據類型: ${permissionStatus['supportedTypes']?.join(', ') ?? 'N/A'}'),
+              if (permissionStatus['error'] != null) ...[
+                const SizedBox(height: 8),
+                Text('錯誤: ${permissionStatus['error']}', style: const TextStyle(color: Colors.red)),
+              ],
+            ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.confirm),
+            ),
+            if (!permissionStatus['hasPermissions'])
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await healthService.initialize();
+                },
+                child: const Text('重新請求權限'),
+              ),
+          ],
         ),
       );
     }
