@@ -7,7 +7,6 @@ import '../models/friend_model.dart';
 class FriendService extends ChangeNotifier {
   static const String _friendsKey = 'friends_list';
   static const String _userIdKey = 'user_id';
-  static const String _pendingInvitesKey = 'pending_invites';
   
   List<Friend> _friends = [];
   String? _currentUserId;

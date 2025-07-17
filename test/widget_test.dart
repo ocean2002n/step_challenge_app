@@ -5,15 +5,18 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:step_challenge_app/main.dart';
+import 'package:step_challenge_app/services/locale_service.dart';
+import 'package:step_challenge_app/services/deep_link_service.dart';
 
 void main() {
   testWidgets('App loads successfully', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const StepChallengeApp());
+    await tester.pumpWidget(StepChallengeApp(
+      localeService: LocaleService(),
+      deepLinkService: DeepLinkService(),
+    ));
 
     // Verify that our app loads
     expect(find.text('正在初始化應用...'), findsOneWidget);

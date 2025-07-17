@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:step_challenge_app/l10n/app_localizations.dart';
-import '../models/user_model.dart';
 import '../utils/app_theme.dart';
 
 class ProfileScreen extends StatefulWidget {
