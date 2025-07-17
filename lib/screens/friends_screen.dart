@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:step_challenge_app/l10n/app_localizations.dart';
 import '../models/friend_model.dart';
 import '../services/friend_service.dart';
 import '../services/health_service.dart';
 import '../utils/app_theme.dart';
+import '../l10n/app_localizations.dart';
 import 'friend_qr_screen.dart';
 import 'qr_scanner_screen.dart';
 
@@ -16,7 +16,7 @@ class FriendsScreen extends StatefulWidget {
 }
 
 class _FriendsScreenState extends State<FriendsScreen> {
-  bool _showCurrentMonth = true;
+  int _currentMonthOffset = 0; // 0 = current month, -1 = last month, etc.
 
   @override
   void initState() {
@@ -28,6 +28,24 @@ class _FriendsScreenState extends State<FriendsScreen> {
         friendService.addMockFriends();
       }
     });
+  }
+
+  DateTime get _selectedMonth {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month + _currentMonthOffset);
+  }
+
+  String _getMonthYearString(DateTime date, AppLocalizations l10n) {
+    final months = [
+      '一月', '二月', '三月', '四月', '五月', '六月',
+      '七月', '八月', '九月', '十月', '十一月', '十二月'
+    ];
+    return '${months[date.month - 1]} ${date.year}';
+  }
+
+  // Convert steps to kilometers (assuming 1 km ≈ 1,250 steps)
+  double _stepsToKm(int steps) {
+    return steps / 1250.0;
   }
 
   Widget _buildEmptyState() {
@@ -109,33 +127,31 @@ class _FriendsScreenState extends State<FriendsScreen> {
     );
   }
 
-  Widget _buildFriendsList(List<Friend> friends) {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildLeaderboardHeader(List<Friend> friends) {
     final healthService = context.watch<HealthService>();
-    final currentUserSteps = _showCurrentMonth 
+    
+    // Get current user steps for selected month
+    final currentUserSteps = _currentMonthOffset == 0 
         ? healthService.monthlySteps 
         : healthService.lastMonthSteps;
     
-    // Create a combined list with user and friends for ranking
+    // Create combined list for ranking
     final allParticipants = <Map<String, dynamic>>[];
     
     // Add current user
     allParticipants.add({
       'id': 'current_user',
-      'nickname': l10n.you,
+      'nickname': '你',
       'steps': currentUserSteps,
       'isCurrentUser': true,
     });
     
     // Add friends
     for (final friend in friends) {
-      final month = _showCurrentMonth 
-          ? DateTime.now()
-          : DateTime(DateTime.now().year, DateTime.now().month - 1);
       allParticipants.add({
         'id': friend.id,
         'nickname': friend.nickname,
-        'steps': friend.getStepsForMonth(month),
+        'steps': friend.getStepsForMonth(_selectedMonth),
         'avatarPath': friend.avatarPath,
         'isCurrentUser': false,
         'friend': friend,
@@ -145,155 +161,292 @@ class _FriendsScreenState extends State<FriendsScreen> {
     // Sort by steps (descending)
     allParticipants.sort((a, b) => (b['steps'] as int).compareTo(a['steps'] as int));
     
-    return Column(
-      children: [
-        // Header with month toggle
-        Container(
-          padding: const EdgeInsets.all(16),
-          child: Row(
+    // Find current user's position
+    final userRank = allParticipants.indexWhere((p) => p['isCurrentUser'] == true) + 1;
+    final userSteps = allParticipants.firstWhere((p) => p['isCurrentUser'] == true)['steps'] as int;
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
             children: [
-              Expanded(
-                child: Text(
-                  l10n.friendsRanking,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              ),
-              SegmentedButton<bool>(
-                segments: [
-                  ButtonSegment(
-                    value: true,
-                    label: Text(l10n.thisMonth),
-                    icon: const Icon(Icons.calendar_today),
+              // User stats
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: AppTheme.primaryColor,
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
-                  ButtonSegment(
-                    value: false,
-                    label: Text(l10n.lastMonth),
-                    icon: const Icon(Icons.calendar_month),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '你的本月成績',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          userRank == 1 ? '第一名' : '第${userRank}名',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${_stepsToKm(userSteps).toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const Text(
+                        'KM',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-                selected: {_showCurrentMonth},
-                onSelectionChanged: (Set<bool> selection) {
-                  setState(() {
-                    _showCurrentMonth = selection.first;
-                  });
-                },
+              ),
+              
+              const SizedBox(height: 16),
+              
+              // Steps info
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '步數',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    Text(
+                      '${userSteps.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} 步',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-        
-        // Friends ranking list
-        Expanded(
-          child: ListView.builder(
-            itemCount: allParticipants.length,
-            itemBuilder: (context, index) {
-              final participant = allParticipants[index];
-              final rank = index + 1;
-              final isCurrentUser = participant['isCurrentUser'] as bool;
-              
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                color: isCurrentUser ? AppTheme.primaryColor.withOpacity(0.1) : null,
-                child: ListTile(
-                  leading: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Rank badge
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: _getRankColor(rank),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            '$rank',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      // Avatar
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundColor: isCurrentUser 
-                            ? AppTheme.primaryColor 
-                            : Colors.grey[300],
-                        child: isCurrentUser
-                            ? const Icon(Icons.person, color: Colors.white)
-                            : Icon(Icons.person, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                  title: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          participant['nickname'] as String,
-                          style: TextStyle(
-                            fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                      if (isCurrentUser)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primaryColor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            l10n.you,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  subtitle: Text(
-                    l10n.stepsThisMonth(participant['steps'].toString()),
-                  ),
-                  trailing: !isCurrentUser
-                      ? PopupMenuButton<String>(
-                          onSelected: (value) async {
-                            if (value == 'remove') {
-                              final friend = participant['friend'] as Friend;
-                              final friendService = context.read<FriendService>();
-                              final success = await friendService.removeFriend(friend.id);
-                              if (success && mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(l10n.friendRemoved)),
-                                );
-                              }
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: 'remove',
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.person_remove, color: Colors.red),
-                                  const SizedBox(width: 8),
-                                  Text(l10n.removeFriend),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      : null,
-                ),
-              );
-            },
+      ),
+    );
+  }
+
+
+  Widget _buildFriendsRanking(List<Friend> friends) {
+    final healthService = context.watch<HealthService>();
+    
+    final currentUserSteps = _currentMonthOffset == 0 
+        ? healthService.monthlySteps 
+        : healthService.lastMonthSteps;
+    
+    // Create combined list for ranking
+    final allParticipants = <Map<String, dynamic>>[];
+    
+    // Add current user
+    allParticipants.add({
+      'id': 'current_user',
+      'nickname': '你',
+      'steps': currentUserSteps,
+      'isCurrentUser': true,
+    });
+    
+    // Add friends
+    for (final friend in friends) {
+      allParticipants.add({
+        'id': friend.id,
+        'nickname': friend.nickname,
+        'steps': friend.getStepsForMonth(_selectedMonth),
+        'avatarPath': friend.avatarPath,
+        'isCurrentUser': false,
+        'friend': friend,
+      });
+    }
+    
+    // Sort by steps (descending)
+    allParticipants.sort((a, b) => (b['steps'] as int).compareTo(a['steps'] as int));
+    
+    // Filter out participants with 0 steps for the "no kilometers" message
+    final participantsWithSteps = allParticipants.where((p) => (p['steps'] as int) > 0).toList();
+    final participantsWithoutSteps = allParticipants.where((p) => (p['steps'] as int) == 0).toList();
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            '好友本月步數排行',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
+        
+        // Ranking list
+        ...participantsWithSteps.asMap().entries.map((entry) {
+          final index = entry.key;
+          final participant = entry.value;
+          final rank = index + 1;
+          final isCurrentUser = participant['isCurrentUser'] as bool;
+          final steps = participant['steps'] as int;
+          
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+            child: Card(
+              elevation: isCurrentUser ? 2 : 0,
+              color: isCurrentUser ? Colors.white : Colors.grey[50],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: isCurrentUser 
+                    ? BorderSide(color: AppTheme.primaryColor, width: 2)
+                    : BorderSide.none,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    // Rank with medal or number
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: _getRankColor(rank),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '$rank',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: rank <= 3 ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    
+                    // Avatar
+                    CircleAvatar(
+                      radius: 22,
+                      backgroundColor: isCurrentUser ? AppTheme.primaryColor : Colors.grey[300],
+                      child: Icon(
+                        isCurrentUser ? Icons.person : Icons.person_outline,
+                        color: isCurrentUser ? Colors.white : Colors.grey[600],
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    
+                    // Name
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            participant['nickname'] as String,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: isCurrentUser ? FontWeight.w600 : FontWeight.w500,
+                              color: isCurrentUser ? AppTheme.primaryColor : Colors.black87,
+                            ),
+                          ),
+                          if (isCurrentUser)
+                            Text(
+                              '(你)',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    
+                    // Steps and distance
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${_stepsToKm(steps).toStringAsFixed(2)} km',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: isCurrentUser ? AppTheme.primaryColor : Colors.black87,
+                          ),
+                        ),
+                        Text(
+                          '${steps.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} 步',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+        
+        // No kilometers message
+        if (participantsWithoutSteps.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              '${participantsWithoutSteps.length} 位好友還未有步數記錄',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 14,
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -301,13 +454,13 @@ class _FriendsScreenState extends State<FriendsScreen> {
   Color _getRankColor(int rank) {
     switch (rank) {
       case 1:
-        return Colors.amber[600]!; // Gold
+        return Colors.amber; // 金色
       case 2:
-        return Colors.grey[400]!;  // Silver
+        return Colors.grey[400]!; // 銀色
       case 3:
-        return Colors.brown[400]!; // Bronze
+        return Colors.orange[700]!; // 銅色
       default:
-        return AppTheme.primaryColor;
+        return Colors.grey[200]!; // 其他
     }
   }
 
@@ -316,10 +469,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
     final l10n = AppLocalizations.of(context)!;
     
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(l10n.friends),
-        backgroundColor: AppTheme.primaryColor,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          l10n.friends,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -330,20 +491,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 ),
               );
             },
-            icon: const Icon(Icons.qr_code),
-            tooltip: l10n.myQrCode,
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const QrScannerScreen(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.qr_code_scanner),
-            tooltip: l10n.scanQrCode,
+            icon: const Icon(Icons.person_add, color: Colors.black),
           ),
         ],
       ),
@@ -357,9 +505,65 @@ class _FriendsScreenState extends State<FriendsScreen> {
             return _buildEmptyState();
           }
           
-          return _buildFriendsList(friendService.friends);
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              
+              // Month navigation
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _currentMonthOffset--;
+                        });
+                      },
+                      icon: const Icon(Icons.chevron_left, size: 32),
+                    ),
+                    Text(
+                      _getMonthYearString(_selectedMonth, l10n),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _currentMonthOffset < 0 ? () {
+                        setState(() {
+                          _currentMonthOffset++;
+                        });
+                      } : null,
+                      icon: Icon(
+                        Icons.chevron_right, 
+                        size: 32,
+                        color: _currentMonthOffset < 0 ? Colors.black : Colors.grey[300],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 8),
+              
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildLeaderboardHeader(friendService.friends),
+                      _buildFriendsRanking(friendService.friends),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
         },
       ),
     );
   }
 }
+

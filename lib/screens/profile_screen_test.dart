@@ -4,15 +4,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:step_challenge_app/l10n/app_localizations.dart';
 import '../utils/app_theme.dart';
+import 'friend_qr_screen.dart';
+import 'qr_scanner_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class ProfileScreenTest extends StatefulWidget {
+  const ProfileScreenTest({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileScreenTest> createState() => _ProfileScreenTestState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenTestState extends State<ProfileScreenTest> {
   final _formKey = GlobalKey<FormState>();
   final _nicknameController = TextEditingController();
   final _heightController = TextEditingController();
@@ -22,11 +24,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   DateTime? _birthDate;
   File? _avatarImage;
   final ImagePicker _picker = ImagePicker();
-  
-  List<String> _getGenderOptions(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return [l10n.male, l10n.female, l10n.other];
-  }
 
   @override
   void initState() {
@@ -35,19 +32,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserData() async {
-    // Load user data from SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _nicknameController.text = prefs.getString('nickname') ?? '';
-      _selectedGender = prefs.getString('gender');
-      _heightController.text = prefs.getDouble('height')?.toString() ?? '';
-      _weightController.text = prefs.getDouble('weight')?.toString() ?? '';
-      
-      final birthDateString = prefs.getString('birthDate');
-      if (birthDateString != null) {
-        _birthDate = DateTime.parse(birthDateString);
-      }
-    });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _nicknameController.text = prefs.getString('nickname') ?? '';
+        _selectedGender = prefs.getString('gender');
+        _heightController.text = prefs.getDouble('height')?.toString() ?? '';
+        _weightController.text = prefs.getDouble('weight')?.toString() ?? '';
+        
+        final birthDateString = prefs.getString('birthDate');
+        if (birthDateString != null) {
+          _birthDate = DateTime.parse(birthDateString);
+        }
+      });
+    } catch (e) {
+      debugPrint('Error loading user data: $e');
+    }
+  }
+
+  List<String> _getGenderOptions(AppLocalizations l10n) {
+    return [l10n.male, l10n.female, l10n.other];
+  }
+
+  String? _getGenderKey(String displayName, AppLocalizations l10n) {
+    if (displayName == l10n.male) return 'male';
+    if (displayName == l10n.female) return 'female';
+    if (displayName == l10n.other) return 'other';
+    return null;
+  }
+
+  String? _getDisplayGender(String? key, AppLocalizations l10n) {
+    if (key == 'male') return l10n.male;
+    if (key == 'female') return l10n.female;
+    if (key == 'other') return l10n.other;
+    return null;
   }
 
   Future<void> _pickImage() async {
@@ -110,8 +128,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           await prefs.setString('birthDate', _birthDate!.toIso8601String());
         }
 
-        // TODO: Upload avatar and save path
-        
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -132,7 +148,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
+    
+    // 如果本地化對象為空，顯示錯誤信息
+    if (l10n == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Error'),
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+        ),
+        body: const Center(
+          child: Text(
+            'Localization not available',
+            style: TextStyle(color: Colors.red, fontSize: 18),
+          ),
+        ),
+      );
+    }
     
     return Scaffold(
       appBar: AppBar(
@@ -218,13 +251,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             // Gender selection
             DropdownButtonFormField<String>(
-              value: _selectedGender,
+              value: _getDisplayGender(_selectedGender, l10n),
               decoration: InputDecoration(
                 labelText: l10n.gender,
                 prefixIcon: const Icon(Icons.wc),
                 border: const OutlineInputBorder(),
               ),
-              items: _getGenderOptions(context).map((String gender) {
+              items: _getGenderOptions(l10n).map((String gender) {
                 return DropdownMenuItem<String>(
                   value: gender,
                   child: Text(gender),
@@ -232,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               }).toList(),
               onChanged: (String? newValue) {
                 setState(() {
-                  _selectedGender = newValue;
+                  _selectedGender = _getGenderKey(newValue!, l10n);
                 });
               },
             ),
@@ -286,7 +319,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                // Weight field
                 Expanded(
                   child: TextFormField(
                     controller: _weightController,
@@ -341,7 +373,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/friend_qr');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FriendQrScreen(),
+                                ),
+                              );
                             },
                             icon: const Icon(Icons.qr_code),
                             label: Text(l10n.myQrCode),
@@ -356,7 +393,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/scan_qr');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const QrScannerScreen(),
+                                ),
+                              );
                             },
                             icon: const Icon(Icons.qr_code_scanner),
                             label: Text(l10n.scanQrCode),

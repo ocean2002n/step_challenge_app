@@ -3,14 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:step_challenge_app/l10n/app_localizations.dart';
 import '../services/health_service.dart';
 import '../services/sheets_service.dart';
+import '../services/auth_service.dart';
 import '../widgets/step_counter_card.dart';
 import '../widgets/weekly_chart_card.dart';
 import '../widgets/goal_progress_card.dart';
 import '../widgets/challenge_list_card.dart';
 import 'profile_screen.dart';
+import 'profile_screen_test.dart';
 import 'language_settings_screen.dart';
 import 'friends_screen.dart';
 import 'health_settings_screen.dart';
+import 'welcome_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -282,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ProfileScreen(),
+                          builder: (context) => const ProfileScreenTest(),
                         ),
                       );
                     },
@@ -323,6 +326,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     },
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.logout, color: Colors.red),
+                    title: const Text(
+                      '登出',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    trailing: const Icon(Icons.chevron_right, color: Colors.red),
+                    onTap: _showLogoutConfirmation,
                   ),
                 ],
               ),
@@ -537,6 +550,57 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       );
+    }
+  }
+
+  void _showLogoutConfirmation() {
+    final l10n = AppLocalizations.of(context)!;
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('登出'),
+        content: const Text('確定要登出嗎？這將清除所有本地資料。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              await _logout();
+            },
+            child: const Text(
+              '登出',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _logout() async {
+    try {
+      final authService = context.read<AuthService>();
+      await authService.logout();
+      
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('登出失敗: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 }
