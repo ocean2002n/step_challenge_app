@@ -411,4 +411,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get friendsRanking => 'Friends Ranking';
+
+  @override
+  String get appleHealth => 'Apple Health';
+
+  @override
+  String get connected => 'Connected';
+
+  @override
+  String get notConnected => 'Not Connected';
+
+  @override
+  String get syncHealthData => 'Sync Health Data';
+
+  @override
+  String get reauthorizeHealthData => 'Re-authorize Health Data';
+
+  @override
+  String get syncingHealthData => 'Syncing health data from Apple Health...';
+
+  @override
+  String get syncComplete => 'Sync Complete';
+
+  @override
+  String todayStepsCount(Object steps) {
+    return 'Today\'s Steps: $steps';
+  }
+
+  @override
+  String monthlyStepsCount(Object steps) {
+    return 'Monthly Steps: $steps';
+  }
+
+  @override
+  String weeklyAverageSteps(Object steps) {
+    return 'Weekly Average: $steps';
+  }
+
+  @override
+  String goalAchievedDays(Object days) {
+    return 'Goal Achieved: $days days';
+  }
+
+  @override
+  String syncFailed(Object error) {
+    return 'Sync failed: $error';
+  }
+
+  @override
+  String get checkSettings => 'Check Settings';
+
+  @override
+  String get reauthorizeSuccess => 'Re-authorization successful!';
+
+  @override
+  String get reauthorizeFailed =>
+      'Re-authorization failed, please check health app settings';
+
+  @override
+  String reauthorizationFailed(Object error) {
+    return 'Re-authorization failed: $error';
+  }
+
+  @override
+  String healthDataSyncComplete(Object steps) {
+    return 'Health data sync complete! Today\'s steps: $steps';
+  }
+
+  @override
+  String get healthDataSyncFailed => 'Health data sync failed';
 }

@@ -849,6 +849,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Friends Ranking'**
   String get friendsRanking;
+
+  /// No description provided for @appleHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Health'**
+  String get appleHealth;
+
+  /// No description provided for @connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get connected;
+
+  /// No description provided for @notConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Connected'**
+  String get notConnected;
+
+  /// No description provided for @syncHealthData.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Health Data'**
+  String get syncHealthData;
+
+  /// No description provided for @reauthorizeHealthData.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-authorize Health Data'**
+  String get reauthorizeHealthData;
+
+  /// No description provided for @syncingHealthData.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing health data from Apple Health...'**
+  String get syncingHealthData;
+
+  /// No description provided for @syncComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Complete'**
+  String get syncComplete;
+
+  /// No description provided for @todayStepsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Steps: {steps}'**
+  String todayStepsCount(Object steps);
+
+  /// No description provided for @monthlyStepsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Steps: {steps}'**
+  String monthlyStepsCount(Object steps);
+
+  /// No description provided for @weeklyAverageSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Average: {steps}'**
+  String weeklyAverageSteps(Object steps);
+
+  /// No description provided for @goalAchievedDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal Achieved: {days} days'**
+  String goalAchievedDays(Object days);
+
+  /// No description provided for @syncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed: {error}'**
+  String syncFailed(Object error);
+
+  /// No description provided for @checkSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Settings'**
+  String get checkSettings;
+
+  /// No description provided for @reauthorizeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-authorization successful!'**
+  String get reauthorizeSuccess;
+
+  /// No description provided for @reauthorizeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-authorization failed, please check health app settings'**
+  String get reauthorizeFailed;
+
+  /// No description provided for @reauthorizationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-authorization failed: {error}'**
+  String reauthorizationFailed(Object error);
+
+  /// No description provided for @healthDataSyncComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Health data sync complete! Today\'s steps: {steps}'**
+  String healthDataSyncComplete(Object steps);
+
+  /// No description provided for @healthDataSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Health data sync failed'**
+  String get healthDataSyncFailed;
 }
 
 class _AppLocalizationsDelegate

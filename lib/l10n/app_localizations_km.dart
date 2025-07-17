@@ -413,4 +413,74 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get friendsRanking => 'ចំណាត់ថ្នាក់មិត្តភក្តិ';
+
+  @override
+  String get appleHealth => 'Apple សុខភាព';
+
+  @override
+  String get connected => 'បានចុកប្រភាប់';
+
+  @override
+  String get notConnected => 'មិនបានចុកប្រភាប់';
+
+  @override
+  String get syncHealthData => 'ធ្វើសមកាលកម្មតិន្នញ់សុខភាព';
+
+  @override
+  String get reauthorizeHealthData => 'ថ្វើពិនិត្យអនុញ្ញាតតិន្នញ់សុខភាព';
+
+  @override
+  String get syncingHealthData =>
+      'កំពុងធ្វើសមកាលកម្មតិន្នញ់សុខភាពពី Apple សុខភាព...';
+
+  @override
+  String get syncComplete => 'ការធ្វើសមកាលកម្មបានបញ្ចប់';
+
+  @override
+  String todayStepsCount(Object steps) {
+    return 'ជំហានថ្ងៃនេះ៖ $steps';
+  }
+
+  @override
+  String monthlyStepsCount(Object steps) {
+    return 'ជំហានប្រចាំខែ៖ $steps';
+  }
+
+  @override
+  String weeklyAverageSteps(Object steps) {
+    return 'ជំហានជាមធ្យមប្រចាំសប្តាហ៍៖ $steps';
+  }
+
+  @override
+  String goalAchievedDays(Object days) {
+    return 'ថ្ងៃដែលសម្រេចគោលដៅ៖ $days ថ្ងៃ';
+  }
+
+  @override
+  String syncFailed(Object error) {
+    return 'ការធ្វើសមកាលកម្មបរាជ័យ៖ $error';
+  }
+
+  @override
+  String get checkSettings => 'ពិនិត្យមើលការកំណត់';
+
+  @override
+  String get reauthorizeSuccess => 'ការថ្វើពិនិត្យអនុញ្ញាតជោគជ័យ!';
+
+  @override
+  String get reauthorizeFailed =>
+      'ការថ្វើពិនិត្យអនុញ្ញាតបរាជ័យ សូមពិនិត្យមើលការកំណត់កម្មវិធីសុខភាព';
+
+  @override
+  String reauthorizationFailed(Object error) {
+    return 'ការថ្វើពិនិត្យអនុញ្ញាតបរាជ័យ៖ $error';
+  }
+
+  @override
+  String healthDataSyncComplete(Object steps) {
+    return 'ការធ្វើសមកាលកម្មតិន្នញ់សុខភាពបានបញ្ចប់! ជំហានថ្ងៃនេះ៖ $steps';
+  }
+
+  @override
+  String get healthDataSyncFailed => 'ការធ្វើសមកាលកម្មតិន្នញ់សុខភាពបរាជ័យ';
 }

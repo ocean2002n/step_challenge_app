@@ -84,7 +84,7 @@ class HealthService extends ChangeNotifier {
     }
   }
 
-  /// 讀取真實的健康數據
+  /// 讀取真實的健康數據 (初始化時使用，失敗會降級到模擬數據)
   Future<void> _loadRealHealthData() async {
     try {
       // 並行讀取所有健康數據
@@ -101,8 +101,19 @@ class HealthService extends ChangeNotifier {
     }
   }
 
+  /// 強制同步健康數據 (同步時使用，失敗會拋出錯誤)
+  Future<void> _forceSyncHealthData() async {
+    // 並行讀取所有健康數據，設置 throwOnError: true 讓錯誤向上傳播
+    await Future.wait([
+      _loadTodaySteps(throwOnError: true),
+      _loadWeeklySteps(throwOnError: true),
+      _loadMonthlySteps(throwOnError: true),
+      _loadHeartRateData(throwOnError: true),
+    ]);
+  }
+
   /// 讀取真實的月度步數數據
-  Future<void> _loadMonthlySteps() async {
+  Future<void> _loadMonthlySteps({bool throwOnError = false}) async {
     try {
       final now = DateTime.now();
       final startOfMonth = DateTime(now.year, now.month, 1);
@@ -138,12 +149,16 @@ class HealthService extends ChangeNotifier {
       debugPrint('📊 Monthly steps loaded: This month: $_monthlySteps, Last month: $_lastMonthSteps');
     } catch (e) {
       debugPrint('Error loading monthly steps: $e');
-      _generateMockMonthlyData();
+      if (throwOnError) {
+        rethrow;
+      } else {
+        _generateMockMonthlyData();
+      }
     }
   }
 
   /// 讀取心率數據
-  Future<void> _loadHeartRateData() async {
+  Future<void> _loadHeartRateData({bool throwOnError = false}) async {
     try {
       final now = DateTime.now();
       final startOfDay = DateTime(now.year, now.month, now.day);
@@ -165,11 +180,14 @@ class HealthService extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error loading heart rate data: $e');
+      if (throwOnError) {
+        rethrow;
+      }
     }
   }
 
   /// 獲取今日步數
-  Future<void> _loadTodaySteps() async {
+  Future<void> _loadTodaySteps({bool throwOnError = false}) async {
     try {
       final now = DateTime.now();
       final startOfDay = DateTime(now.year, now.month, now.day);
@@ -191,11 +209,14 @@ class HealthService extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Error loading today steps: $e');
+      if (throwOnError) {
+        rethrow; // 重新拋出錯誤
+      }
     }
   }
 
   /// 獲取過去7天步數
-  Future<void> _loadWeeklySteps() async {
+  Future<void> _loadWeeklySteps({bool throwOnError = false}) async {
     try {
       final now = DateTime.now();
       
@@ -234,6 +255,9 @@ class HealthService extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Error loading weekly steps: $e');
+      if (throwOnError) {
+        rethrow;
+      }
     }
   }
 
@@ -284,25 +308,36 @@ class HealthService extends ChangeNotifier {
   Future<void> syncHealthData() async {
     debugPrint('🔄 Starting health data sync...');
     
+    // 如果沒有授權，先嘗試初始化
     if (!_isAuthorized) {
       debugPrint('📝 Not authorized, reinitializing...');
-      await initialize();
-      return;
+      final success = await initialize();
+      if (!success || !_isAuthorized) {
+        debugPrint('❌ Authorization failed');
+        throw Exception('無法獲取健康數據權限，請在設定中授權健康數據存取');
+      }
     }
 
     try {
       debugPrint('📱 Syncing health data from Apple Health...');
       
-      // 強制重新讀取所有健康數據
-      await _loadRealHealthData();
+      // 強制同步真實健康數據，失敗會拋出錯誤
+      await _forceSyncHealthData();
       
       debugPrint('✅ Health data sync completed successfully');
       notifyListeners();
+      
     } catch (e) {
       debugPrint('💥 Health sync error: $e');
       
-      // 如果同步失敗，嘗試重新初始化
-      await initialize();
+      // 拋出用戶友好的錯誤訊息
+      if (e.toString().contains('Permission')) {
+        throw Exception('健康數據權限不足，請檢查設定中的健康數據權限');
+      } else if (e.toString().contains('Network') || e.toString().contains('network')) {
+        throw Exception('網路連線問題，請檢查網路連線後重試');
+      } else {
+        throw Exception('健康數據同步失敗，請稍後重試');
+      }
     }
   }
 

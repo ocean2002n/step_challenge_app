@@ -396,4 +396,72 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get friendsRanking => '好友排行榜';
+
+  @override
+  String get appleHealth => 'Apple 健康';
+
+  @override
+  String get connected => '已連接';
+
+  @override
+  String get notConnected => '未連接';
+
+  @override
+  String get syncHealthData => '立即同步健康數據';
+
+  @override
+  String get reauthorizeHealthData => '重新授權健康數據';
+
+  @override
+  String get syncingHealthData => '正在從 Apple 健康同步健康數據...';
+
+  @override
+  String get syncComplete => '同步完成';
+
+  @override
+  String todayStepsCount(Object steps) {
+    return '今日步數：$steps';
+  }
+
+  @override
+  String monthlyStepsCount(Object steps) {
+    return '月步數：$steps';
+  }
+
+  @override
+  String weeklyAverageSteps(Object steps) {
+    return '週平均：$steps';
+  }
+
+  @override
+  String goalAchievedDays(Object days) {
+    return '達標天數：$days 天';
+  }
+
+  @override
+  String syncFailed(Object error) {
+    return '同步失敗：$error';
+  }
+
+  @override
+  String get checkSettings => '檢查設定';
+
+  @override
+  String get reauthorizeSuccess => '重新授權成功！';
+
+  @override
+  String get reauthorizeFailed => '重新授權失敗，請檢查健康應用設定';
+
+  @override
+  String reauthorizationFailed(Object error) {
+    return '重新授權失敗：$error';
+  }
+
+  @override
+  String healthDataSyncComplete(Object steps) {
+    return '健康數據同步完成！今日步數：$steps';
+  }
+
+  @override
+  String get healthDataSyncFailed => '健康數據同步失敗';
 }
