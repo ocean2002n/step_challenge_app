@@ -480,4 +480,99 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthDataSyncFailed => 'Health data sync failed';
+
+  @override
+  String get welcomeTitle => 'Welcome to Step Challenge!';
+
+  @override
+  String get welcomeSubtitle =>
+      'Track your daily steps, compete with friends, and achieve your health goals together.';
+
+  @override
+  String get getStarted => 'Get Started';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get onboardingHealthTitle => 'Track Your Health';
+
+  @override
+  String get onboardingHealthDescription =>
+      'Monitor your daily steps and health data with Apple Health integration for accurate tracking.';
+
+  @override
+  String get onboardingFriendsTitle => 'Connect with Friends';
+
+  @override
+  String get onboardingFriendsDescription =>
+      'Add friends, share QR codes, and see monthly step rankings to stay motivated together.';
+
+  @override
+  String get onboardingChallengesTitle => 'Join Challenges';
+
+  @override
+  String get onboardingChallengesDescription =>
+      'Participate in step challenges and compete with others to achieve your fitness goals.';
+
+  @override
+  String get createProfile => 'Create Profile';
+
+  @override
+  String get basicInformation => 'Basic Information';
+
+  @override
+  String get basicInformationSubtitle =>
+      'Let\'s start with some basic details about you.';
+
+  @override
+  String get tapToAddPhoto => 'Tap to add photo';
+
+  @override
+  String get enterNickname => 'Enter your nickname';
+
+  @override
+  String get personalDetails => 'Personal Details';
+
+  @override
+  String get personalDetailsSubtitle => 'Tell us a bit more about yourself.';
+
+  @override
+  String get selectBirthDate => 'Select birth date';
+
+  @override
+  String get physicalInformation => 'Physical Information';
+
+  @override
+  String get physicalInformationSubtitle =>
+      'Help us calculate your health metrics accurately.';
+
+  @override
+  String get enterHeight => 'Enter your height';
+
+  @override
+  String get pleaseEnterHeight => 'Please enter your height';
+
+  @override
+  String get enterWeight => 'Enter your weight';
+
+  @override
+  String get pleaseEnterWeight => 'Please enter your weight';
+
+  @override
+  String get healthPermissionSubtitle =>
+      'Enable health data access for accurate step tracking.';
+
+  @override
+  String get healthPermissionDescription =>
+      'We\'ll request permission to read your step data from Apple Health. This helps us provide accurate tracking and personalized insights.';
+
+  @override
+  String get pleaseSelectGender => 'Please select your gender';
+
+  @override
+  String get completeRegistration => 'Complete Registration';
 }

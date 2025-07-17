@@ -483,4 +483,99 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get healthDataSyncFailed => 'ការធ្វើសមកាលកម្មតិន្នញ់សុខភាពបរាជ័យ';
+
+  @override
+  String get welcomeTitle => 'សូមស្វាគមន៍មកកាន់បញ្ហាប្រកួតហ្វឹកហាត់!';
+
+  @override
+  String get welcomeSubtitle =>
+      'តាមដានជំហានប្រចាំថ្ងៃរបស់អ្នក ប្រកួតជាមួយមិត្តភក្តិ និងសម្រេចគោលដៅសុខភាពជាមួយគ្នា។';
+
+  @override
+  String get getStarted => 'ចាប់ផ្តើម';
+
+  @override
+  String get skip => 'រំលង';
+
+  @override
+  String get next => 'បន្ទាប់';
+
+  @override
+  String get onboardingHealthTitle => 'តាមដានសុខភាព';
+
+  @override
+  String get onboardingHealthDescription =>
+      'តាមដានជំហានប្រចាំថ្ងៃ និងទិន្នន័យសុខភាពរបស់អ្នកជាមួយការរួមបញ្ចូលជាមួយ Apple សុខភាពសម្រាប់ការតាមដានដ៏ជាក់លាក់។';
+
+  @override
+  String get onboardingFriendsTitle => 'ភ្ជាប់ជាមួយមិត្តភក្តិ';
+
+  @override
+  String get onboardingFriendsDescription =>
+      'បន្ថែមមិត្តភក្តិ ចែករំលែក QR កូដ និងមើលចំណាត់ថ្នាក់ជំហានប្រចាំខែដើម្បីរក្សាការលើកទឹកចិត្តជាមួយគ្នា។';
+
+  @override
+  String get onboardingChallengesTitle => 'ចូលរួមបញ្ហាប្រកួត';
+
+  @override
+  String get onboardingChallengesDescription =>
+      'ចូលរួមក្នុងបញ្ហាប្រកួតជំហាន និងប្រកួតជាមួយអ្នកដទៃដើម្បីសម្រេចគោលដៅកាយសម្បទារបស់អ្នក។';
+
+  @override
+  String get createProfile => 'បង្កើតប្រវត្តិរូប';
+
+  @override
+  String get basicInformation => 'ព័ត៌មានមូលដ្ឋាន';
+
+  @override
+  String get basicInformationSubtitle =>
+      'តោះចាប់ផ្តើមដោយព័ត៌មានមូលដ្ឋានមួយចំនួនអំពីអ្នក។';
+
+  @override
+  String get tapToAddPhoto => 'ចុចដើម្បីបន្ថែមរូបភាព';
+
+  @override
+  String get enterNickname => 'បញ្ចូលឈ្មោះហៅក្រៅរបស់អ្នក';
+
+  @override
+  String get personalDetails => 'ព័ត៌មានលម្អិត';
+
+  @override
+  String get personalDetailsSubtitle => 'ប្រាប់យើងបន្តិចទៀតអំពីខ្លួនអ្នក។';
+
+  @override
+  String get selectBirthDate => 'ជ្រើសរើសថ្ងៃកំណើត';
+
+  @override
+  String get physicalInformation => 'ព័ត៌មានរាងកាយ';
+
+  @override
+  String get physicalInformationSubtitle =>
+      'ជួយយើងគណនាសូចនាករសុខភាពរបស់អ្នកឱ្យបានត្រឹមត្រូវ។';
+
+  @override
+  String get enterHeight => 'បញ្ចូលកម្ពស់របស់អ្នក';
+
+  @override
+  String get pleaseEnterHeight => 'សូមបញ្ចូលកម្ពស់របស់អ្នក';
+
+  @override
+  String get enterWeight => 'បញ្ចូលទម្ងន់របស់អ្នក';
+
+  @override
+  String get pleaseEnterWeight => 'សូមបញ្ចូលទម្ងន់របស់អ្នក';
+
+  @override
+  String get healthPermissionSubtitle =>
+      'បើកការចូលប្រើទិន្នន័យសុខភាពសម្រាប់ការតាមដានជំហានដ៏ជាក់លាក់។';
+
+  @override
+  String get healthPermissionDescription =>
+      'យើងនឹងស្នើសុំការអនុញ្ញាតដើម្បីអានទិន្នន័យជំហានរបស់អ្នកពី Apple សុខភាព។ នេះជួយយើងផ្តល់ការតាមដាន និងការយល់ដឹងប្រកបដោយភាពជាក់លាក់។';
+
+  @override
+  String get pleaseSelectGender => 'សូមជ្រើសរើសភេទរបស់អ្នក';
+
+  @override
+  String get completeRegistration => 'បញ្ចប់ការចុះឈ្មោះ';
 }

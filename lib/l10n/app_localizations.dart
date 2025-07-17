@@ -957,6 +957,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Health data sync failed'**
   String get healthDataSyncFailed;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Step Challenge!'**
+  String get welcomeTitle;
+
+  /// No description provided for @welcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your daily steps, compete with friends, and achieve your health goals together.'**
+  String get welcomeSubtitle;
+
+  /// No description provided for @getStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get getStarted;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @onboardingHealthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Your Health'**
+  String get onboardingHealthTitle;
+
+  /// No description provided for @onboardingHealthDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor your daily steps and health data with Apple Health integration for accurate tracking.'**
+  String get onboardingHealthDescription;
+
+  /// No description provided for @onboardingFriendsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect with Friends'**
+  String get onboardingFriendsTitle;
+
+  /// No description provided for @onboardingFriendsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add friends, share QR codes, and see monthly step rankings to stay motivated together.'**
+  String get onboardingFriendsDescription;
+
+  /// No description provided for @onboardingChallengesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Challenges'**
+  String get onboardingChallengesTitle;
+
+  /// No description provided for @onboardingChallengesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Participate in step challenges and compete with others to achieve your fitness goals.'**
+  String get onboardingChallengesDescription;
+
+  /// No description provided for @createProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Profile'**
+  String get createProfile;
+
+  /// No description provided for @basicInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Information'**
+  String get basicInformation;
+
+  /// No description provided for @basicInformationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s start with some basic details about you.'**
+  String get basicInformationSubtitle;
+
+  /// No description provided for @tapToAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add photo'**
+  String get tapToAddPhoto;
+
+  /// No description provided for @enterNickname.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your nickname'**
+  String get enterNickname;
+
+  /// No description provided for @personalDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Details'**
+  String get personalDetails;
+
+  /// No description provided for @personalDetailsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us a bit more about yourself.'**
+  String get personalDetailsSubtitle;
+
+  /// No description provided for @selectBirthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select birth date'**
+  String get selectBirthDate;
+
+  /// No description provided for @physicalInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical Information'**
+  String get physicalInformation;
+
+  /// No description provided for @physicalInformationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help us calculate your health metrics accurately.'**
+  String get physicalInformationSubtitle;
+
+  /// No description provided for @enterHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your height'**
+  String get enterHeight;
+
+  /// No description provided for @pleaseEnterHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your height'**
+  String get pleaseEnterHeight;
+
+  /// No description provided for @enterWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your weight'**
+  String get enterWeight;
+
+  /// No description provided for @pleaseEnterWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your weight'**
+  String get pleaseEnterWeight;
+
+  /// No description provided for @healthPermissionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable health data access for accurate step tracking.'**
+  String get healthPermissionSubtitle;
+
+  /// No description provided for @healthPermissionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll request permission to read your step data from Apple Health. This helps us provide accurate tracking and personalized insights.'**
+  String get healthPermissionDescription;
+
+  /// No description provided for @pleaseSelectGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your gender'**
+  String get pleaseSelectGender;
+
+  /// No description provided for @completeRegistration.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Registration'**
+  String get completeRegistration;
 }
 
 class _AppLocalizationsDelegate

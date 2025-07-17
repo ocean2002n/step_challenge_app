@@ -72,4 +72,13 @@ class LocaleService extends ChangeNotifier {
   bool isCurrentLanguage(String languageCode) {
     return _locale.languageCode == languageCode;
   }
+  
+  /// 設定語言區域
+  Future<void> setLocale(Locale locale) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_languageKey, locale.languageCode);
+    
+    _locale = locale;
+    notifyListeners();
+  }
 }

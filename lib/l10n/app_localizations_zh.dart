@@ -464,4 +464,92 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get healthDataSyncFailed => '健康數據同步失敗';
+
+  @override
+  String get welcomeTitle => '歡迎使用步數挑戰！';
+
+  @override
+  String get welcomeSubtitle => '追蹤每日步數，與朋友競爭，一起達成健康目標。';
+
+  @override
+  String get getStarted => '開始使用';
+
+  @override
+  String get skip => '跳過';
+
+  @override
+  String get next => '下一步';
+
+  @override
+  String get onboardingHealthTitle => '追蹤健康';
+
+  @override
+  String get onboardingHealthDescription => '透過Apple健康整合監控每日步數和健康數據，提供精確追蹤。';
+
+  @override
+  String get onboardingFriendsTitle => '與朋友連結';
+
+  @override
+  String get onboardingFriendsDescription => '新增朋友、分享QR碼，查看月步數排行榜，一起保持動力。';
+
+  @override
+  String get onboardingChallengesTitle => '參加挑戰';
+
+  @override
+  String get onboardingChallengesDescription => '參與步數挑戰，與他人競爭以達成您的健身目標。';
+
+  @override
+  String get createProfile => '建立個人檔案';
+
+  @override
+  String get basicInformation => '基本資訊';
+
+  @override
+  String get basicInformationSubtitle => '讓我們從一些基本資料開始。';
+
+  @override
+  String get tapToAddPhoto => '點擊新增照片';
+
+  @override
+  String get enterNickname => '輸入您的暱稱';
+
+  @override
+  String get personalDetails => '個人詳情';
+
+  @override
+  String get personalDetailsSubtitle => '告訴我們更多關於您的資訊。';
+
+  @override
+  String get selectBirthDate => '選擇出生日期';
+
+  @override
+  String get physicalInformation => '身體資訊';
+
+  @override
+  String get physicalInformationSubtitle => '幫助我們準確計算您的健康指標。';
+
+  @override
+  String get enterHeight => '輸入您的身高';
+
+  @override
+  String get pleaseEnterHeight => '請輸入您的身高';
+
+  @override
+  String get enterWeight => '輸入您的體重';
+
+  @override
+  String get pleaseEnterWeight => '請輸入您的體重';
+
+  @override
+  String get healthPermissionSubtitle => '啟用健康數據存取以進行精確步數追蹤。';
+
+  @override
+  String get healthPermissionDescription =>
+      '我們將請求從Apple健康讀取您的步數數據的權限。這有助於我們提供準確的追蹤和個人化見解。';
+
+  @override
+  String get pleaseSelectGender => '請選擇您的性別';
+
+  @override
+  String get completeRegistration => '完成註冊';
 }
