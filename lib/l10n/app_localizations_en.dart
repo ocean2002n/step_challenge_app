@@ -435,12 +435,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String todayStepsCount(Object steps) {
-    return 'Today\'s Steps: $steps';
+    return '✅ Today\'s Steps: $steps';
   }
 
   @override
   String monthlyStepsCount(Object steps) {
-    return 'Monthly Steps: $steps';
+    return '📊 Monthly Steps: $steps';
   }
 
   @override
@@ -575,4 +575,169 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completeRegistration => 'Complete Registration';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get syncingData => 'Syncing data from Apple Health...';
+
+  @override
+  String get syncCompleted => 'Sync Completed';
+
+  @override
+  String weeklyAverage(Object steps) {
+    return '📈 Weekly Average: $steps';
+  }
+
+  @override
+  String goalAchievedCount(Object days) {
+    return '🎯 Goal Achieved: $days days';
+  }
+
+  @override
+  String syncFail(Object error) {
+    return 'Sync failed: $error';
+  }
+
+  @override
+  String get viewSettings => 'View Settings';
+
+  @override
+  String get checkingPermissions => 'Checking health data permissions...';
+
+  @override
+  String permissionStatus(Object status) {
+    return 'Permission Status: $status';
+  }
+
+  @override
+  String authStatus(Object status) {
+    return 'Auth Status: $status';
+  }
+
+  @override
+  String get authorized => 'Authorized';
+
+  @override
+  String get unauthorized => 'Unauthorized';
+
+  @override
+  String supportedDataTypes(Object types) {
+    return 'Supported Data Types: $types';
+  }
+
+  @override
+  String error(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get requestPermissionAgain => 'Request Permission Again';
+
+  @override
+  String get logoutConfirmation =>
+      'Are you sure you want to log out? This will clear all local data.';
+
+  @override
+  String get yourMonthlyPerformance => 'Your Monthly Performance';
+
+  @override
+  String userRank(Object rank) {
+    return 'Rank #$rank';
+  }
+
+  @override
+  String get km => 'KM';
+
+  @override
+  String userSteps(Object steps) {
+    return '$steps steps';
+  }
+
+  @override
+  String get friendsMonthlyRanking => 'Friends\' Monthly Ranking';
+
+  @override
+  String get youParentheses => '(You)';
+
+  @override
+  String kmValue(Object value) {
+    return '$value km';
+  }
+
+  @override
+  String friendsWithoutSteps(Object count) {
+    return '$count friends have no step records yet';
+  }
+
+  @override
+  String get idNumber => 'ID Number/Passport Number';
+
+  @override
+  String get nationality => 'Nationality';
+
+  @override
+  String get selectNationality => 'Please select nationality';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get emergencyContact => 'Emergency Contact Information';
+
+  @override
+  String get emergencyContactName => 'Emergency Contact Name';
+
+  @override
+  String get emergencyContactPhone => 'Emergency Contact Phone';
+
+  @override
+  String get emergencyContactRelation => 'Emergency Contact Relationship';
+
+  @override
+  String get medicalHistory => 'Medical History';
+
+  @override
+  String get medicalHistoryHint =>
+      'Please describe any relevant medical conditions or allergies';
+
+  @override
+  String get relationParent => 'Parent';
+
+  @override
+  String get relationSpouse => 'Spouse';
+
+  @override
+  String get relationSibling => 'Sibling';
+
+  @override
+  String get relationChild => 'Child';
+
+  @override
+  String get relationFriend => 'Friend';
+
+  @override
+  String get relationColleague => 'Colleague';
+
+  @override
+  String get relationOther => 'Other';
+
+  @override
+  String get validIdRequired => 'Please enter a valid ID number';
+
+  @override
+  String get validPhoneRequired => 'Please enter a valid phone number';
+
+  @override
+  String get validEmailRequired => 'Please enter a valid email address';
+
+  @override
+  String get searchNationality => 'Search Nationality';
+
+  @override
+  String get selectNationalityDialog => 'Select Nationality';
 }

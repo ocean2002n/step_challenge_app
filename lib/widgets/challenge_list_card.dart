@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import '../models/challenge_model.dart';
 import '../utils/app_theme.dart';
+import '../services/auth_service.dart';
+import '../screens/create_challenge_screen.dart';
 
 class ChallengeListCard extends StatefulWidget {
-  const ChallengeListCard({super.key});
+  final VoidCallback? onRefresh;
+  
+  const ChallengeListCard({super.key, this.onRefresh});
 
   @override
-  State<ChallengeListCard> createState() => _ChallengeListCardState();
+  State<ChallengeListCard> createState() => ChallengeListCardState();
 }
 
-class _ChallengeListCardState extends State<ChallengeListCard> {
+class ChallengeListCardState extends State<ChallengeListCard> {
   List<Challenge> _challenges = [];
   bool _isLoading = true;
 
@@ -37,6 +42,7 @@ class _ChallengeListCardState extends State<ChallengeListCard> {
           goalValue: 8000,
           status: ChallengeStatus.active,
           createdDate: DateTime.now().subtract(const Duration(hours: 2)),
+          privacy: ChallengePrivacyType.public,
         ),
         Challenge(
           id: '2',
@@ -49,6 +55,7 @@ class _ChallengeListCardState extends State<ChallengeListCard> {
           goalValue: 10000,
           status: ChallengeStatus.active,
           createdDate: DateTime.now().subtract(const Duration(days: 5)),
+          privacy: ChallengePrivacyType.public,
         ),
         Challenge(
           id: '3',
@@ -61,6 +68,7 @@ class _ChallengeListCardState extends State<ChallengeListCard> {
           goalValue: 1000000,
           status: ChallengeStatus.active,
           createdDate: DateTime.now().subtract(const Duration(days: 10)),
+          privacy: ChallengePrivacyType.private,
         ),
       ];
       _isLoading = false;
@@ -147,11 +155,19 @@ class _ChallengeListCardState extends State<ChallengeListCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          challenge.title,
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontSize: 18,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                challenge.title,
+                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            _buildPrivacyChip(challenge.privacy),
+                          ],
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -165,6 +181,7 @@ class _ChallengeListCardState extends State<ChallengeListCard> {
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
                   _buildStatusChip(challenge, isExpiringSoon, isExpired),
                 ],
               ),
@@ -268,6 +285,15 @@ class _ChallengeListCardState extends State<ChallengeListCard> {
                             foregroundColor: AppTheme.primaryGreen,
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           ),
+                        ),
+                      const SizedBox(width: 8),
+                      if (_isCreator(challenge))
+                        IconButton(
+                          onPressed: () => _editChallenge(challenge),
+                          icon: const Icon(Icons.edit, size: 20),
+                          color: AppTheme.primaryGreen,
+                          padding: const EdgeInsets.all(4),
+                          constraints: const BoxConstraints(),
                         ),
                       const SizedBox(width: 8),
                       IconButton(
@@ -446,6 +472,83 @@ class _ChallengeListCardState extends State<ChallengeListCard> {
   void _shareChallenge(Challenge challenge) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('分享挑戰: ${challenge.title}')),
+    );
+  }
+  
+  bool _isCreator(Challenge challenge) {
+    final authService = context.read<AuthService>();
+    return authService.userId == challenge.creatorId;
+  }
+  
+  void _editChallenge(Challenge challenge) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CreateChallengeScreen(challenge: challenge),
+      ),
+    ).then((result) {
+      if (result != null) {
+        setState(() {
+          final index = _challenges.indexWhere((c) => c.id == challenge.id);
+          if (index != -1) {
+            if (result == 'deleted') {
+              _challenges.removeAt(index);
+            } else {
+              _challenges[index] = result;
+            }
+          }
+        });
+        widget.onRefresh?.call();
+      }
+    });
+  }
+  
+  void addNewChallenge(Challenge challenge) {
+    setState(() {
+      _challenges.insert(0, challenge);
+    });
+  }
+  
+  Widget _buildPrivacyChip(ChallengePrivacyType privacy) {
+    Color chipColor;
+    String chipText;
+    IconData chipIcon;
+
+    switch (privacy) {
+      case ChallengePrivacyType.public:
+        chipColor = AppTheme.primaryGreen;
+        chipText = '公開';
+        chipIcon = Icons.public;
+        break;
+      case ChallengePrivacyType.private:
+        chipColor = AppTheme.secondaryBlue;
+        chipText = '私人';
+        chipIcon = Icons.lock;
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: chipColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: chipColor.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(chipIcon, size: 12, color: chipColor),
+          const SizedBox(width: 4),
+          Text(
+            chipText,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: chipColor,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

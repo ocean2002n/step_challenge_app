@@ -1,5 +1,6 @@
 enum ChallengeGoalType { daily, total, duration }
 enum ChallengeStatus { active, completed, cancelled }
+enum ChallengePrivacyType { public, private }
 
 class Challenge {
   final String id;
@@ -12,6 +13,7 @@ class Challenge {
   final int goalValue;
   final ChallengeStatus status;
   final DateTime createdDate;
+  final ChallengePrivacyType privacy;
 
   Challenge({
     required this.id,
@@ -24,6 +26,7 @@ class Challenge {
     required this.goalValue,
     required this.status,
     required this.createdDate,
+    required this.privacy,
   });
 
   Map<String, dynamic> toJson() {
@@ -38,6 +41,7 @@ class Challenge {
       'goal_value': goalValue,
       'status': status.name,
       'created_date': createdDate.toIso8601String(),
+      'privacy': privacy.name,
     };
   }
 
@@ -57,6 +61,10 @@ class Challenge {
         (e) => e.name == json['status'],
       ),
       createdDate: DateTime.parse(json['created_date']),
+      privacy: ChallengePrivacyType.values.firstWhere(
+        (e) => e.name == json['privacy'],
+        orElse: () => ChallengePrivacyType.public,
+      ),
     );
   }
 
@@ -71,6 +79,7 @@ class Challenge {
     int? goalValue,
     ChallengeStatus? status,
     DateTime? createdDate,
+    ChallengePrivacyType? privacy,
   }) {
     return Challenge(
       id: id ?? this.id,
@@ -83,6 +92,7 @@ class Challenge {
       goalValue: goalValue ?? this.goalValue,
       status: status ?? this.status,
       createdDate: createdDate ?? this.createdDate,
+      privacy: privacy ?? this.privacy,
     );
   }
 }

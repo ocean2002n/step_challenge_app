@@ -8,6 +8,8 @@ import '../l10n/app_localizations.dart';
 import 'friend_qr_screen.dart';
 import 'qr_scanner_screen.dart';
 
+import 'package:intl/intl.dart';
+
 class FriendsScreen extends StatefulWidget {
   const FriendsScreen({super.key});
 
@@ -36,11 +38,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
   }
 
   String _getMonthYearString(DateTime date, AppLocalizations l10n) {
-    final months = [
-      '一月', '二月', '三月', '四月', '五月', '六月',
-      '七月', '八月', '九月', '十月', '十一月', '十二月'
-    ];
-    return '${months[date.month - 1]} ${date.year}';
+    final locale = l10n.localeName;
+    return DateFormat.yMMMM(locale).format(date);
   }
 
   // Convert steps to kilometers (assuming 1 km ≈ 1,250 steps)
@@ -128,6 +127,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
   }
 
   Widget _buildLeaderboardHeader(List<Friend> friends) {
+    final l10n = AppLocalizations.of(context)!;
     final healthService = context.watch<HealthService>();
     
     // Get current user steps for selected month
@@ -141,7 +141,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
     // Add current user
     allParticipants.add({
       'id': 'current_user',
-      'nickname': '你',
+      'nickname': l10n.you,
       'steps': currentUserSteps,
       'isCurrentUser': true,
     });
@@ -194,7 +194,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '你的本月成績',
+                          l10n.yourMonthlyPerformance,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey[600],
@@ -203,7 +203,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          userRank == 1 ? '第一名' : '第${userRank}名',
+                          l10n.userRank(userRank),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -224,9 +224,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           color: Colors.black,
                         ),
                       ),
-                      const Text(
-                        'KM',
-                        style: TextStyle(
+                      Text(
+                        l10n.km,
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
                           fontWeight: FontWeight.w500,
@@ -250,14 +250,14 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '步數',
+                      l10n.steps,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
                       ),
                     ),
                     Text(
-                      '${userSteps.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} 步',
+                      l10n.userSteps(userSteps),
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -276,6 +276,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
 
 
   Widget _buildFriendsRanking(List<Friend> friends) {
+    final l10n = AppLocalizations.of(context)!;
     final healthService = context.watch<HealthService>();
     
     final currentUserSteps = _currentMonthOffset == 0 
@@ -288,7 +289,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
     // Add current user
     allParticipants.add({
       'id': 'current_user',
-      'nickname': '你',
+      'nickname': l10n.you,
       'steps': currentUserSteps,
       'isCurrentUser': true,
     });
@@ -319,7 +320,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: Text(
-            '好友本月步數排行',
+            l10n.friendsMonthlyRanking,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -397,7 +398,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           ),
                           if (isCurrentUser)
                             Text(
-                              '(你)',
+                              l10n.youParentheses,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey[600],
@@ -412,7 +413,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '${_stepsToKm(steps).toStringAsFixed(2)} km',
+                          l10n.kmValue(_stepsToKm(steps)),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -420,7 +421,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           ),
                         ),
                         Text(
-                          '${steps.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} 步',
+                          l10n.userSteps(steps),
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -440,7 +441,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              '${participantsWithoutSteps.length} 位好友還未有步數記錄',
+              l10n.friendsWithoutSteps(participantsWithoutSteps.length),
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 14,

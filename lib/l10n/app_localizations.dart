@@ -895,13 +895,13 @@ abstract class AppLocalizations {
   /// No description provided for @todayStepsCount.
   ///
   /// In en, this message translates to:
-  /// **'Today\'s Steps: {steps}'**
+  /// **'✅ Today\'s Steps: {steps}'**
   String todayStepsCount(Object steps);
 
   /// No description provided for @monthlyStepsCount.
   ///
   /// In en, this message translates to:
-  /// **'Monthly Steps: {steps}'**
+  /// **'📊 Monthly Steps: {steps}'**
   String monthlyStepsCount(Object steps);
 
   /// No description provided for @weeklyAverageSteps.
@@ -1131,6 +1131,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Complete Registration'**
   String get completeRegistration;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @syncingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing data from Apple Health...'**
+  String get syncingData;
+
+  /// No description provided for @syncCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Completed'**
+  String get syncCompleted;
+
+  /// No description provided for @weeklyAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'📈 Weekly Average: {steps}'**
+  String weeklyAverage(Object steps);
+
+  /// No description provided for @goalAchievedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'🎯 Goal Achieved: {days} days'**
+  String goalAchievedCount(Object days);
+
+  /// No description provided for @syncFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed: {error}'**
+  String syncFail(Object error);
+
+  /// No description provided for @viewSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'View Settings'**
+  String get viewSettings;
+
+  /// No description provided for @checkingPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking health data permissions...'**
+  String get checkingPermissions;
+
+  /// No description provided for @permissionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Status: {status}'**
+  String permissionStatus(Object status);
+
+  /// No description provided for @authStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Auth Status: {status}'**
+  String authStatus(Object status);
+
+  /// No description provided for @authorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorized'**
+  String get authorized;
+
+  /// No description provided for @unauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Unauthorized'**
+  String get unauthorized;
+
+  /// No description provided for @supportedDataTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported Data Types: {types}'**
+  String supportedDataTypes(Object types);
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String error(Object error);
+
+  /// No description provided for @requestPermissionAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Permission Again'**
+  String get requestPermissionAgain;
+
+  /// No description provided for @logoutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out? This will clear all local data.'**
+  String get logoutConfirmation;
+
+  /// No description provided for @yourMonthlyPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Monthly Performance'**
+  String get yourMonthlyPerformance;
+
+  /// No description provided for @userRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank #{rank}'**
+  String userRank(Object rank);
+
+  /// No description provided for @km.
+  ///
+  /// In en, this message translates to:
+  /// **'KM'**
+  String get km;
+
+  /// No description provided for @userSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'{steps} steps'**
+  String userSteps(Object steps);
+
+  /// No description provided for @friendsMonthlyRanking.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends\' Monthly Ranking'**
+  String get friendsMonthlyRanking;
+
+  /// No description provided for @youParentheses.
+  ///
+  /// In en, this message translates to:
+  /// **'(You)'**
+  String get youParentheses;
+
+  /// No description provided for @kmValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} km'**
+  String kmValue(Object value);
+
+  /// No description provided for @friendsWithoutSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} friends have no step records yet'**
+  String friendsWithoutSteps(Object count);
+
+  /// No description provided for @idNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'ID Number/Passport Number'**
+  String get idNumber;
+
+  /// No description provided for @nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get nationality;
+
+  /// No description provided for @selectNationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select nationality'**
+  String get selectNationality;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @emergencyContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency Contact Information'**
+  String get emergencyContact;
+
+  /// No description provided for @emergencyContactName.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency Contact Name'**
+  String get emergencyContactName;
+
+  /// No description provided for @emergencyContactPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency Contact Phone'**
+  String get emergencyContactPhone;
+
+  /// No description provided for @emergencyContactRelation.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency Contact Relationship'**
+  String get emergencyContactRelation;
+
+  /// No description provided for @medicalHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical History'**
+  String get medicalHistory;
+
+  /// No description provided for @medicalHistoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe any relevant medical conditions or allergies'**
+  String get medicalHistoryHint;
+
+  /// No description provided for @relationParent.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent'**
+  String get relationParent;
+
+  /// No description provided for @relationSpouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Spouse'**
+  String get relationSpouse;
+
+  /// No description provided for @relationSibling.
+  ///
+  /// In en, this message translates to:
+  /// **'Sibling'**
+  String get relationSibling;
+
+  /// No description provided for @relationChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Child'**
+  String get relationChild;
+
+  /// No description provided for @relationFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend'**
+  String get relationFriend;
+
+  /// No description provided for @relationColleague.
+  ///
+  /// In en, this message translates to:
+  /// **'Colleague'**
+  String get relationColleague;
+
+  /// No description provided for @relationOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get relationOther;
+
+  /// No description provided for @validIdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid ID number'**
+  String get validIdRequired;
+
+  /// No description provided for @validPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid phone number'**
+  String get validPhoneRequired;
+
+  /// No description provided for @validEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get validEmailRequired;
+
+  /// No description provided for @searchNationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Nationality'**
+  String get searchNationality;
+
+  /// No description provided for @selectNationalityDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Nationality'**
+  String get selectNationalityDialog;
 }
 
 class _AppLocalizationsDelegate

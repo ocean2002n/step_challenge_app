@@ -8,12 +8,14 @@ import '../widgets/step_counter_card.dart';
 import '../widgets/weekly_chart_card.dart';
 import '../widgets/goal_progress_card.dart';
 import '../widgets/challenge_list_card.dart';
+import '../models/challenge_model.dart';
 import 'profile_screen.dart';
 import 'profile_screen_test.dart';
 import 'language_settings_screen.dart';
 import 'friends_screen.dart';
 import 'health_settings_screen.dart';
 import 'welcome_screen.dart';
+import 'create_challenge_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,6 +27,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   int _selectedIndex = 0;
+  final GlobalKey<ChallengeListCardState> _challengeListKey = GlobalKey();
 
   @override
   void initState() {
@@ -253,7 +256,10 @@ class _HomeScreenState extends State<HomeScreen> {
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: 16),
-            const ChallengeListCard(),
+            ChallengeListCard(
+              key: _challengeListKey,
+              onRefresh: () => setState(() {}),
+            ),
           ],
         ),
       ),
@@ -330,9 +336,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.red),
-                    title: const Text(
-                      '登出',
-                      style: TextStyle(color: Colors.red),
+                    title: Text(
+                      l10n.logout,
+                      style: const TextStyle(color: Colors.red),
                     ),
                     trailing: const Icon(Icons.chevron_right, color: Colors.red),
                     onTap: _showLogoutConfirmation,
@@ -367,12 +373,12 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(l10n.syncData),
           ],
         ),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('正在從 Apple Health 同步數據...'),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(l10n.syncingData),
           ],
         ),
       ),
@@ -392,26 +398,26 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 const Icon(Icons.check_circle, color: Colors.green),
                 const SizedBox(width: 12),
-                const Text('同步完成'),
+                Text(l10n.syncCompleted),
               ],
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('✅ 今日步數：${healthService.todaySteps}'),
+                Text(l10n.todayStepsCount(healthService.todaySteps)),
                 const SizedBox(height: 8),
-                Text('📊 本月步數：${healthService.monthlySteps}'),
+                Text(l10n.monthlyStepsCount(healthService.monthlySteps)),
                 const SizedBox(height: 8),
-                Text('📈 本週平均：${healthService.getWeeklyAverageSteps().toInt()}'),
+                Text(l10n.weeklyAverage(healthService.getWeeklyAverageSteps().toInt())),
                 const SizedBox(height: 8),
-                Text('🎯 目標達成：${healthService.getWeeklyGoalsAchieved(10000)} 天'),
+                Text(l10n.goalAchievedCount(healthService.getWeeklyGoalsAchieved(10000))),
               ],
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('確定'),
+                child: Text(l10n.confirm),
               ),
             ],
           ),
@@ -427,12 +433,12 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 const Icon(Icons.error, color: Colors.white),
                 const SizedBox(width: 12),
-                Text('同步失敗：$e'),
+                Text(l10n.syncFail(e.toString())),
               ],
             ),
             backgroundColor: Colors.red,
             action: SnackBarAction(
-              label: '查看設定',
+              label: l10n.viewSettings,
               textColor: Colors.white,
               onPressed: () {
                 Navigator.push(
@@ -481,11 +487,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _createNewChallenge() {
-    final l10n = AppLocalizations.of(context)!;
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.createChallengeInDevelopment)),
-    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CreateChallengeScreen(),
+      ),
+    ).then((result) {
+      if (result != null && result is Challenge) {
+        // 將新建的挑戰添加到列表中
+        _challengeListKey.currentState?.addNewChallenge(result);
+      }
+    });
   }
 
   void _checkHealthPermissions() async {
@@ -498,12 +510,12 @@ class _HomeScreenState extends State<HomeScreen> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text(l10n.healthDataPermission),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('檢查健康數據權限...'),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(l10n.checkingPermissions),
           ],
         ),
       ),
@@ -523,14 +535,14 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('權限狀態: ${permissionStatus['hasPermissions'] ? '已授權' : '未授權'}'),
+              Text(l10n.permissionStatus(permissionStatus['hasPermissions'] ? l10n.authorized : l10n.unauthorized)),
               const SizedBox(height: 8),
-              Text('認證狀態: ${permissionStatus['isAuthorized'] ? '已認證' : '未認證'}'),
+              Text(l10n.authStatus(permissionStatus['isAuthorized'] ? l10n.authorized : l10n.unauthorized)),
               const SizedBox(height: 8),
-              Text('支援的數據類型: ${permissionStatus['supportedTypes']?.join(', ') ?? 'N/A'}'),
+              Text(l10n.supportedDataTypes(permissionStatus['supportedTypes']?.join(', ') ?? 'N/A')),
               if (permissionStatus['error'] != null) ...[
                 const SizedBox(height: 8),
-                Text('錯誤: ${permissionStatus['error']}', style: const TextStyle(color: Colors.red)),
+                Text(l10n.error(permissionStatus['error']), style: const TextStyle(color: Colors.red)),
               ],
             ],
           ),
@@ -545,7 +557,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.of(context).pop();
                   await healthService.initialize();
                 },
-                child: const Text('重新請求權限'),
+                child: Text(l10n.requestPermissionAgain),
               ),
           ],
         ),
@@ -559,8 +571,8 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('登出'),
-        content: const Text('確定要登出嗎？這將清除所有本地資料。'),
+        title: Text(l10n.logout),
+        content: Text(l10n.logoutConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -571,9 +583,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.of(context).pop();
               await _logout();
             },
-            child: const Text(
-              '登出',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              l10n.logout,
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         ],

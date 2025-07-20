@@ -420,12 +420,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String todayStepsCount(Object steps) {
-    return '今日步數：$steps';
+    return '✅ 今日步數：$steps';
   }
 
   @override
   String monthlyStepsCount(Object steps) {
-    return '月步數：$steps';
+    return '📊 本月步數：$steps';
   }
 
   @override
@@ -552,4 +552,167 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get completeRegistration => '完成註冊';
+
+  @override
+  String get logout => '登出';
+
+  @override
+  String get syncingData => '正在從 Apple Health 同步數據...';
+
+  @override
+  String get syncCompleted => '同步完成';
+
+  @override
+  String weeklyAverage(Object steps) {
+    return '📈 本週平均：$steps';
+  }
+
+  @override
+  String goalAchievedCount(Object days) {
+    return '🎯 目標達成：$days 天';
+  }
+
+  @override
+  String syncFail(Object error) {
+    return '同步失敗：$error';
+  }
+
+  @override
+  String get viewSettings => '查看設定';
+
+  @override
+  String get checkingPermissions => '正在檢查健康數據權限...';
+
+  @override
+  String permissionStatus(Object status) {
+    return '權限狀態：$status';
+  }
+
+  @override
+  String authStatus(Object status) {
+    return '認證狀態：$status';
+  }
+
+  @override
+  String get authorized => '已授權';
+
+  @override
+  String get unauthorized => '未授權';
+
+  @override
+  String supportedDataTypes(Object types) {
+    return '支援的數據類型：$types';
+  }
+
+  @override
+  String error(Object error) {
+    return '錯誤：$error';
+  }
+
+  @override
+  String get requestPermissionAgain => '重新請求權限';
+
+  @override
+  String get logoutConfirmation => '確定要登出嗎？這將清除所有本地資料。';
+
+  @override
+  String get yourMonthlyPerformance => '你的本月成績';
+
+  @override
+  String userRank(Object rank) {
+    return '第$rank名';
+  }
+
+  @override
+  String get km => '公里';
+
+  @override
+  String userSteps(Object steps) {
+    return '$steps 步';
+  }
+
+  @override
+  String get friendsMonthlyRanking => '好友本月步數排行';
+
+  @override
+  String get youParentheses => '(你)';
+
+  @override
+  String kmValue(Object value) {
+    return '$value 公里';
+  }
+
+  @override
+  String friendsWithoutSteps(Object count) {
+    return '$count 位好友還未有步數記錄';
+  }
+
+  @override
+  String get idNumber => '身分證字號/護照號碼';
+
+  @override
+  String get nationality => '國籍';
+
+  @override
+  String get selectNationality => '請選擇國籍';
+
+  @override
+  String get phoneNumber => '手機號碼';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get emergencyContact => '緊急聯絡人資訊';
+
+  @override
+  String get emergencyContactName => '緊急聯絡人姓名';
+
+  @override
+  String get emergencyContactPhone => '緊急聯絡人電話';
+
+  @override
+  String get emergencyContactRelation => '緊急聯絡人關係';
+
+  @override
+  String get medicalHistory => '特殊病史';
+
+  @override
+  String get medicalHistoryHint => '請描述任何相關的醫療狀況或過敏史';
+
+  @override
+  String get relationParent => '父母';
+
+  @override
+  String get relationSpouse => '配偶';
+
+  @override
+  String get relationSibling => '兄弟姊妹';
+
+  @override
+  String get relationChild => '子女';
+
+  @override
+  String get relationFriend => '朋友';
+
+  @override
+  String get relationColleague => '同事';
+
+  @override
+  String get relationOther => '其他';
+
+  @override
+  String get validIdRequired => '請輸入有效的證件號碼';
+
+  @override
+  String get validPhoneRequired => '請輸入有效的手機號碼';
+
+  @override
+  String get validEmailRequired => '請輸入有效的電子郵件地址';
+
+  @override
+  String get searchNationality => '搜尋國籍';
+
+  @override
+  String get selectNationalityDialog => '選擇國籍';
 }

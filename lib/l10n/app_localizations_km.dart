@@ -438,12 +438,12 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String todayStepsCount(Object steps) {
-    return 'ជំហានថ្ងៃនេះ៖ $steps';
+    return '✅ ជំហានថ្ងៃនេះ៖ $steps';
   }
 
   @override
   String monthlyStepsCount(Object steps) {
-    return 'ជំហានប្រចាំខែ៖ $steps';
+    return '📊 ជំហានប្រចាំខែ៖ $steps';
   }
 
   @override
@@ -578,4 +578,170 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get completeRegistration => 'បញ្ចប់ការចុះឈ្មោះ';
+
+  @override
+  String get logout => 'ចេញ';
+
+  @override
+  String get syncingData => 'កំពុងធ្វើសមកាលកម្មទិន្នន័យពី Apple Health...';
+
+  @override
+  String get syncCompleted => 'ការធ្វើសមកាលកម្មបានបញ្ចប់';
+
+  @override
+  String weeklyAverage(Object steps) {
+    return '📈 មធ្យមភាគប្រចាំសប្តាហ៍៖ $steps';
+  }
+
+  @override
+  String goalAchievedCount(Object days) {
+    return '🎯 សម្រេចគោលដៅ៖ $days ថ្ងៃ';
+  }
+
+  @override
+  String syncFail(Object error) {
+    return 'ការធ្វើសមកាលកម្មបរាជ័យ៖ $error';
+  }
+
+  @override
+  String get viewSettings => 'មើលការកំណត់';
+
+  @override
+  String get checkingPermissions => 'កំពុងពិនិត្យមើលសិទ្ធិទិន្នន័យសុខភាព...';
+
+  @override
+  String permissionStatus(Object status) {
+    return 'ស្ថានភាពសិទ្ធិ៖ $status';
+  }
+
+  @override
+  String authStatus(Object status) {
+    return 'ស្ថានភាពការផ្ទៀងផ្ទាត់៖ $status';
+  }
+
+  @override
+  String get authorized => 'បានអនុញ្ញាត';
+
+  @override
+  String get unauthorized => 'មិនបានអនុញ្ញាត';
+
+  @override
+  String supportedDataTypes(Object types) {
+    return 'ប្រភេទទិន្នន័យដែលគាំទ្រ៖ $types';
+  }
+
+  @override
+  String error(Object error) {
+    return 'កំហុស៖ $error';
+  }
+
+  @override
+  String get requestPermissionAgain => 'ស្នើសុំសិទ្ធិម្តងទៀត';
+
+  @override
+  String get logoutConfirmation =>
+      'តើអ្នកប្រាកដថាចង់ចេញមែនទេ? វានឹងលុបទិន្នន័យក្នុងតំបន់ទាំងអស់។';
+
+  @override
+  String get yourMonthlyPerformance => 'ការអនុវត្តប្រចាំខែរបស់អ្នក';
+
+  @override
+  String userRank(Object rank) {
+    return 'ចំណាត់ថ្នាក់ទី $rank';
+  }
+
+  @override
+  String get km => 'គីឡូម៉ែត្រ';
+
+  @override
+  String userSteps(Object steps) {
+    return '$steps ជំហាន';
+  }
+
+  @override
+  String get friendsMonthlyRanking => 'ចំណាត់ថ្នាក់មិត្តភក្តិប្រចាំខែ';
+
+  @override
+  String get youParentheses => '(អ្នក)';
+
+  @override
+  String kmValue(Object value) {
+    return '$value គីឡូម៉ែត្រ';
+  }
+
+  @override
+  String friendsWithoutSteps(Object count) {
+    return 'មិត្តភក្តិ $count នាក់មិនទាន់មានកំណត់ត្រាជំហាននៅឡើយទេ';
+  }
+
+  @override
+  String get idNumber => 'លេខអត្តសញ្ញាណប័ណ្ណ/លេខលិខិតឆ្លងដែន';
+
+  @override
+  String get nationality => 'សញ្ជាតិ';
+
+  @override
+  String get selectNationality => 'សូមជ្រើសរើសសញ្ជាតិ';
+
+  @override
+  String get phoneNumber => 'លេខទូរស័ព្ទ';
+
+  @override
+  String get email => 'អ៊ីមែល';
+
+  @override
+  String get emergencyContact => 'ព័ត៌មានទំនាក់ទំនងពេលបន្ទាន់';
+
+  @override
+  String get emergencyContactName => 'ឈ្មោះអ្នកទំនាក់ទំនងពេលបន្ទាន់';
+
+  @override
+  String get emergencyContactPhone => 'ទូរស័ព្ទអ្នកទំនាក់ទំនងពេលបន្ទាន់';
+
+  @override
+  String get emergencyContactRelation =>
+      'ទំនាក់ទំនងជាមួយអ្នកទំនាក់ទំនងពេលបន្ទាន់';
+
+  @override
+  String get medicalHistory => 'ប្រវត្តិវេជ្ជសាស្ត្រពិសេស';
+
+  @override
+  String get medicalHistoryHint =>
+      'សូមពិពណ៌នាអំពីលក្ខខណ្ឌវេជ្ជសាស្ត្រ ឬការមិនស៊ូមកម្មដែលពាក់ព័ន្ធ';
+
+  @override
+  String get relationParent => 'ឪពុកម្តាយ';
+
+  @override
+  String get relationSpouse => 'ប្តីភរិយា';
+
+  @override
+  String get relationSibling => 'បងប្អូន';
+
+  @override
+  String get relationChild => 'កូន';
+
+  @override
+  String get relationFriend => 'មិត្តភក្តិ';
+
+  @override
+  String get relationColleague => 'សហការី';
+
+  @override
+  String get relationOther => 'ផ្សេងទៀត';
+
+  @override
+  String get validIdRequired => 'សូមបញ្ចូលលេខអត្តសញ្ញាណប័ណ្ណដែលត្រឹមត្រូវ';
+
+  @override
+  String get validPhoneRequired => 'សូមបញ្ចូលលេខទូរស័ព្ទដែលត្រឹមត្រូវ';
+
+  @override
+  String get validEmailRequired => 'សូមបញ្ចូលអ៊ីមែលដែលត្រឹមត្រូវ';
+
+  @override
+  String get searchNationality => 'ស្វែងរកសញ្ជាតិ';
+
+  @override
+  String get selectNationalityDialog => 'ជ្រើសរើសសញ្ជាតិ';
 }
