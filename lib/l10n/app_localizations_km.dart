@@ -122,7 +122,7 @@ class AppLocalizationsKm extends AppLocalizations {
   String get birthDate => 'ថ្ងៃខែឆ្នាំកំណើត';
 
   @override
-  String get pleaseSelectBirthDate => 'សូមជ្រើសរើសថ្ងៃខែឆ្នាំកំណើត';
+  String get pleaseSelectBirthDate => 'សូមជ្រើសរើសថ្ងៃកំណើត';
 
   @override
   String get height => 'កម្ពស់';
@@ -528,20 +528,19 @@ class AppLocalizationsKm extends AppLocalizations {
   String get basicInformation => 'ព័ត៌មានមូលដ្ឋាន';
 
   @override
-  String get basicInformationSubtitle =>
-      'តោះចាប់ផ្តើមដោយព័ត៌មានមូលដ្ឋានមួយចំនួនអំពីអ្នក។';
+  String get basicInformationSubtitle => 'តោះចាប់ផ្តើមជាមួយព័ត៌មានមូលដ្ឋានខ្លះ';
 
   @override
-  String get tapToAddPhoto => 'ចុចដើម្បីបន្ថែមរូបភាព';
+  String get tapToAddPhoto => 'ចុចដើម្បីបន្ថែមរូបថត';
 
   @override
   String get enterNickname => 'បញ្ចូលឈ្មោះហៅក្រៅរបស់អ្នក';
 
   @override
-  String get personalDetails => 'ព័ត៌មានលម្អិត';
+  String get personalDetails => 'ព័ត៌មានបុគ្គល';
 
   @override
-  String get personalDetailsSubtitle => 'ប្រាប់យើងបន្តិចទៀតអំពីខ្លួនអ្នក។';
+  String get personalDetailsSubtitle => 'ប្រាប់យើងបន្តិចអំពីអ្នក';
 
   @override
   String get selectBirthDate => 'ជ្រើសរើសថ្ងៃកំណើត';
@@ -551,7 +550,7 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get physicalInformationSubtitle =>
-      'ជួយយើងគណនាសូចនាករសុខភាពរបស់អ្នកឱ្យបានត្រឹមត្រូវ។';
+      'ជួយយើងគណនាសូចនាករសុខភាពដោយត្រឹមត្រូវ';
 
   @override
   String get enterHeight => 'បញ្ចូលកម្ពស់របស់អ្នក';
@@ -567,11 +566,11 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get healthPermissionSubtitle =>
-      'បើកការចូលប្រើទិន្នន័យសុខភាពសម្រាប់ការតាមដានជំហានដ៏ជាក់លាក់។';
+      'បើកការចូលប្រើទិន្នន័យសុខភាពសម្រាប់ការតាមដានជំហានត្រឹមត្រូវ';
 
   @override
   String get healthPermissionDescription =>
-      'យើងនឹងស្នើសុំការអនុញ្ញាតដើម្បីអានទិន្នន័យជំហានរបស់អ្នកពី Apple សុខភាព។ នេះជួយយើងផ្តល់ការតាមដាន និងការយល់ដឹងប្រកបដោយភាពជាក់លាក់។';
+      'យើងនឹងស្នើសុំការអនុញ្ញាតអានទិន្នន័យជំហានរបស់អ្នកពីApple Health។ នេះជួយយើងផ្តល់ការតាមដានត្រឹមត្រូវនិងការយល់ដឹងផ្ទាល់ខ្លួន។';
 
   @override
   String get pleaseSelectGender => 'សូមជ្រើសរើសភេទរបស់អ្នក';
@@ -744,4 +743,266 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get selectNationalityDialog => 'ជ្រើសរើសសញ្ជាតិ';
+
+  @override
+  String get marathonEvents => 'ព្រឹត្តិការណ៍ម៉ារ៉ាថុន';
+
+  @override
+  String get searchMarathonEvents => 'ស្វែងរកព្រឹត្តិការណ៍ម៉ារ៉ាថុន...';
+
+  @override
+  String get filter => 'តម្រង';
+
+  @override
+  String get clearFilter => 'សម្អាតតម្រង';
+
+  @override
+  String get filterMarathonEvents => 'តម្រងព្រឹត្តិការណ៍ម៉ារ៉ាថុន';
+
+  @override
+  String get noMarathonEvents => 'រកមិនឃើញព្រឹត្តិការណ៍ម៉ារ៉ាថុន';
+
+  @override
+  String get noMarathonEventsDescription =>
+      'សូមពិនិត្យមើលនៅពេលក្រោយសម្រាប់ព្រឹត្តិការណ៍ដែលនឹងមកដល់ ឬកែសម្រួលលក្ខខណ្ឌស្វែងរករបស់អ្នក។';
+
+  @override
+  String get upcoming => 'នឹងមកដល់';
+
+  @override
+  String get registrationOpen => 'បើកចំហ';
+
+  @override
+  String get registrationClosed => 'ការចុះឈ្មោះបានបិទ';
+
+  @override
+  String get ongoing => 'កំពុងដំណើរការ';
+
+  @override
+  String get completed => 'បានបញ្ចប់';
+
+  @override
+  String get cancelled => 'បានលុបចោល';
+
+  @override
+  String get distance => 'ចម្ងាយ';
+
+  @override
+  String get location => 'ទីតាំង';
+
+  @override
+  String get enterLocation => 'បញ្ចូលទីតាំង';
+
+  @override
+  String get dateRange => 'ជួរកាលបរិច្ឆេទ';
+
+  @override
+  String get startDate => 'កាលបរិច្ឆេទចាប់ផ្តើម';
+
+  @override
+  String get endDate => 'កាលបរិច្ឆេទបញ្ចប់';
+
+  @override
+  String get clearAll => 'សម្អាតទាំងអស់';
+
+  @override
+  String get apply => 'អនុវត្ត';
+
+  @override
+  String get status => 'ស្ថានភាព';
+
+  @override
+  String get dateNotSet => 'កាលបរិច្ឆេទមិនបានកំណត់';
+
+  @override
+  String get marathonEventDetails => 'ព័ត៌មានលម្អិតព្រឹត្តិការណ៍ម៉ារ៉ាថុន';
+
+  @override
+  String get details => 'ព័ត៌មានលម្អិត';
+
+  @override
+  String get races => 'ការប្រកួត';
+
+  @override
+  String get eventDescription => 'ការពិពណ៌នាព្រឹត្តិការណ៍';
+
+  @override
+  String get contactInformation => 'ព័ត៌មានទំនាក់ទំនង';
+
+  @override
+  String get organizer => 'អ្នករៀបចំ';
+
+  @override
+  String get website => 'វេបសាយ';
+
+  @override
+  String get routeMap => 'ផែនទីផ្លូវ';
+
+  @override
+  String get notes => 'កំណត់ចំណាំ';
+
+  @override
+  String get tags => 'ស្លាក';
+
+  @override
+  String get raceDate => 'កាលបរិច្ឆេទប្រកួត';
+
+  @override
+  String get registrationDeadline => 'ថ្ងៃផុតកំណត់ការចុះឈ្មោះ';
+
+  @override
+  String get entryFee => 'ថ្លៃចូលរួម';
+
+  @override
+  String get free => 'ឥតគិតថ្លៃ';
+
+  @override
+  String get raceFull => 'ការប្រកួតពេញ';
+
+  @override
+  String get registered => 'បានចុះឈ្មោះ';
+
+  @override
+  String get register => 'ចុះឈ្មោះ';
+
+  @override
+  String get eventLocation => 'ទីតាំងព្រឹត្តិការណ៍';
+
+  @override
+  String get startPoint => 'ចំណុចចាប់ផ្តើម';
+
+  @override
+  String get finishPoint => 'ចំណុចបញ្ចប់';
+
+  @override
+  String get address => 'អាសយដ្ឋាន';
+
+  @override
+  String get landmark => 'ចំណុចសម្គាល់';
+
+  @override
+  String get registerForRace => 'ចុះឈ្មោះសម្រាប់ការប្រកួត';
+
+  @override
+  String get participantName => 'ឈ្មោះអ្នកចូលរួម';
+
+  @override
+  String get pleaseEnterParticipantName => 'សូមបញ្ចូលឈ្មោះអ្នកចូលរួម';
+
+  @override
+  String get medicalInformation => 'ព័ត៌មានវេជ្ជសាស្ត្រ';
+
+  @override
+  String get registrationSuccessful => 'ការចុះឈ្មោះបានជោគជ័យ!';
+
+  @override
+  String get registrationFailed => 'ការចុះឈ្មោះបរាជ័យ';
+
+  @override
+  String get community => 'សហគមន៍';
+
+  @override
+  String get events => 'ព្រឹត្តិការណ៍';
+
+  @override
+  String get noRouteMapAvailable => 'មិនមានផែនទីផ្លូវ';
+
+  @override
+  String get earlyBird => 'ការចុះឈ្មោះមុន';
+
+  @override
+  String get earlyBirdPrice => 'តម្លៃការចុះឈ្មោះមុន';
+
+  @override
+  String get regularPrice => 'តម្លៃធម្មតា';
+
+  @override
+  String get earlyBirdUntil => 'ការចុះឈ្មោះមុនដល់';
+
+  @override
+  String get registrationStep1 => 'ព័ត៌មានចុះឈ្មោះ';
+
+  @override
+  String get registrationStep2 => 'វិធីសាស្ត្រទូទាត់';
+
+  @override
+  String get fillRegistrationInfo => 'បំពេញព័ត៌មានចុះឈ្មោះ';
+
+  @override
+  String get selectPaymentMethod => 'ជ្រើសរើសវិធីសាស្ត្រទូទាត់';
+
+  @override
+  String get creditCard => 'កាតឥណទាន';
+
+  @override
+  String get abaPayment => 'ការទូទាត់ ABA';
+
+  @override
+  String get termsAndConditions => 'ខ្ញុំយល់ព្រមតាមលក្ខខណ្ឌ';
+
+  @override
+  String get iAgreeToTerms => 'ខ្ញុំយល់ព្រមតាមលក្ខខណ្ឌ';
+
+  @override
+  String get pleaseAgreeToTerms => 'សូមយល់ព្រមតាមលក្ខខណ្ឌ';
+
+  @override
+  String get proceedToPayment => 'បន្តទៅកាន់ការទូទាត់';
+
+  @override
+  String get makePayment => 'ធ្វើការទូទាត់';
+
+  @override
+  String get paymentSuccessful => 'ការទូទាត់ជោគជ័យ!';
+
+  @override
+  String get paymentFailed => 'ការទូទាត់បរាជ័យ';
+
+  @override
+  String get registrationCompleted => 'ការចុះឈ្មោះបានបញ្ចប់';
+
+  @override
+  String get backToEvents => 'ត្រលប់ទៅបញ្ជីព្រឹត្តិការណ៍';
+
+  @override
+  String get paymentAmount => 'ចំនួនទឹកប្រាក់ទូទាត់';
+
+  @override
+  String get name => 'ឈ្មោះ';
+
+  @override
+  String get pleaseEnterName => 'សូមបញ្ចូលឈ្មោះ';
+
+  @override
+  String get pleaseEnterEmail => 'សូមបញ្ចូលអ៊ីមែល';
+
+  @override
+  String get pleaseEnterValidEmail => 'សូមបញ្ចូលអ៊ីមែលត្រឹមត្រូវ';
+
+  @override
+  String get selectParticipantCount => 'ជ្រើសរើសចំនួនអ្នកចូលរួម';
+
+  @override
+  String get maximumParticipants => 'អព្បរមាអ្នកចូលរួម 3 នាក់';
+
+  @override
+  String get participantCount => 'ចំនួនអ្នកចូលរួម';
+
+  @override
+  String get people => 'នាក់';
+
+  @override
+  String get fillRegistrationData => 'បំពេញពត៌មានចុះឈ្មោះ';
+
+  @override
+  String get participantData => 'ទិន្នន័យអ្នកចូលរួម';
+
+  @override
+  String get mainContact => 'អ្នកទំនាក់ទំនងចំបាក់';
+
+  @override
+  String get notFilled => 'មិនទានបំពេញ';
+
+  @override
+  String get complete => 'បញ្ចប់';
 }

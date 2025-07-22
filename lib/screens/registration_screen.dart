@@ -4,11 +4,21 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/auth_service.dart';
 import '../services/health_service.dart';
+import '../services/social_auth_service.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/home_screen.dart';
+import '../screens/social_login_screen.dart';
+
 
 class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({super.key});
+  final int initialStep;
+  final bool isSocialLogin;
+  
+  const RegistrationScreen({
+    super.key,
+    this.initialStep = 0,
+    this.isSocialLogin = false,
+  });
 
   @override
   State<RegistrationScreen> createState() => _RegistrationScreenState();
@@ -16,13 +26,14 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _pageController = PageController();
+  late final PageController _pageController;
   final _nicknameController = TextEditingController();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
+  final _emailController = TextEditingController();
   
-  int _currentStep = 0;
-  final int _totalSteps = 4;
+  late int _currentStep;
+  final int _totalSteps = 3;
   
   String? _selectedGender;
   DateTime? _birthDate;
@@ -32,12 +43,31 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final ImagePicker _picker = ImagePicker();
 
   @override
+  void initState() {
+    super.initState();
+    _currentStep = widget.initialStep;
+    _pageController = PageController(initialPage: widget.initialStep);
+    _loadSocialLoginData();
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     _nicknameController.dispose();
     _heightController.dispose();
     _weightController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadSocialLoginData() async {
+    if (widget.isSocialLogin) {
+      final authService = context.read<AuthService>();
+      setState(() {
+        _nicknameController.text = authService.nickname ?? '';
+        _emailController.text = authService.email ?? '';
+        // 不預填其他資料，讓用戶自己填寫
+      });
+    }
   }
 
   @override
@@ -49,12 +79,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: _currentStep > 0
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black87),
-                onPressed: _previousStep,
-              )
-            : null,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: _getBackButtonAction(),
+        ),
         title: Text(
           l10n.createProfile,
           style: const TextStyle(
@@ -215,6 +243,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               return null;
             },
           ),
+          const SizedBox(height: 24),
+          TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              labelText: l10n.email,
+              hintText: l10n.pleaseEnterEmail,
+              prefixIcon: const Icon(Icons.email),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return l10n.pleaseEnterEmail;
+              }
+              if (!value.contains('@')) {
+                return l10n.pleaseEnterValidEmail;
+              }
+              return null;
+            },
+          ),
         ],
       ),
     );
@@ -258,43 +308,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               _buildGenderOption(l10n.male, 'male', Icons.male),
               const SizedBox(width: 12),
               _buildGenderOption(l10n.female, 'female', Icons.female),
-              const SizedBox(width: 12),
-              _buildGenderOption(l10n.other, 'other', Icons.person),
             ],
           ),
           
           const SizedBox(height: 32),
           
           // Birth date
-          GestureDetector(
-            onTap: () => _selectBirthDate(context, l10n),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[400]!),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.calendar_today, color: Colors.grey[600]),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      _birthDate != null
-                          ? '${_birthDate!.year}/${_birthDate!.month}/${_birthDate!.day}'
-                          : l10n.selectBirthDate,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: _birthDate != null
-                            ? Colors.black87
-                            : Colors.grey[600],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          Text(
+            l10n.birthDate,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
+          const SizedBox(height: 8),
+          _buildBirthDateSelector(),
         ],
       ),
     );
@@ -554,6 +579,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
+  VoidCallback _getBackButtonAction() {
+    // 對於社群登入用戶，在第二步（initialStep=1）時也應該能返回到社群登入頁面
+    if (widget.isSocialLogin && _currentStep == widget.initialStep) {
+      return _goBackToSocialLogin;
+    }
+    // 對於一般用戶，在第一步時返回到社群登入頁面
+    else if (!widget.isSocialLogin && _currentStep == 0) {
+      return _goBackToSocialLogin;
+    }
+    // 其他情況返回上一步
+    else {
+      return _previousStep;
+    }
+  }
+
+  void _goBackToSocialLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const SocialLoginScreen()),
+    );
+  }
+
   bool _validateCurrentStep() {
     final l10n = AppLocalizations.of(context)!;
     
@@ -601,6 +648,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   void _completeRegistration() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_validateCurrentStep()) return;
     
     setState(() {
@@ -611,14 +659,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       final authService = context.read<AuthService>();
       final healthService = context.read<HealthService>();
       
-      // Register user
-      await authService.registerUser(
-        nickname: _nicknameController.text.trim(),
-        gender: _selectedGender!,
-        birthDate: _birthDate!,
-        height: double.parse(_heightController.text),
-        weight: double.parse(_weightController.text),
-      );
+      if (widget.isSocialLogin) {
+        // For social login users, complete the registration with additional info
+        await authService.completeSocialLoginRegistration(
+          gender: _selectedGender,
+          birthDate: _birthDate,
+          height: double.tryParse(_heightController.text),
+          weight: double.tryParse(_weightController.text),
+        );
+      } else {
+        // For email registration users
+        await authService.registerUser(
+          nickname: _nicknameController.text.trim(),
+          email: _emailController.text.trim(),
+          gender: _selectedGender!,
+          birthDate: _birthDate!,
+          height: double.parse(_heightController.text),
+          weight: double.parse(_weightController.text),
+        );
+      }
+      
+      // Complete onboarding for all users
+      await authService.completeOnboarding();
       
       // Initialize health service
       await healthService.initialize();
@@ -667,18 +729,117 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
-  void _selectBirthDate(BuildContext context, AppLocalizations l10n) async {
-    final DateTime? picked = await showDatePicker(
+  Widget _buildBirthDateSelector() {
+    final l10n = AppLocalizations.of(context)!;
+    
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: _selectBirthDateWithPicker,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.cake_outlined,
+                    color: Theme.of(context).primaryColor,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _birthDate != null
+                            ? _formatBirthDate(_birthDate!)
+                            : l10n.selectBirthDate,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: _birthDate != null ? Colors.black87 : Colors.grey[600],
+                        ),
+                      ),
+                      if (_birthDate != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          _getAgeText(_birthDate!),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  color: Colors.grey[400],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatBirthDate(DateTime date) {
+    final months = [
+      '', '一月', '二月', '三月', '四月', '五月', '六月',
+      '七月', '八月', '九月', '十月', '十一月', '十二月'
+    ];
+    return '${date.year}年 ${months[date.month]} ${date.day}日';
+  }
+
+  String _getAgeText(DateTime birthDate) {
+    final now = DateTime.now();
+    int age = now.year - birthDate.year;
+    if (now.month < birthDate.month || 
+        (now.month == birthDate.month && now.day < birthDate.day)) {
+      age--;
+    }
+    return '$age 歲';
+  }
+
+  void _selectBirthDateWithPicker() async {
+    final selectedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now().subtract(const Duration(days: 365 * 25)),
-      firstDate: DateTime.now().subtract(const Duration(days: 365 * 100)),
-      lastDate: DateTime.now().subtract(const Duration(days: 365 * 13)),
-      helpText: l10n.selectBirthDate,
+      initialDate: _birthDate ?? DateTime.now().subtract(const Duration(days: 365 * 25)),
+      firstDate: DateTime(1920),
+      lastDate: DateTime.now().subtract(const Duration(days: 365 * 10)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Theme.of(context).primaryColor,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black87,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     
-    if (picked != null) {
+    if (selectedDate != null) {
       setState(() {
-        _birthDate = picked;
+        _birthDate = selectedDate;
       });
     }
   }

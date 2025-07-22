@@ -120,7 +120,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get birthDate => '出生年月日';
 
   @override
-  String get pleaseSelectBirthDate => '請選擇出生年月日';
+  String get pleaseSelectBirthDate => '請選擇出生日期';
 
   @override
   String get height => '身高';
@@ -505,7 +505,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get basicInformation => '基本資訊';
 
   @override
-  String get basicInformationSubtitle => '讓我們從一些基本資料開始。';
+  String get basicInformationSubtitle => '讓我們從一些基本資料開始';
 
   @override
   String get tapToAddPhoto => '點擊新增照片';
@@ -517,7 +517,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get personalDetails => '個人詳情';
 
   @override
-  String get personalDetailsSubtitle => '告訴我們更多關於您的資訊。';
+  String get personalDetailsSubtitle => '告訴我們更多關於您的資訊';
 
   @override
   String get selectBirthDate => '選擇出生日期';
@@ -526,7 +526,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get physicalInformation => '身體資訊';
 
   @override
-  String get physicalInformationSubtitle => '幫助我們準確計算您的健康指標。';
+  String get physicalInformationSubtitle => '幫助我們準確計算您的健康指標';
 
   @override
   String get enterHeight => '輸入您的身高';
@@ -541,7 +541,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pleaseEnterWeight => '請輸入您的體重';
 
   @override
-  String get healthPermissionSubtitle => '啟用健康數據存取以進行精確步數追蹤。';
+  String get healthPermissionSubtitle => '啟用健康數據存取以進行精確步數追蹤';
 
   @override
   String get healthPermissionDescription =>
@@ -715,4 +715,265 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get selectNationalityDialog => '選擇國籍';
+
+  @override
+  String get marathonEvents => '馬拉松賽事';
+
+  @override
+  String get searchMarathonEvents => '搜尋馬拉松賽事...';
+
+  @override
+  String get filter => '篩選';
+
+  @override
+  String get clearFilter => '清除篩選';
+
+  @override
+  String get filterMarathonEvents => '篩選馬拉松賽事';
+
+  @override
+  String get noMarathonEvents => '找不到馬拉松賽事';
+
+  @override
+  String get noMarathonEventsDescription => '請稍後再查看即將舉行的賽事或調整您的搜尋條件。';
+
+  @override
+  String get upcoming => '即將舉行';
+
+  @override
+  String get registrationOpen => '開放';
+
+  @override
+  String get registrationClosed => '報名截止';
+
+  @override
+  String get ongoing => '進行中';
+
+  @override
+  String get completed => '已完成';
+
+  @override
+  String get cancelled => '已取消';
+
+  @override
+  String get distance => '距離';
+
+  @override
+  String get location => '地點';
+
+  @override
+  String get enterLocation => '輸入地點';
+
+  @override
+  String get dateRange => '日期範圍';
+
+  @override
+  String get startDate => '開始日期';
+
+  @override
+  String get endDate => '結束日期';
+
+  @override
+  String get clearAll => '清除全部';
+
+  @override
+  String get apply => '套用';
+
+  @override
+  String get status => '狀態';
+
+  @override
+  String get dateNotSet => '日期未設定';
+
+  @override
+  String get marathonEventDetails => '馬拉松賽事詳情';
+
+  @override
+  String get details => '詳情';
+
+  @override
+  String get races => '賽事項目';
+
+  @override
+  String get eventDescription => '賽事描述';
+
+  @override
+  String get contactInformation => '聯絡資訊';
+
+  @override
+  String get organizer => '主辦單位';
+
+  @override
+  String get website => '網站';
+
+  @override
+  String get routeMap => '路線圖';
+
+  @override
+  String get notes => '備註';
+
+  @override
+  String get tags => '標籤';
+
+  @override
+  String get raceDate => '比賽日期';
+
+  @override
+  String get registrationDeadline => '報名截止日期';
+
+  @override
+  String get entryFee => '報名費';
+
+  @override
+  String get free => '免費';
+
+  @override
+  String get raceFull => '名額已滿';
+
+  @override
+  String get registered => '已報名';
+
+  @override
+  String get register => '報名';
+
+  @override
+  String get eventLocation => '賽事地點';
+
+  @override
+  String get startPoint => '起跑點';
+
+  @override
+  String get finishPoint => '終點';
+
+  @override
+  String get address => '地址';
+
+  @override
+  String get landmark => '地標';
+
+  @override
+  String get registerForRace => '報名參賽';
+
+  @override
+  String get participantName => '參賽者姓名';
+
+  @override
+  String get pleaseEnterParticipantName => '請輸入參賽者姓名';
+
+  @override
+  String get medicalInformation => '醫療資訊';
+
+  @override
+  String get registrationSuccessful => '報名成功！';
+
+  @override
+  String get registrationFailed => '報名失敗';
+
+  @override
+  String get community => '社群';
+
+  @override
+  String get events => '賽事';
+
+  @override
+  String get noRouteMapAvailable => '沒有路線圖';
+
+  @override
+  String get earlyBird => '早鳥';
+
+  @override
+  String get earlyBirdPrice => '早鳥價格';
+
+  @override
+  String get regularPrice => '正常價格';
+
+  @override
+  String get earlyBirdUntil => '早鳥優惠至';
+
+  @override
+  String get registrationStep1 => '報名資訊';
+
+  @override
+  String get registrationStep2 => '付款方式';
+
+  @override
+  String get fillRegistrationInfo => '填寫報名資訊';
+
+  @override
+  String get selectPaymentMethod => '選擇付款方式';
+
+  @override
+  String get creditCard => '信用卡';
+
+  @override
+  String get abaPayment => 'ABA支付';
+
+  @override
+  String get termsAndConditions => '我同意條款與條件';
+
+  @override
+  String get iAgreeToTerms => '我同意條款與條件';
+
+  @override
+  String get pleaseAgreeToTerms => '請同意條款與條件';
+
+  @override
+  String get proceedToPayment => '前往付款';
+
+  @override
+  String get makePayment => '進行付款';
+
+  @override
+  String get paymentSuccessful => '付款成功！';
+
+  @override
+  String get paymentFailed => '付款失敗';
+
+  @override
+  String get registrationCompleted => '報名完成';
+
+  @override
+  String get backToEvents => '返回活動列表';
+
+  @override
+  String get paymentAmount => '付款金額';
+
+  @override
+  String get name => '姓名';
+
+  @override
+  String get pleaseEnterName => '請輸入姓名';
+
+  @override
+  String get pleaseEnterEmail => '請輸入Email';
+
+  @override
+  String get pleaseEnterValidEmail => '請輸入有效的Email';
+
+  @override
+  String get selectParticipantCount => '選擇參賽人數';
+
+  @override
+  String get maximumParticipants => '最多可報名3人';
+
+  @override
+  String get participantCount => '參賽人數';
+
+  @override
+  String get people => '人';
+
+  @override
+  String get fillRegistrationData => '填寫報名資料';
+
+  @override
+  String get participantData => '參賽者資料';
+
+  @override
+  String get mainContact => '主要聯絡人';
+
+  @override
+  String get notFilled => '未填寫';
+
+  @override
+  String get complete => '完成';
 }

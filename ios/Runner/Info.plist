@@ -66,6 +66,10 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	
+	<!-- Google Sign-In Configuration -->
+	<key>GIDClientID</key>
+	<string>980817000780-1s0kg6sa7mpli6cqttjk2u5p4aes83f0.apps.googleusercontent.com</string>
+	
 	<!-- Deep Link URL Scheme -->
 	<key>CFBundleURLTypes</key>
 	<array>
@@ -83,6 +87,14 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>https</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>google-signin</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.980817000780-1s0kg6sa7mpli6cqttjk2u5p4aes83f0</string>
 			</array>
 		</dict>
 	</array>

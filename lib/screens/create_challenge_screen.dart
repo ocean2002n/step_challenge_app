@@ -18,6 +18,8 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _goalValueController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   
   ChallengeGoalType _selectedGoalType = ChallengeGoalType.daily;
   ChallengePrivacyType _selectedPrivacy = ChallengePrivacyType.public;
@@ -36,6 +38,8 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
   void _initializeData() {
     final authService = context.read<AuthService>();
     _currentUserId = authService.userId;
+    _nameController.text = authService.nickname ?? '';
+    _emailController.text = authService.email ?? '';
     
     if (widget.challenge != null) {
       _isEditing = true;
@@ -142,6 +146,39 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '請輸入挑戰描述';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: '姓名',
+                        prefixIcon: Icon(Icons.person_outline),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '請輸入姓名';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.email_outlined),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '請輸入Email';
+                        }
+                        if (!value.contains('@')) {
+                          return '請輸入有效的Email';
                         }
                         return null;
                       },

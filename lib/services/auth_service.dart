@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'social_auth_service.dart';
 
 class AuthService extends ChangeNotifier {
   static const String _isFirstLaunchKey = 'is_first_launch';
@@ -13,12 +14,26 @@ class AuthService extends ChangeNotifier {
   bool _isUserRegistered = false;
   String? _userId;
   DateTime? _registrationDate;
+  String? _nickname;
+  String? _email;
+  String? _gender;
+  DateTime? _birthDate;
+  double? _height;
+  double? _weight;
+  String? _profilePhotoUrl;
   
   bool get isFirstLaunch => _isFirstLaunch;
   bool get hasCompletedOnboarding => _hasCompletedOnboarding;
   bool get isUserRegistered => _isUserRegistered;
   String? get userId => _userId;
   DateTime? get registrationDate => _registrationDate;
+  String? get nickname => _nickname;
+  String? get email => _email;
+  String? get gender => _gender;
+  DateTime? get birthDate => _birthDate;
+  double? get height => _height;
+  double? get weight => _weight;
+  String? get profilePhotoUrl => _profilePhotoUrl;
   
   /// 初始化認證服務
   Future<void> initialize() async {
@@ -33,6 +48,17 @@ class AuthService extends ChangeNotifier {
     _hasCompletedOnboarding = prefs.getBool(_hasCompletedOnboardingKey) ?? false;
     _isUserRegistered = prefs.getBool(_userRegisteredKey) ?? false;
     _userId = prefs.getString(_userIdKey);
+    
+    _nickname = prefs.getString('nickname');
+    _email = prefs.getString('email');
+    _gender = prefs.getString('gender');
+    final birthDateString = prefs.getString('birthDate');
+    if (birthDateString != null) {
+      _birthDate = DateTime.parse(birthDateString);
+    }
+    _height = prefs.getDouble('height');
+    _weight = prefs.getDouble('weight');
+    _profilePhotoUrl = prefs.getString('profilePhotoUrl');
     
     final regDateString = prefs.getString(_registrationDateKey);
     if (regDateString != null) {
@@ -66,10 +92,12 @@ class AuthService extends ChangeNotifier {
   /// 用戶註冊
   Future<void> registerUser({
     required String nickname,
+    required String email,
     required String gender,
     required DateTime birthDate,
     required double height,
     required double weight,
+    String? profilePhotoUrl,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = _generateUserId();
@@ -82,16 +110,73 @@ class AuthService extends ChangeNotifier {
     
     // 保存用戶基本資料
     await prefs.setString('nickname', nickname);
+    await prefs.setString('email', email);
     await prefs.setString('gender', gender);
     await prefs.setString('birthDate', birthDate.toIso8601String());
     await prefs.setDouble('height', height);
     await prefs.setDouble('weight', weight);
+    if (profilePhotoUrl != null) {
+      await prefs.setString('profilePhotoUrl', profilePhotoUrl);
+    }
     
     _isUserRegistered = true;
     _userId = userId;
     _registrationDate = now;
+    _nickname = nickname;
+    _email = email;
+    _gender = gender;
+    _birthDate = birthDate;
+    _height = height;
+    _weight = weight;
+    _profilePhotoUrl = profilePhotoUrl;
     
     debugPrint('✅ User registered successfully: $userId');
+    notifyListeners();
+  }
+
+  /// 使用社群登入註冊用戶
+  Future<void> registerWithSocialLogin({
+    required LinkedAccount socialAccount,
+    String? gender,
+    DateTime? birthDate,
+    double? height,
+    double? weight,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = _generateUserId();
+    final now = DateTime.now();
+    
+    // 保存註冊狀態
+    await prefs.setBool(_userRegisteredKey, true);
+    await prefs.setString(_userIdKey, userId);
+    await prefs.setString(_registrationDateKey, now.toIso8601String());
+    
+    // 保存社群登入資料
+    final nickname = socialAccount.displayName ?? socialAccount.email?.split('@').first ?? 'User';
+    final email = socialAccount.email ?? '';
+    
+    await prefs.setString('nickname', nickname);
+    await prefs.setString('email', email);
+    if (gender != null) await prefs.setString('gender', gender);
+    if (birthDate != null) await prefs.setString('birthDate', birthDate.toIso8601String());
+    if (height != null) await prefs.setDouble('height', height);
+    if (weight != null) await prefs.setDouble('weight', weight);
+    if (socialAccount.photoUrl != null) {
+      await prefs.setString('profilePhotoUrl', socialAccount.photoUrl!);
+    }
+    
+    _isUserRegistered = true;
+    _userId = userId;
+    _registrationDate = now;
+    _nickname = nickname;
+    _email = email;
+    _gender = gender;
+    _birthDate = birthDate;
+    _height = height;
+    _weight = weight;
+    _profilePhotoUrl = socialAccount.photoUrl;
+    
+    debugPrint('✅ User registered with ${socialAccount.provider.name} login: $userId');
     notifyListeners();
   }
   
@@ -112,6 +197,83 @@ class AuthService extends ChangeNotifier {
     return completed / total;
   }
   
+  /// 初步註冊社群登入用戶（不標記為完全註冊）
+  Future<void> initSocialLoginUser({
+    required LinkedAccount socialAccount,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = _generateUserId();
+    final now = DateTime.now();
+    
+    // 保存基本註冊狀態（但不標記為完全註冊）
+    await prefs.setString(_userIdKey, userId);
+    await prefs.setString(_registrationDateKey, now.toIso8601String());
+    
+    // 保存社群登入資料
+    final nickname = socialAccount.displayName ?? socialAccount.email?.split('@').first ?? 'User';
+    final email = socialAccount.email ?? '';
+    
+    await prefs.setString('nickname', nickname);
+    await prefs.setString('email', email);
+    if (socialAccount.photoUrl != null) {
+      await prefs.setString('profilePhotoUrl', socialAccount.photoUrl!);
+    }
+    
+    // 更新內存狀態（但 _isUserRegistered 保持 false）
+    _userId = userId;
+    _registrationDate = now;
+    _nickname = nickname;
+    _email = email;
+    _profilePhotoUrl = socialAccount.photoUrl;
+    
+    debugPrint('✅ Social login user initialized: $userId (incomplete registration)');
+    notifyListeners();
+  }
+
+  /// 完成社群登入用戶註冊
+  Future<void> completeSocialLoginRegistration({
+    String? gender,
+    DateTime? birthDate,
+    double? height,
+    double? weight,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    // 保存完整註冊狀態
+    await prefs.setBool(_userRegisteredKey, true);
+    
+    if (gender != null) await prefs.setString('gender', gender);
+    if (birthDate != null) await prefs.setString('birthDate', birthDate.toIso8601String());
+    if (height != null) await prefs.setDouble('height', height);
+    if (weight != null) await prefs.setDouble('weight', weight);
+    
+    // 更新內存狀態
+    _isUserRegistered = true;
+    _gender = gender;
+    _birthDate = birthDate;
+    _height = height;
+    _weight = weight;
+    
+    debugPrint('✅ Social login user registration completed: $_userId');
+    notifyListeners();
+  }
+
+  /// 更新用戶資料照片
+  Future<void> updateProfilePhoto(String? photoUrl) async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    if (photoUrl != null && photoUrl.isNotEmpty) {
+      await prefs.setString('profilePhotoUrl', photoUrl);
+      _profilePhotoUrl = photoUrl;
+    } else {
+      await prefs.remove('profilePhotoUrl');
+      _profilePhotoUrl = null;
+    }
+    
+    debugPrint('✅ Profile photo updated: $photoUrl');
+    notifyListeners();
+  }
+
   /// 登出用戶
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
@@ -122,6 +284,13 @@ class AuthService extends ChangeNotifier {
     _isUserRegistered = false;
     _userId = null;
     _registrationDate = null;
+    _nickname = null;
+    _email = null;
+    _gender = null;
+    _birthDate = null;
+    _height = null;
+    _weight = null;
+    _profilePhotoUrl = null;
     
     debugPrint('🔐 User logged out');
     notifyListeners();
@@ -137,6 +306,13 @@ class AuthService extends ChangeNotifier {
     _isUserRegistered = false;
     _userId = null;
     _registrationDate = null;
+    _nickname = null;
+    _email = null;
+    _gender = null;
+    _birthDate = null;
+    _height = null;
+    _weight = null;
+    _profilePhotoUrl = null;
     
     debugPrint('🔄 User data reset');
     notifyListeners();

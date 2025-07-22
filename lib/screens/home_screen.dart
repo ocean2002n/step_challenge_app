@@ -10,12 +10,12 @@ import '../widgets/goal_progress_card.dart';
 import '../widgets/challenge_list_card.dart';
 import '../models/challenge_model.dart';
 import 'profile_screen.dart';
-import 'profile_screen_test.dart';
 import 'language_settings_screen.dart';
 import 'friends_screen.dart';
 import 'health_settings_screen.dart';
 import 'welcome_screen.dart';
 import 'create_challenge_screen.dart';
+import 'marathon_events_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -245,25 +245,50 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildChallengesTab() {
     final l10n = AppLocalizations.of(context)!;
     
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+    return DefaultTabController(
+      length: 2,
+      child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.challengeActivities,
-              style: Theme.of(context).textTheme.headlineLarge,
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                l10n.challengeActivities,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
             ),
-            const SizedBox(height: 16),
-            ChallengeListCard(
-              key: _challengeListKey,
-              onRefresh: () => setState(() {}),
+            TabBar(
+              labelColor: Theme.of(context).primaryColor,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: Theme.of(context).primaryColor,
+              tabs: [
+                Tab(text: l10n.community),
+                Tab(text: l10n.events),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: ChallengeListCard(
+                      key: _challengeListKey,
+                      onRefresh: () => setState(() {}),
+                    ),
+                  ),
+                  _buildMarathonEventsTab(),
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildMarathonEventsTab() {
+    return const MarathonEventsScreen();
   }
 
   Widget _buildProfileTab() {
@@ -291,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ProfileScreenTest(),
+                          builder: (context) => const ProfileScreen(),
                         ),
                       );
                     },

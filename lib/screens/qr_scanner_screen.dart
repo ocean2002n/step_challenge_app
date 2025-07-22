@@ -51,43 +51,54 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-            flex: 4,
             child: _buildQrView(context),
           ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: Colors.black,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  if (isProcessing)
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(color: Colors.white),
-                        SizedBox(width: 16),
-                        Text(
-                          'Adding friend...',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+          Container(
+            height: 140, // 固定高度避免跑版
+            color: Colors.black,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                if (isProcessing)
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
                         ),
-                      ],
-                    )
-                  else
-                    const Text(
-                      'Point your camera at a QR code',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ElevatedButton(
+                      ),
+                      SizedBox(width: 12),
+                      Text(
+                        'Adding friend...',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ],
+                  )
+                else
+                  const Text(
+                    'Point your camera at a QR code',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
                     onPressed: isProcessing ? null : () => _showManualEntry(),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: AppTheme.primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Enter Code Manually'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           )
         ],

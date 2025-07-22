@@ -2,8 +2,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:step_challenge_app/l10n/app_localizations.dart';
+import '../widgets/phone_number_field.dart';
+import '../widgets/birth_date_field.dart';
+import '../widgets/linked_accounts_widget.dart';
+import '../services/auth_service.dart';
+import '../services/social_auth_service.dart';
 import '../utils/app_theme.dart';
+import 'friend_qr_screen.dart';
+import 'qr_scanner_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,16 +25,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _nicknameController = TextEditingController();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
+  final _idController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _emergencyNameController = TextEditingController();
+  final _emergencyPhoneController = TextEditingController();
+  final _nationalityController = TextEditingController();
+  final _medicalHistoryController = TextEditingController();
   
   String? _selectedGender;
   DateTime? _birthDate;
   File? _avatarImage;
   final ImagePicker _picker = ImagePicker();
-  
-  List<String> _getGenderOptions(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return [l10n.male, l10n.female, l10n.other];
-  }
+  String _selectedNationality = 'Cambodia';
+  String _selectedEmergencyRelation = 'parent';
+  bool _emergencyContactExpanded = false;
 
   @override
   void initState() {
@@ -35,19 +48,113 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserData() async {
-    // Load user data from SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _nicknameController.text = prefs.getString('nickname') ?? '';
-      _selectedGender = prefs.getString('gender');
-      _heightController.text = prefs.getDouble('height')?.toString() ?? '';
-      _weightController.text = prefs.getDouble('weight')?.toString() ?? '';
-      
-      final birthDateString = prefs.getString('birthDate');
-      if (birthDateString != null) {
-        _birthDate = DateTime.parse(birthDateString);
-      }
-    });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final authService = context.read<AuthService>();
+      setState(() {
+        _nicknameController.text = prefs.getString('nickname') ?? '';
+        _selectedGender = prefs.getString('gender');
+        _heightController.text = prefs.getDouble('height')?.toString() ?? '';
+        _weightController.text = prefs.getDouble('weight')?.toString() ?? '';
+        _idController.text = prefs.getString('idNumber') ?? '';
+        _phoneController.text = prefs.getString('phoneNumber') ?? '';
+        _emailController.text = prefs.getString('email') ?? '';
+        _emergencyNameController.text = prefs.getString('emergencyName') ?? '';
+        _emergencyPhoneController.text = prefs.getString('emergencyPhone') ?? '';
+        _selectedNationality = prefs.getString('nationality') ?? 'Cambodia';
+        _nationalityController.text = _selectedNationality;
+        _selectedEmergencyRelation = prefs.getString('emergencyRelation') ?? 'parent';
+        _medicalHistoryController.text = prefs.getString('medicalHistory') ?? '';
+        
+        final birthDateString = prefs.getString('birthDate');
+        if (birthDateString != null) {
+          _birthDate = DateTime.parse(birthDateString);
+        }
+      });
+    } catch (e) {
+      debugPrint('Error loading user data: $e');
+    }
+  }
+
+  List<String> _getGenderOptions(AppLocalizations l10n) {
+    return [l10n.male, l10n.female];
+  }
+  
+  List<String> _getNationalityOptions() {
+    return [
+      'Cambodia',
+      'Thailand', 
+      'Vietnam',
+      'Laos',
+      'Myanmar',
+      'Singapore',
+      'Malaysia',
+      'Indonesia',
+      'Philippines',
+      'Taiwan',
+      'China',
+      'Japan',
+      'Korea',
+      'USA',
+      'Other'
+    ];
+  }
+  
+  List<String> _getEmergencyRelationOptions() {
+    return [
+      'parent',
+      'spouse',
+      'sibling',
+      'child',
+      'friend',
+      'colleague',
+      'other'
+    ];
+  }
+  
+  String _getRelationDisplayName(String relation, AppLocalizations l10n) {
+    switch (relation) {
+      case 'parent': return l10n.relationParent;
+      case 'spouse': return l10n.relationSpouse;
+      case 'sibling': return l10n.relationSibling;
+      case 'child': return l10n.relationChild;
+      case 'friend': return l10n.relationFriend;
+      case 'colleague': return l10n.relationColleague;
+      case 'other': return l10n.relationOther;
+      default: return relation;
+    }
+  }
+  
+  Future<void> _showNationalityPicker() async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return _NationalityPickerDialog(
+          currentNationality: _nationalityController.text,
+          nationalities: _getNationalityOptions(),
+          l10n: AppLocalizations.of(context)!,
+        );
+      },
+    );
+    
+    if (result != null) {
+      setState(() {
+        _nationalityController.text = result;
+        _selectedNationality = result;
+      });
+    }
+  }
+
+  String? _getGenderKey(String displayName, AppLocalizations l10n) {
+    if (displayName == l10n.male) return 'male';
+    if (displayName == l10n.female) return 'female';
+    return null;
+  }
+
+  String? _getDisplayGender(String? key, AppLocalizations l10n) {
+    if (key == 'male') return l10n.male;
+    if (key == 'female') return l10n.female;
+    return null;
   }
 
   Future<void> _pickImage() async {
@@ -74,21 +181,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _selectBirthDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _birthDate ?? DateTime(1990),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      locale: Localizations.localeOf(context),
-    );
-    
-    if (picked != null && picked != _birthDate) {
-      setState(() {
-        _birthDate = picked;
-      });
-    }
-  }
 
   Future<void> _saveProfile() async {
     if (_formKey.currentState!.validate()) {
@@ -109,9 +201,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (_birthDate != null) {
           await prefs.setString('birthDate', _birthDate!.toIso8601String());
         }
+        await prefs.setString('idNumber', _idController.text);
+        await prefs.setString('phoneNumber', _phoneController.text);
+        await prefs.setString('email', _emailController.text);
+        await prefs.setString('emergencyName', _emergencyNameController.text);
+        await prefs.setString('emergencyPhone', _emergencyPhoneController.text);
+        await prefs.setString('nationality', _nationalityController.text);
+        await prefs.setString('emergencyRelation', _selectedEmergencyRelation);
+        await prefs.setString('medicalHistory', _medicalHistoryController.text);
 
-        // TODO: Upload avatar and save path
-        
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -132,7 +230,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
+    
+    // 如果本地化對象為空，顯示錯誤信息
+    if (l10n == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Error'),
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+        ),
+        body: const Center(
+          child: Text(
+            'Localization not available',
+            style: TextStyle(color: Colors.red, fontSize: 18),
+          ),
+        ),
+      );
+    }
     
     return Scaffold(
       appBar: AppBar(
@@ -158,19 +273,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Center(
               child: Stack(
                 children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: _avatarImage != null 
-                        ? FileImage(_avatarImage!) 
-                        : null,
-                    child: _avatarImage == null 
-                        ? Icon(
-                            Icons.person,
-                            size: 60,
-                            color: Colors.grey[600],
-                          )
-                        : null,
+                  Consumer<AuthService>(
+                    builder: (context, authService, child) {
+                      final profilePhotoUrl = authService.profilePhotoUrl;
+                      
+                      return CircleAvatar(
+                        radius: 60,
+                        backgroundColor: Colors.grey[300],
+                        backgroundImage: _avatarImage != null 
+                            ? FileImage(_avatarImage!) as ImageProvider
+                            : (profilePhotoUrl != null && profilePhotoUrl.isNotEmpty)
+                                ? NetworkImage(profilePhotoUrl) as ImageProvider
+                                : null,
+                        child: (_avatarImage == null && (profilePhotoUrl == null || profilePhotoUrl.isEmpty))
+                            ? Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.grey[600],
+                              )
+                            : null,
+                      );
+                    },
                   ),
                   Positioned(
                     bottom: 0,
@@ -218,13 +341,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             // Gender selection
             DropdownButtonFormField<String>(
-              value: _selectedGender,
+              value: _getDisplayGender(_selectedGender, l10n),
               decoration: InputDecoration(
                 labelText: l10n.gender,
                 prefixIcon: const Icon(Icons.wc),
                 border: const OutlineInputBorder(),
               ),
-              items: _getGenderOptions(context).map((String gender) {
+              items: _getGenderOptions(l10n).map((String gender) {
                 return DropdownMenuItem<String>(
                   value: gender,
                   child: Text(gender),
@@ -232,7 +355,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               }).toList(),
               onChanged: (String? newValue) {
                 setState(() {
-                  _selectedGender = newValue;
+                  _selectedGender = _getGenderKey(newValue!, l10n);
                 });
               },
             ),
@@ -240,23 +363,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 16),
             
             // Birth date selection
-            InkWell(
-              onTap: _selectBirthDate,
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  labelText: l10n.birthDate,
-                  prefixIcon: const Icon(Icons.cake),
-                  border: const OutlineInputBorder(),
-                ),
-                child: Text(
-                  _birthDate != null
-                      ? '${_birthDate!.year}年${_birthDate!.month}月${_birthDate!.day}日'
-                      : l10n.pleaseSelectBirthDate,
-                  style: TextStyle(
-                    color: _birthDate != null ? Colors.black : Colors.grey[600],
-                  ),
-                ),
-              ),
+            BirthDateField(
+              selectedDate: _birthDate,
+              labelText: l10n.birthDate,
+              onDateSelected: (date) => setState(() => _birthDate = date),
+              minimumAge: 10,
             ),
             
             const SizedBox(height: 16),
@@ -286,7 +397,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                // Weight field
                 Expanded(
                   child: TextFormField(
                     controller: _weightController,
@@ -310,6 +420,194 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
+            
+            const SizedBox(height: 16),
+            
+            // ID Number field
+            TextFormField(
+              controller: _idController,
+              decoration: InputDecoration(
+                labelText: l10n.idNumber,
+                prefixIcon: const Icon(Icons.badge_outlined),
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value != null && value.isNotEmpty && value.length < 5) {
+                  return l10n.validIdRequired;
+                }
+                return null;
+              },
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Nationality field
+            InkWell(
+              onTap: _showNationalityPicker,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: l10n.nationality,
+                  prefixIcon: const Icon(Icons.flag),
+                  suffixIcon: const Icon(Icons.arrow_drop_down),
+                  border: const OutlineInputBorder(),
+                ),
+                child: Text(
+                  _nationalityController.text.isEmpty ? l10n.selectNationality : _nationalityController.text,
+                  style: TextStyle(
+                    color: _nationalityController.text.isEmpty ? Colors.grey[600] : Colors.black87,
+                  ),
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Phone number field
+            PhoneNumberField(
+              initialValue: _phoneController.text,
+              labelText: l10n.phoneNumber,
+              onChanged: (value) => _phoneController.text = value,
+              validator: (value) {
+                if (value != null && value.isNotEmpty) {
+                  if (!RegExp(r'^[+]?[0-9]{8,15}$').hasMatch(value)) {
+                    return l10n.validPhoneRequired;
+                  }
+                }
+                return null;
+              },
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Email field
+            TextFormField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: l10n.email,
+                prefixIcon: const Icon(Icons.email),
+                border: const OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value != null && value.isNotEmpty) {
+                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                    return l10n.validEmailRequired;
+                  }
+                }
+                return null;
+              },
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Medical History field
+            TextFormField(
+              controller: _medicalHistoryController,
+              decoration: InputDecoration(
+                labelText: l10n.medicalHistory,
+                hintText: l10n.medicalHistoryHint,
+                prefixIcon: const Icon(Icons.medical_services_outlined),
+                border: const OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Emergency Contact Section
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _emergencyContactExpanded = !_emergencyContactExpanded;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.emergency,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.emergencyContact,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            _emergencyContactExpanded 
+                                ? Icons.expand_less 
+                                : Icons.expand_more,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_emergencyContactExpanded) ...[
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emergencyNameController,
+                        decoration: InputDecoration(
+                          labelText: l10n.emergencyContactName,
+                          prefixIcon: const Icon(Icons.person_outline),
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emergencyPhoneController,
+                        decoration: InputDecoration(
+                          labelText: l10n.emergencyContactPhone,
+                          prefixIcon: const Icon(Icons.phone_in_talk),
+                          border: const OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value != null && value.isNotEmpty) {
+                            if (!RegExp(r'^[+]?[0-9]{8,15}$').hasMatch(value)) {
+                              return l10n.validPhoneRequired;
+                            }
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: _selectedEmergencyRelation,
+                        decoration: InputDecoration(
+                          labelText: l10n.emergencyContactRelation,
+                          prefixIcon: const Icon(Icons.family_restroom),
+                          border: const OutlineInputBorder(),
+                        ),
+                        items: _getEmergencyRelationOptions().map((String relation) {
+                          return DropdownMenuItem<String>(
+                            value: relation,
+                            child: Text(_getRelationDisplayName(relation, l10n)),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedEmergencyRelation = newValue!;
+                          });
+                        },
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Linked accounts section
+            const LinkedAccountsWidget(),
             
             const SizedBox(height: 24),
             
@@ -341,7 +639,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/friend_qr');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FriendQrScreen(),
+                                ),
+                              );
                             },
                             icon: const Icon(Icons.qr_code),
                             label: Text(l10n.myQrCode),
@@ -356,7 +659,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/scan_qr');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const QrScannerScreen(),
+                                ),
+                              );
                             },
                             icon: const Icon(Icons.qr_code_scanner),
                             label: Text(l10n.scanQrCode),
@@ -392,10 +700,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
+            
+            const SizedBox(height: 16),
+            
+            // 測試用：重置應用程式狀態按鈕（開發時使用）
+            OutlinedButton(
+              onPressed: _resetAppForTesting,
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                side: const BorderSide(color: Colors.red),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                '🔄 重置應用程式（測試用）',
+                style: TextStyle(fontSize: 16, color: Colors.red),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _resetAppForTesting() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('重置應用程式'),
+        content: const Text('這將清除所有用戶資料，包括社群登入帳號。確定要重置嗎？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('重置'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final authService = context.read<AuthService>();
+      await authService.resetUserData();
+      
+      // 清除社群登入資料
+      final socialAuthService = context.read<SocialAuthService>();
+      await socialAuthService.clearAllAccounts();
+      
+      if (mounted) {
+        // 重啟應用程式到社群登入畫面
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      }
+    }
   }
 
   @override
@@ -403,6 +764,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _nicknameController.dispose();
     _heightController.dispose();
     _weightController.dispose();
+    _idController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _emergencyNameController.dispose();
+    _emergencyPhoneController.dispose();
+    _nationalityController.dispose();
+    _medicalHistoryController.dispose();
     super.dispose();
+  }
+}
+
+class _NationalityPickerDialog extends StatefulWidget {
+  final String currentNationality;
+  final List<String> nationalities;
+  final AppLocalizations l10n;
+
+  const _NationalityPickerDialog({
+    required this.currentNationality,
+    required this.nationalities,
+    required this.l10n,
+  });
+
+  @override
+  State<_NationalityPickerDialog> createState() => _NationalityPickerDialogState();
+}
+
+class _NationalityPickerDialogState extends State<_NationalityPickerDialog> {
+  final TextEditingController _searchController = TextEditingController();
+  List<String> _filteredNationalities = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredNationalities = List.from(widget.nationalities);
+    _searchController.addListener(_filterNationalities);
+  }
+
+  void _filterNationalities() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredNationalities = widget.nationalities
+          .where((nationality) => nationality.toLowerCase().contains(query))
+          .toList();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.l10n.selectNationalityDialog),
+      content: SizedBox(
+        width: double.maxFinite,
+        height: 400,
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: widget.l10n.searchNationality,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _filteredNationalities.length,
+                itemBuilder: (context, index) {
+                  final nationality = _filteredNationalities[index];
+                  final isSelected = nationality == widget.currentNationality;
+                  
+                  return ListTile(
+                    title: Text(nationality),
+                    leading: isSelected 
+                        ? const Icon(Icons.check, color: Colors.green)
+                        : null,
+                    onTap: () {
+                      Navigator.of(context).pop(nationality);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(widget.l10n.cancel),
+        ),
+      ],
+    );
   }
 }

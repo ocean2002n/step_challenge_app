@@ -526,7 +526,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get basicInformationSubtitle =>
-      'Let\'s start with some basic details about you.';
+      'Let\'s start with some basic details about you';
 
   @override
   String get tapToAddPhoto => 'Tap to add photo';
@@ -538,40 +538,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get personalDetails => 'Personal Details';
 
   @override
-  String get personalDetailsSubtitle => 'Tell us a bit more about yourself.';
+  String get personalDetailsSubtitle => 'Tell us a bit more about yourself';
 
   @override
-  String get selectBirthDate => 'Select birth date';
+  String get selectBirthDate => 'Select Birth Date';
 
   @override
   String get physicalInformation => 'Physical Information';
 
   @override
   String get physicalInformationSubtitle =>
-      'Help us calculate your health metrics accurately.';
+      'Help us calculate your health metrics accurately';
 
   @override
   String get enterHeight => 'Enter your height';
 
   @override
-  String get pleaseEnterHeight => 'Please enter your height';
+  String get pleaseEnterHeight => 'Please enter height';
 
   @override
   String get enterWeight => 'Enter your weight';
 
   @override
-  String get pleaseEnterWeight => 'Please enter your weight';
+  String get pleaseEnterWeight => 'Please enter weight';
 
   @override
   String get healthPermissionSubtitle =>
-      'Enable health data access for accurate step tracking.';
+      'Enable health data access for accurate step tracking';
 
   @override
   String get healthPermissionDescription =>
       'We\'ll request permission to read your step data from Apple Health. This helps us provide accurate tracking and personalized insights.';
 
   @override
-  String get pleaseSelectGender => 'Please select your gender';
+  String get pleaseSelectGender => 'Please select gender';
 
   @override
   String get completeRegistration => 'Complete Registration';
@@ -740,4 +740,266 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectNationalityDialog => 'Select Nationality';
+
+  @override
+  String get marathonEvents => 'Marathon Events';
+
+  @override
+  String get searchMarathonEvents => 'Search marathon events...';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get clearFilter => 'Clear Filter';
+
+  @override
+  String get filterMarathonEvents => 'Filter Marathon Events';
+
+  @override
+  String get noMarathonEvents => 'No marathon events found';
+
+  @override
+  String get noMarathonEventsDescription =>
+      'Check back later for upcoming events or adjust your search criteria.';
+
+  @override
+  String get upcoming => 'Upcoming';
+
+  @override
+  String get registrationOpen => 'Open';
+
+  @override
+  String get registrationClosed => 'Registration Closed';
+
+  @override
+  String get ongoing => 'Ongoing';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get cancelled => 'Cancelled';
+
+  @override
+  String get distance => 'Distance';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get enterLocation => 'Enter location';
+
+  @override
+  String get dateRange => 'Date Range';
+
+  @override
+  String get startDate => 'Start Date';
+
+  @override
+  String get endDate => 'End Date';
+
+  @override
+  String get clearAll => 'Clear All';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get dateNotSet => 'Date not set';
+
+  @override
+  String get marathonEventDetails => 'Marathon Event Details';
+
+  @override
+  String get details => 'Details';
+
+  @override
+  String get races => 'Races';
+
+  @override
+  String get eventDescription => 'Event Description';
+
+  @override
+  String get contactInformation => 'Contact Information';
+
+  @override
+  String get organizer => 'Organizer';
+
+  @override
+  String get website => 'Website';
+
+  @override
+  String get routeMap => 'Route Map';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get tags => 'Tags';
+
+  @override
+  String get raceDate => 'Race Date';
+
+  @override
+  String get registrationDeadline => 'Registration Deadline';
+
+  @override
+  String get entryFee => 'Entry Fee';
+
+  @override
+  String get free => 'Free';
+
+  @override
+  String get raceFull => 'Race Full';
+
+  @override
+  String get registered => 'Registered';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get eventLocation => 'Event Location';
+
+  @override
+  String get startPoint => 'Start Point';
+
+  @override
+  String get finishPoint => 'Finish Point';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get landmark => 'Landmark';
+
+  @override
+  String get registerForRace => 'Register for Race';
+
+  @override
+  String get participantName => 'Participant Name';
+
+  @override
+  String get pleaseEnterParticipantName => 'Please enter participant name';
+
+  @override
+  String get medicalInformation => 'Medical Information';
+
+  @override
+  String get registrationSuccessful => 'Registration successful!';
+
+  @override
+  String get registrationFailed => 'Registration failed';
+
+  @override
+  String get community => 'Community';
+
+  @override
+  String get events => 'Events';
+
+  @override
+  String get noRouteMapAvailable => 'No route map available';
+
+  @override
+  String get earlyBird => 'Early Bird';
+
+  @override
+  String get earlyBirdPrice => 'Early Bird Price';
+
+  @override
+  String get regularPrice => 'Regular Price';
+
+  @override
+  String get earlyBirdUntil => 'Early Bird Until';
+
+  @override
+  String get registrationStep1 => 'Registration Information';
+
+  @override
+  String get registrationStep2 => 'Payment Method';
+
+  @override
+  String get fillRegistrationInfo => 'Fill Registration Information';
+
+  @override
+  String get selectPaymentMethod => 'Select Payment Method';
+
+  @override
+  String get creditCard => 'Credit Card';
+
+  @override
+  String get abaPayment => 'ABA Payment';
+
+  @override
+  String get termsAndConditions => 'I agree to the Terms and Conditions';
+
+  @override
+  String get iAgreeToTerms => 'I agree to the terms and conditions';
+
+  @override
+  String get pleaseAgreeToTerms => 'Please agree to the terms and conditions';
+
+  @override
+  String get proceedToPayment => 'Proceed to Payment';
+
+  @override
+  String get makePayment => 'Make Payment';
+
+  @override
+  String get paymentSuccessful => 'Payment Successful!';
+
+  @override
+  String get paymentFailed => 'Payment Failed';
+
+  @override
+  String get registrationCompleted => 'Registration completed successfully';
+
+  @override
+  String get backToEvents => 'Back to Events';
+
+  @override
+  String get paymentAmount => 'Payment Amount';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get pleaseEnterName => 'Please enter name';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter email';
+
+  @override
+  String get pleaseEnterValidEmail => 'Please enter a valid email';
+
+  @override
+  String get selectParticipantCount => 'Select number of participants';
+
+  @override
+  String get maximumParticipants => 'Maximum 3 participants';
+
+  @override
+  String get participantCount => 'Number of participants';
+
+  @override
+  String get people => 'people';
+
+  @override
+  String get fillRegistrationData => 'Fill registration data';
+
+  @override
+  String get participantData => 'Participant data';
+
+  @override
+  String get mainContact => 'Main contact';
+
+  @override
+  String get notFilled => 'Not filled';
+
+  @override
+  String get complete => 'Complete';
 }

@@ -1039,7 +1039,7 @@ abstract class AppLocalizations {
   /// No description provided for @basicInformationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s start with some basic details about you.'**
+  /// **'Let\'s start with some basic details about you'**
   String get basicInformationSubtitle;
 
   /// No description provided for @tapToAddPhoto.
@@ -1063,13 +1063,13 @@ abstract class AppLocalizations {
   /// No description provided for @personalDetailsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Tell us a bit more about yourself.'**
+  /// **'Tell us a bit more about yourself'**
   String get personalDetailsSubtitle;
 
   /// No description provided for @selectBirthDate.
   ///
   /// In en, this message translates to:
-  /// **'Select birth date'**
+  /// **'Select Birth Date'**
   String get selectBirthDate;
 
   /// No description provided for @physicalInformation.
@@ -1081,7 +1081,7 @@ abstract class AppLocalizations {
   /// No description provided for @physicalInformationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Help us calculate your health metrics accurately.'**
+  /// **'Help us calculate your health metrics accurately'**
   String get physicalInformationSubtitle;
 
   /// No description provided for @enterHeight.
@@ -1093,7 +1093,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseEnterHeight.
   ///
   /// In en, this message translates to:
-  /// **'Please enter your height'**
+  /// **'Please enter height'**
   String get pleaseEnterHeight;
 
   /// No description provided for @enterWeight.
@@ -1105,13 +1105,13 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseEnterWeight.
   ///
   /// In en, this message translates to:
-  /// **'Please enter your weight'**
+  /// **'Please enter weight'**
   String get pleaseEnterWeight;
 
   /// No description provided for @healthPermissionSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enable health data access for accurate step tracking.'**
+  /// **'Enable health data access for accurate step tracking'**
   String get healthPermissionSubtitle;
 
   /// No description provided for @healthPermissionDescription.
@@ -1123,7 +1123,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseSelectGender.
   ///
   /// In en, this message translates to:
-  /// **'Please select your gender'**
+  /// **'Please select gender'**
   String get pleaseSelectGender;
 
   /// No description provided for @completeRegistration.
@@ -1413,6 +1413,528 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Nationality'**
   String get selectNationalityDialog;
+
+  /// No description provided for @marathonEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Marathon Events'**
+  String get marathonEvents;
+
+  /// No description provided for @searchMarathonEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Search marathon events...'**
+  String get searchMarathonEvents;
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
+
+  /// No description provided for @clearFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filter'**
+  String get clearFilter;
+
+  /// No description provided for @filterMarathonEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Marathon Events'**
+  String get filterMarathonEvents;
+
+  /// No description provided for @noMarathonEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'No marathon events found'**
+  String get noMarathonEvents;
+
+  /// No description provided for @noMarathonEventsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Check back later for upcoming events or adjust your search criteria.'**
+  String get noMarathonEventsDescription;
+
+  /// No description provided for @upcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get upcoming;
+
+  /// No description provided for @registrationOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get registrationOpen;
+
+  /// No description provided for @registrationClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Closed'**
+  String get registrationClosed;
+
+  /// No description provided for @ongoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing'**
+  String get ongoing;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cancelled;
+
+  /// No description provided for @distance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get distance;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @enterLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter location'**
+  String get enterLocation;
+
+  /// No description provided for @dateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get dateRange;
+
+  /// No description provided for @startDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get startDate;
+
+  /// No description provided for @endDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get endDate;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clearAll;
+
+  /// No description provided for @apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get apply;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @dateNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Date not set'**
+  String get dateNotSet;
+
+  /// No description provided for @marathonEventDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Marathon Event Details'**
+  String get marathonEventDetails;
+
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get details;
+
+  /// No description provided for @races.
+  ///
+  /// In en, this message translates to:
+  /// **'Races'**
+  String get races;
+
+  /// No description provided for @eventDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Description'**
+  String get eventDescription;
+
+  /// No description provided for @contactInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Information'**
+  String get contactInformation;
+
+  /// No description provided for @organizer.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizer'**
+  String get organizer;
+
+  /// No description provided for @website.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get website;
+
+  /// No description provided for @routeMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Route Map'**
+  String get routeMap;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @tags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get tags;
+
+  /// No description provided for @raceDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Race Date'**
+  String get raceDate;
+
+  /// No description provided for @registrationDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Deadline'**
+  String get registrationDeadline;
+
+  /// No description provided for @entryFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry Fee'**
+  String get entryFee;
+
+  /// No description provided for @free.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get free;
+
+  /// No description provided for @raceFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Race Full'**
+  String get raceFull;
+
+  /// No description provided for @registered.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered'**
+  String get registered;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @eventLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Location'**
+  String get eventLocation;
+
+  /// No description provided for @startPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Point'**
+  String get startPoint;
+
+  /// No description provided for @finishPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish Point'**
+  String get finishPoint;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @landmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Landmark'**
+  String get landmark;
+
+  /// No description provided for @registerForRace.
+  ///
+  /// In en, this message translates to:
+  /// **'Register for Race'**
+  String get registerForRace;
+
+  /// No description provided for @participantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Participant Name'**
+  String get participantName;
+
+  /// No description provided for @pleaseEnterParticipantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter participant name'**
+  String get pleaseEnterParticipantName;
+
+  /// No description provided for @medicalInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical Information'**
+  String get medicalInformation;
+
+  /// No description provided for @registrationSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration successful!'**
+  String get registrationSuccessful;
+
+  /// No description provided for @registrationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed'**
+  String get registrationFailed;
+
+  /// No description provided for @community.
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get community;
+
+  /// No description provided for @events.
+  ///
+  /// In en, this message translates to:
+  /// **'Events'**
+  String get events;
+
+  /// No description provided for @noRouteMapAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No route map available'**
+  String get noRouteMapAvailable;
+
+  /// No description provided for @earlyBird.
+  ///
+  /// In en, this message translates to:
+  /// **'Early Bird'**
+  String get earlyBird;
+
+  /// No description provided for @earlyBirdPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Early Bird Price'**
+  String get earlyBirdPrice;
+
+  /// No description provided for @regularPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular Price'**
+  String get regularPrice;
+
+  /// No description provided for @earlyBirdUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Early Bird Until'**
+  String get earlyBirdUntil;
+
+  /// No description provided for @registrationStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Information'**
+  String get registrationStep1;
+
+  /// No description provided for @registrationStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get registrationStep2;
+
+  /// No description provided for @fillRegistrationInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill Registration Information'**
+  String get fillRegistrationInfo;
+
+  /// No description provided for @selectPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Payment Method'**
+  String get selectPaymentMethod;
+
+  /// No description provided for @creditCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit Card'**
+  String get creditCard;
+
+  /// No description provided for @abaPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'ABA Payment'**
+  String get abaPayment;
+
+  /// No description provided for @termsAndConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the Terms and Conditions'**
+  String get termsAndConditions;
+
+  /// No description provided for @iAgreeToTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the terms and conditions'**
+  String get iAgreeToTerms;
+
+  /// No description provided for @pleaseAgreeToTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Please agree to the terms and conditions'**
+  String get pleaseAgreeToTerms;
+
+  /// No description provided for @proceedToPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Proceed to Payment'**
+  String get proceedToPayment;
+
+  /// No description provided for @makePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Make Payment'**
+  String get makePayment;
+
+  /// No description provided for @paymentSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Successful!'**
+  String get paymentSuccessful;
+
+  /// No description provided for @paymentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Failed'**
+  String get paymentFailed;
+
+  /// No description provided for @registrationCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration completed successfully'**
+  String get registrationCompleted;
+
+  /// No description provided for @backToEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Events'**
+  String get backToEvents;
+
+  /// No description provided for @paymentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Amount'**
+  String get paymentAmount;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @pleaseEnterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter name'**
+  String get pleaseEnterName;
+
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @pleaseEnterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get pleaseEnterValidEmail;
+
+  /// No description provided for @selectParticipantCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Select number of participants'**
+  String get selectParticipantCount;
+
+  /// No description provided for @maximumParticipants.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum 3 participants'**
+  String get maximumParticipants;
+
+  /// No description provided for @participantCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of participants'**
+  String get participantCount;
+
+  /// No description provided for @people.
+  ///
+  /// In en, this message translates to:
+  /// **'people'**
+  String get people;
+
+  /// No description provided for @fillRegistrationData.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill registration data'**
+  String get fillRegistrationData;
+
+  /// No description provided for @participantData.
+  ///
+  /// In en, this message translates to:
+  /// **'Participant data'**
+  String get participantData;
+
+  /// No description provided for @mainContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Main contact'**
+  String get mainContact;
+
+  /// No description provided for @notFilled.
+  ///
+  /// In en, this message translates to:
+  /// **'Not filled'**
+  String get notFilled;
+
+  /// No description provided for @complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get complete;
 }
 
 class _AppLocalizationsDelegate
