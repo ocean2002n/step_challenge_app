@@ -5,8 +5,41 @@ import '../services/social_auth_service.dart';
 import '../utils/app_theme.dart';
 import '../l10n/app_localizations.dart';
 
-class LinkedAccountsWidget extends StatelessWidget {
+class LinkedAccountsWidget extends StatefulWidget {
   const LinkedAccountsWidget({super.key});
+
+  @override
+  State<LinkedAccountsWidget> createState() => _LinkedAccountsWidgetState();
+}
+
+class _LinkedAccountsWidgetState extends State<LinkedAccountsWidget> {
+  bool _isAppleSignInAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAppleSignInAvailability();
+  }
+
+  Future<void> _checkAppleSignInAvailability() async {
+    try {
+      final socialAuthService = context.read<SocialAuthService>();
+      final isAvailable = await socialAuthService.isAppleSignInAvailable;
+      
+      if (mounted) {
+        setState(() {
+          _isAppleSignInAvailable = isAvailable;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error checking Apple Sign-In availability: $e');
+      if (mounted) {
+        setState(() {
+          _isAppleSignInAvailable = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +61,7 @@ class LinkedAccountsWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '已連結帳號',
+                      l10n.linkedAccounts,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -44,15 +77,17 @@ class LinkedAccountsWidget extends StatelessWidget {
                   socialAuthService: socialAuthService,
                   l10n: l10n,
                 ),
-                const SizedBox(height: 12),
                 
-                // Apple Account
-                _buildAccountRow(
-                  context: context,
-                  provider: SocialProvider.apple,
-                  socialAuthService: socialAuthService,
-                  l10n: l10n,
-                ),
+                // 條件性顯示 Apple Account
+                if (_isAppleSignInAvailable) ...[
+                  const SizedBox(height: 12),
+                  _buildAccountRow(
+                    context: context,
+                    provider: SocialProvider.apple,
+                    socialAuthService: socialAuthService,
+                    l10n: l10n,
+                  ),
+                ],
               ],
             ),
           ),
@@ -100,7 +135,7 @@ class LinkedAccountsWidget extends StatelessWidget {
               ),
               if (isLinked) ...[
                 Text(
-                  account.email ?? account.displayName ?? '已連結',
+                  account.email ?? account.displayName ?? l10n.linked,
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 14,
@@ -108,7 +143,7 @@ class LinkedAccountsWidget extends StatelessWidget {
                 ),
               ] else ...[
                 Text(
-                  '未連結',
+                  l10n.notLinked,
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 14,
@@ -126,7 +161,7 @@ class LinkedAccountsWidget extends StatelessWidget {
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
             ),
-            child: const Text('解除連結'),
+            child: Text(l10n.unlink),
           ),
         ] else ...[
           ElevatedButton(
@@ -136,7 +171,7 @@ class LinkedAccountsWidget extends StatelessWidget {
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
-            child: const Text('連結'),
+            child: Text(l10n.link),
           ),
         ],
       ],
@@ -174,6 +209,8 @@ class LinkedAccountsWidget extends StatelessWidget {
     SocialProvider provider,
     SocialAuthService socialAuthService,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
+    
     try {
       SocialAuthResult result;
       
@@ -187,7 +224,7 @@ class LinkedAccountsWidget extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${socialAuthService.getProviderDisplayName(provider)} 帳號連結成功'),
+              content: Text('${socialAuthService.getProviderDisplayName(provider)} ${l10n.accountLinkedSuccessfully}'),
               backgroundColor: Colors.green,
             ),
           );
@@ -196,7 +233,7 @@ class LinkedAccountsWidget extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.error ?? '連結失敗'),
+              content: Text(result.error ?? l10n.linkFailed),
               backgroundColor: Colors.red,
             ),
           );
@@ -206,7 +243,7 @@ class LinkedAccountsWidget extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('連結時發生錯誤：$e'),
+            content: Text('${l10n.linkError}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -219,20 +256,22 @@ class LinkedAccountsWidget extends StatelessWidget {
     SocialProvider provider,
     SocialAuthService socialAuthService,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
+    
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('解除連結'),
-        content: Text('確定要解除與 ${socialAuthService.getProviderDisplayName(provider)} 的連結嗎？'),
+        title: Text(l10n.unlink),
+        content: Text('${l10n.confirmUnlinkAccount} ${socialAuthService.getProviderDisplayName(provider)}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('解除連結'),
+            child: Text(l10n.unlink),
           ),
         ],
       ),
@@ -246,8 +285,8 @@ class LinkedAccountsWidget extends StatelessWidget {
           SnackBar(
             content: Text(
               success 
-                ? '${socialAuthService.getProviderDisplayName(provider)} 帳號已解除連結'
-                : '解除連結失敗'
+                ? '${socialAuthService.getProviderDisplayName(provider)} ${l10n.accountUnlinkedSuccessfully}'
+                : l10n.unlinkFailed
             ),
             backgroundColor: success ? Colors.green : Colors.red,
           ),

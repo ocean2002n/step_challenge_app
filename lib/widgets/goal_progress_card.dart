@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:step_challenge_app/l10n/app_localizations.dart';
 import '../services/health_service.dart';
 import '../utils/app_theme.dart';
 
@@ -9,6 +10,8 @@ class GoalProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Consumer<HealthService>(
       builder: (context, healthService, child) {
         final todaySteps = healthService.todaySteps;
@@ -27,7 +30,7 @@ class GoalProgressCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '目標進度',
+                      l10n.goalProgress,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     Container(
@@ -50,7 +53,7 @@ class GoalProgressCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            isGoalAchieved ? '已達成' : '進行中',
+                            isGoalAchieved ? l10n.achieved : l10n.inProgress,
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -119,7 +122,7 @@ class GoalProgressCard extends StatelessWidget {
                             ).animate().fadeIn(duration: 800.ms).scale(),
                             const SizedBox(height: 4),
                             Text(
-                              isGoalAchieved ? '目標達成！' : '繼續加油',
+                              isGoalAchieved ? l10n.goalAchieved : l10n.keepGoing,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey[600],
@@ -141,7 +144,7 @@ class GoalProgressCard extends StatelessWidget {
                     Expanded(
                       child: _buildInfoCard(
                         context,
-                        '今日步數',
+                        l10n.todaySteps,
                         todaySteps.toString().replaceAllMapped(
                           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
                           (Match match) => '${match[1]},',
@@ -154,7 +157,7 @@ class GoalProgressCard extends StatelessWidget {
                     Expanded(
                       child: _buildInfoCard(
                         context,
-                        isGoalAchieved ? '超出目標' : '剩餘步數',
+                        isGoalAchieved ? l10n.exceededGoal : l10n.remainingSteps,
                         isGoalAchieved 
                             ? (todaySteps - dailyGoal).toString().replaceAllMapped(
                                 RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
@@ -191,7 +194,7 @@ class GoalProgressCard extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          _getMotivationalMessage(progress, isGoalAchieved),
+                          _getMotivationalMessage(progress, isGoalAchieved, l10n),
                           style: TextStyle(
                             color: AppTheme.darkGreen,
                             fontSize: 14,
@@ -255,17 +258,17 @@ class GoalProgressCard extends StatelessWidget {
     );
   }
 
-  String _getMotivationalMessage(double progress, bool isGoalAchieved) {
+  String _getMotivationalMessage(double progress, bool isGoalAchieved, AppLocalizations l10n) {
     if (isGoalAchieved) {
-      return '太棒了！您已經達成今日目標，繼續保持健康的生活習慣！';
+      return l10n.goalAchievedCongrats;
     } else if (progress >= 0.8) {
-      return '快要達成目標了！再走一點就成功了，加油！';
+      return l10n.nearGoalMessage;
     } else if (progress >= 0.5) {
-      return '已經完成一半了！繼續努力，目標就在眼前！';
+      return l10n.halfwayMessage;
     } else if (progress >= 0.2) {
-      return '好的開始！每一步都讓您更接近健康目標。';
+      return l10n.goodStartMessage;
     } else {
-      return '新的一天開始了！走出第一步，向目標邁進！';
+      return l10n.newDayMessage;
     }
   }
 }

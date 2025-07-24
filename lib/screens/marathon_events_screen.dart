@@ -139,7 +139,7 @@ class _MarathonEventsScreenState extends State<MarathonEventsScreen> {
   }
 
   Widget _buildEventCard(MarathonEvent event, AppLocalizations l10n) {
-    final dateFormat = DateFormat('yyyy/MM/dd');
+    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).toString());
     final earliestDate = event.earliestRaceDate;
     final latestDate = event.latestRaceDate;
     

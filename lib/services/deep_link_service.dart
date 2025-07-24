@@ -24,9 +24,14 @@ class DeepLinkService {
       _channel.setMethodCallHandler(_handleMethodCall);
       
       // Get initial link when app is launched from deep link
-      final String? initialLink = await _channel.invokeMethod('getInitialLink');
-      if (initialLink != null) {
-        _linkStreamController?.add(initialLink);
+      try {
+        final String? initialLink = await _channel.invokeMethod('getInitialLink');
+        if (initialLink != null) {
+          _linkStreamController?.add(initialLink);
+        }
+      } catch (e) {
+        debugPrint('Native deep link not available, using fallback: $e');
+        // This is expected when native implementation is not available
       }
     } catch (e) {
       debugPrint('Error initializing deep link service: $e');

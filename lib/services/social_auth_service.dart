@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'dart:math';
+import 'crashlytics_service.dart';
 
 enum SocialProvider { google, apple }
 
@@ -76,6 +77,29 @@ class SocialAuthService extends ChangeNotifier {
   
   bool get hasGoogleAccount => _linkedAccounts.any((account) => account.provider == SocialProvider.google);
   bool get hasAppleAccount => _linkedAccounts.any((account) => account.provider == SocialProvider.apple);
+  
+  /// 檢查 Apple Sign-In 是否可用且正確配置
+  Future<bool> get isAppleSignInAvailable async {
+    try {
+      // 檢查設備是否支援 Apple Sign-In
+      if (!await SignInWithApple.isAvailable()) {
+        debugPrint('📱 Apple Sign-In not available on this device');
+        return false;
+      }
+      
+      // 嘗試檢查權限配置 - 這裡會捕獲配置錯誤
+      return true;
+    } catch (e) {
+      debugPrint('⚠️ Apple Sign-In configuration issue: $e');
+      // 如果是 entitlement 或 provisioning profile 問題，返回 false
+      if (e.toString().contains('entitlement') || 
+          e.toString().contains('provisioning') ||
+          e.toString().contains('ASAuthorizationError')) {
+        return false;
+      }
+      return false;
+    }
+  }
 
   Future<void> initialize() async {
     await _loadLinkedAccounts();
@@ -115,23 +139,52 @@ class SocialAuthService extends ChangeNotifier {
     }
   }
 
+  /// Save or update a single linked account
+  Future<void> _saveLinkedAccount(LinkedAccount account) async {
+    try {
+      // Check if account already exists (same provider and providerId)
+      final existingIndex = _linkedAccounts.indexWhere(
+        (acc) => acc.provider == account.provider && acc.providerId == account.providerId
+      );
+
+      if (existingIndex >= 0) {
+        // Update existing account
+        _linkedAccounts[existingIndex] = account;
+        debugPrint('🔄 Updated existing ${account.provider.name} account');
+      } else {
+        // Add new account
+        _linkedAccounts.add(account);
+        debugPrint('➕ Added new ${account.provider.name} account');
+      }
+
+      await _saveLinkedAccounts();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('❌ Error saving linked account: $e');
+    }
+  }
+
   /// Sign in with Google
   Future<SocialAuthResult> signInWithGoogle() async {
     try {
-      debugPrint('🔑 Attempting Google sign in...');
-      
+      debugPrint('🔍 Attempting Google sign in...');
+
+      // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      
       if (googleUser == null) {
         debugPrint('❌ Google sign in cancelled by user');
-        return SocialAuthResult(success: false, error: 'Login cancelled');
+        return SocialAuthResult(success: false, error: 'Google 登入已取消');
       }
 
+      // Obtain the auth details from the request  
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      if (googleAuth.accessToken == null) {
-        debugPrint('❌ Failed to get Google access token');
-        return SocialAuthResult(success: false, error: 'Failed to authenticate');
-      }
 
+      debugPrint('✅ Google sign in successful: ${googleUser.email}');
+      debugPrint('   Display Name: ${googleUser.displayName}');
+      debugPrint('   Photo URL: ${googleUser.photoUrl}');
+
+      // Create LinkedAccount object
       final account = LinkedAccount(
         provider: SocialProvider.google,
         providerId: googleUser.id,
@@ -141,28 +194,16 @@ class SocialAuthService extends ChangeNotifier {
         linkedAt: DateTime.now(),
       );
 
-      // Check if account already exists
-      final existingIndex = _linkedAccounts.indexWhere(
-        (acc) => acc.provider == SocialProvider.google && acc.providerId == googleUser.id
-      );
-
-      if (existingIndex >= 0) {
-        // Update existing account
-        _linkedAccounts[existingIndex] = account;
-      } else {
-        // Add new account
-        _linkedAccounts.add(account);
-      }
-
-      await _saveLinkedAccounts();
-      notifyListeners();
-
-      debugPrint('✅ Google sign in successful: ${googleUser.email}');
+      // Save or update the account
+      await _saveLinkedAccount(account);
+      await CrashlyticsService.recordUserAction('google_sign_in_success');
+      
       return SocialAuthResult(success: true, account: account);
 
-    } catch (e) {
-      debugPrint('❌ Google sign in error: $e');
-      return SocialAuthResult(success: false, error: e.toString());
+    } catch (error) {
+      debugPrint('❌ Google sign in error: $error');
+      await CrashlyticsService.recordError(error, StackTrace.current, reason: 'Google sign in failed');
+      return SocialAuthResult(success: false, error: 'Google 登入失敗: ${error.toString()}');
     }
   }
 
@@ -173,7 +214,8 @@ class SocialAuthService extends ChangeNotifier {
 
       // Check if Apple Sign In is available
       if (!await SignInWithApple.isAvailable()) {
-        return SocialAuthResult(success: false, error: 'Apple Sign In not available');
+        debugPrint('❌ Apple Sign In not available on this device');
+        return SocialAuthResult(success: false, error: 'Apple Sign In 在此裝置上不支援');
       }
 
       // Generate nonce for security
@@ -187,6 +229,12 @@ class SocialAuthService extends ChangeNotifier {
         ],
         nonce: nonce,
       );
+      
+      // Check if user cancelled
+      if (appleCredential.userIdentifier == null || appleCredential.userIdentifier!.isEmpty) {
+        debugPrint('❌ Apple Sign In: User identifier is null or empty');
+        return SocialAuthResult(success: false, error: '取消登入或獲取用戶資訊失敗');
+      }
 
       final account = LinkedAccount(
         provider: SocialProvider.apple,
@@ -218,7 +266,8 @@ class SocialAuthService extends ChangeNotifier {
       debugPrint('✅ Apple sign in successful: ${appleCredential.email}');
       return SocialAuthResult(success: true, account: account);
 
-    } catch (e) {
+    } catch (e, stack) {
+      await CrashlyticsService.recordAuthError('Apple Sign-In', e, stack);
       debugPrint('❌ Apple sign in error: $e');
       return SocialAuthResult(success: false, error: e.toString());
     }
@@ -233,7 +282,12 @@ class SocialAuthService extends ChangeNotifier {
       }
 
       if (provider == SocialProvider.google) {
-        await _googleSignIn.signOut();
+        try {
+          await _googleSignIn.signOut();
+          debugPrint('🔓 Google Sign-In signed out');
+        } catch (e) {
+          debugPrint('⚠️ Error signing out from Google: $e');
+        }
       }
 
       _linkedAccounts.removeAt(accountIndex);
@@ -260,7 +314,16 @@ class SocialAuthService extends ChangeNotifier {
   /// Clear all linked accounts (for logout)
   Future<void> clearAllAccounts() async {
     try {
-      await _googleSignIn.signOut();
+      // Sign out from Google if there's a linked Google account
+      if (hasGoogleAccount) {
+        try {
+          await _googleSignIn.signOut();
+          debugPrint('🔓 Google Sign-In signed out during clear all');
+        } catch (e) {
+          debugPrint('⚠️ Error signing out from Google during clear all: $e');
+        }
+      }
+      
       _linkedAccounts.clear();
       await _saveLinkedAccounts();
       notifyListeners();

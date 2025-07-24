@@ -249,39 +249,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remainingSteps => 'Remaining steps';
 
   @override
-  String get goalAchievedCongrats =>
-      'Excellent! You\'ve achieved today\'s goal. Keep up the healthy lifestyle!';
+  String get stepsToGoal => 'steps to reach goal';
 
   @override
-  String get nearGoalMessage =>
-      'Almost there! Just a little more walking and you\'ll succeed. Keep it up!';
+  String get goalAchievedCongrats => 'Goal achieved! Keep it up!';
 
   @override
-  String get halfwayMessage =>
-      'You\'re halfway there! Keep pushing, the goal is within reach!';
+  String get nearGoalMessage => 'Almost there! Keep going!';
 
   @override
-  String get goodStartMessage =>
-      'Great start! Every step brings you closer to your health goal.';
+  String get halfwayMessage => 'Halfway done! Keep pushing!';
 
   @override
-  String get newDayMessage =>
-      'A new day begins! Take the first step towards your goal!';
+  String get goodStartMessage => 'Great start! Keep walking!';
 
   @override
-  String get thisWeekWalkingRecord => 'This Week\'s Walking Record';
+  String get newDayMessage => 'New day! Take the first step!';
+
+  @override
+  String get thisWeekWalkingRecord => 'This Week\'s Record';
 
   @override
   String get noDataAvailable => 'No data available';
 
   @override
-  String get weeklyTotal => 'Weekly total';
+  String get weeklyTotal => 'Total';
 
   @override
-  String get dailyAverageSteps => 'Daily average steps';
+  String get dailyAverageSteps => 'Avg steps';
 
   @override
-  String get daysGoalAchieved => 'Days goal achieved';
+  String get daysGoalAchieved => 'Goal days';
 
   @override
   String get stepGoalReminder => 'Step Goal Reminder';
@@ -383,6 +381,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareLink => 'Share Link';
+
+  @override
+  String get share => 'Share';
 
   @override
   String get copyLink => 'Copy Link';
@@ -1002,4 +1003,92 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get complete => 'Complete';
+
+  @override
+  String get qrCodeDataUnavailable => 'QR code data unavailable';
+
+  @override
+  String get qrCodeSavedSuccess => 'QR code saved to gallery';
+
+  @override
+  String get qrCodeSaveFailed => 'Save failed, please check permissions';
+
+  @override
+  String get saveError => 'Save error';
+
+  @override
+  String get shareQrCodeDescription =>
+      'Share or send this QR code to friends to add them to your friends list';
+
+  @override
+  String get flashlight => 'Flashlight';
+
+  @override
+  String get switchCamera => 'Switch Camera';
+
+  @override
+  String get alignQrCodeToFrame => 'Align QR code within the frame to scan';
+
+  @override
+  String get keepQrCodeClear => 'Keep QR code clear and visible';
+
+  @override
+  String get addingFriend => 'Adding friend...';
+
+  @override
+  String get enterInviteCodeManually => 'Enter invite code manually';
+
+  @override
+  String get cameraPermissionNeeded =>
+      'Need camera permission to scan QR codes';
+
+  @override
+  String get friendAddedSuccessfully => 'Friend added successfully!';
+
+  @override
+  String get invalidQrCodeOrAlreadyFriends =>
+      'Invalid QR code or already friends';
+
+  @override
+  String get errorProcessingQrCode => 'Error processing QR code';
+
+  @override
+  String get enterInviteCode => 'Enter invite code';
+
+  @override
+  String get enterFriendInviteCodeDescription =>
+      'Please enter the 5-digit invite code shared by your friend';
+
+  @override
+  String get linkedAccounts => 'Linked Accounts';
+
+  @override
+  String get linked => 'Linked';
+
+  @override
+  String get notLinked => 'Not linked';
+
+  @override
+  String get link => 'Link';
+
+  @override
+  String get unlink => 'Unlink';
+
+  @override
+  String get accountLinkedSuccessfully => 'account linked successfully';
+
+  @override
+  String get linkFailed => 'Link failed';
+
+  @override
+  String get linkError => 'Link error';
+
+  @override
+  String get confirmUnlinkAccount => 'Are you sure you want to unlink from';
+
+  @override
+  String get accountUnlinkedSuccessfully => 'account unlinked successfully';
+
+  @override
+  String get unlinkFailed => 'Unlink failed';
 }

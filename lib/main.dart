@@ -1,6 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+// import 'package:firebase_core/firebase_core.dart';  // Temporarily disabled
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';  // Temporarily disabled
 import 'screens/home_screen.dart';
 import 'screens/friend_qr_screen.dart';
 import 'screens/qr_scanner_screen.dart';
@@ -15,11 +18,15 @@ import 'services/deep_link_service.dart';
 import 'services/auth_service.dart';
 import 'services/social_auth_service.dart';
 import 'services/marathon_service.dart';
+import 'services/crashlytics_service.dart';
 import 'utils/app_theme.dart';
 import 'package:step_challenge_app/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Crashlytics service (stub mode for now)
+  await CrashlyticsService.initialize();
   
   final localeService = LocaleService();
   await localeService.loadSavedLanguage();
@@ -106,11 +113,7 @@ class StepChallengeApp extends StatelessWidget {
       return const SocialLoginScreen();
     }
     
-    // 如果需要完成其他設定（引導流程等）
-    if (authService.needsSetup()) {
-      return const HomeScreen();
-    } else {
-      return const HomeScreen();
-    }
+    // 其他情況都顯示主畫面
+    return const HomeScreen();
   }
 }

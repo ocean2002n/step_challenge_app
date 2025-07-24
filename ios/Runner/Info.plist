@@ -53,6 +53,8 @@
 	<string>此應用可能會使用位置服務來提供更準確的步數追蹤</string>
 	<key>NSCameraUsageDescription</key>
 	<string>此應用需要使用相機來掃描QR碼以添加好友</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>此應用需要保存QR碼圖片到您的相簿</string>
 	
 	<!-- Notification permissions -->
 	<key>UIBackgroundModes</key>
@@ -66,9 +68,12 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	
+	<!-- Social Authentication Configuration -->
 	<!-- Google Sign-In Configuration -->
 	<key>GIDClientID</key>
 	<string>980817000780-1s0kg6sa7mpli6cqttjk2u5p4aes83f0.apps.googleusercontent.com</string>
+	
+	<!-- Apple Sign-In is configured via Signing & Capabilities in Xcode -->
 	
 	<!-- Deep Link URL Scheme -->
 	<key>CFBundleURLTypes</key>

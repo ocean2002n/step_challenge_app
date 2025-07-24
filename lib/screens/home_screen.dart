@@ -631,9 +631,10 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('登出失敗: $e'),
+            content: Text('${l10n.logout} ${l10n.linkFailed}: $e'),
             backgroundColor: Colors.red,
           ),
         );

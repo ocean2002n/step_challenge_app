@@ -5,9 +5,11 @@ import 'package:image_picker/image_picker.dart';
 import '../services/auth_service.dart';
 import '../services/health_service.dart';
 import '../services/social_auth_service.dart';
+import '../services/locale_service.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/home_screen.dart';
 import '../screens/social_login_screen.dart';
+import '../utils/date_formatter.dart';
 
 
 class RegistrationScreen extends StatefulWidget {
@@ -763,24 +765,32 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _birthDate != null
-                            ? _formatBirthDate(_birthDate!)
-                            : l10n.selectBirthDate,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: _birthDate != null ? Colors.black87 : Colors.grey[600],
-                        ),
+                      Consumer<LocaleService>(
+                        builder: (context, localeService, child) {
+                          return Text(
+                            _birthDate != null
+                                ? DateFormatter.formatBirthDate(_birthDate!, localeService.locale)
+                                : l10n.selectBirthDate,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: _birthDate != null ? Colors.black87 : Colors.grey[600],
+                            ),
+                          );
+                        },
                       ),
                       if (_birthDate != null) ...[
                         const SizedBox(height: 4),
-                        Text(
-                          _getAgeText(_birthDate!),
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
+                        Consumer<LocaleService>(
+                          builder: (context, localeService, child) {
+                            return Text(
+                              DateFormatter.getAgeText(_birthDate!, localeService.locale),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ],
@@ -798,23 +808,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  String _formatBirthDate(DateTime date) {
-    final months = [
-      '', '一月', '二月', '三月', '四月', '五月', '六月',
-      '七月', '八月', '九月', '十月', '十一月', '十二月'
-    ];
-    return '${date.year}年 ${months[date.month]} ${date.day}日';
-  }
-
-  String _getAgeText(DateTime birthDate) {
-    final now = DateTime.now();
-    int age = now.year - birthDate.year;
-    if (now.month < birthDate.month || 
-        (now.month == birthDate.month && now.day < birthDate.day)) {
-      age--;
-    }
-    return '$age 歲';
-  }
 
   void _selectBirthDateWithPicker() async {
     final selectedDate = await showDatePicker(

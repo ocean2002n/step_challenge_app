@@ -701,63 +701,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             
-            const SizedBox(height: 16),
-            
-            // 測試用：重置應用程式狀態按鈕（開發時使用）
-            OutlinedButton(
-              onPressed: _resetAppForTesting,
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                side: const BorderSide(color: Colors.red),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                '🔄 重置應用程式（測試用）',
-                style: TextStyle(fontSize: 16, color: Colors.red),
-              ),
-            ),
           ],
         ),
       ),
     );
   }
 
-  Future<void> _resetAppForTesting() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('重置應用程式'),
-        content: const Text('這將清除所有用戶資料，包括社群登入帳號。確定要重置嗎？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('重置'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      final authService = context.read<AuthService>();
-      await authService.resetUserData();
-      
-      // 清除社群登入資料
-      final socialAuthService = context.read<SocialAuthService>();
-      await socialAuthService.clearAllAccounts();
-      
-      if (mounted) {
-        // 重啟應用程式到社群登入畫面
-        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
-      }
-    }
-  }
 
   @override
   void dispose() {

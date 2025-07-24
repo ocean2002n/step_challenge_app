@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
+import '../services/locale_service.dart';
+import '../utils/date_formatter.dart';
 
 class BirthDateField extends StatelessWidget {
   final DateTime? selectedDate;
@@ -37,25 +40,33 @@ class BirthDateField extends StatelessWidget {
               errorText: errorText,
               enabled: enabled,
             ),
-            child: Text(
-              selectedDate != null
-                  ? DateFormat('yyyy/MM/dd').format(selectedDate!)
-                  : l10n.selectBirthDate,
-              style: TextStyle(
-                color: selectedDate != null 
-                  ? (enabled ? null : Colors.grey) 
-                  : Colors.grey[600],
-              ),
+            child: Consumer<LocaleService>(
+              builder: (context, localeService, child) {
+                return Text(
+                  selectedDate != null
+                      ? DateFormatter.formatBirthDate(selectedDate!, localeService.locale)
+                      : l10n.selectBirthDate,
+                  style: TextStyle(
+                    color: selectedDate != null 
+                      ? (enabled ? null : Colors.grey) 
+                      : Colors.grey[600],
+                  ),
+                );
+              },
             ),
           ),
         ),
         if (selectedDate != null) ...[
           const SizedBox(height: 4),
-          Text(
-            '年齡: ${_calculateAge(selectedDate!)} 歲',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey[600],
-            ),
+          Consumer<LocaleService>(
+            builder: (context, localeService, child) {
+              return Text(
+                DateFormatter.getAgeText(selectedDate!, localeService.locale),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.grey[600],
+                ),
+              );
+            },
           ),
         ],
       ],

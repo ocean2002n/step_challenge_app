@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/friend_model.dart';
+import 'crashlytics_service.dart';
 
 class FriendService extends ChangeNotifier {
   static const String _friendsKey = 'friends_list';
@@ -26,14 +27,17 @@ class FriendService extends ChangeNotifier {
       
       // Get or create user ID
       _currentUserId = prefs.getString(_userIdKey);
-      if (_currentUserId == null) {
+      // Force regenerate if current ID is not 5 characters (for upgrade compatibility)
+      if (_currentUserId == null || _currentUserId!.length != 5) {
         _currentUserId = _generateUserId();
         await prefs.setString(_userIdKey, _currentUserId!);
+        debugPrint('Generated new 5-character user ID: $_currentUserId');
       }
 
       // Load friends list
       await _loadFriends();
-    } catch (e) {
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'FriendService initialization failed');
       debugPrint('Error initializing FriendService: $e');
     } finally {
       _isLoading = false;
@@ -41,11 +45,11 @@ class FriendService extends ChangeNotifier {
     }
   }
 
-  // Generate unique user ID
+  // Generate unique user ID (5 characters max, alphanumeric only)
   String _generateUserId() {
     final random = Random();
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    return List.generate(8, (index) => chars[random.nextInt(chars.length)]).join();
+    return List.generate(5, (index) => chars[random.nextInt(chars.length)]).join();
   }
 
   // Load friends from SharedPreferences
@@ -75,33 +79,50 @@ class FriendService extends ChangeNotifier {
     }
   }
 
-  // Generate invite code for current user
+  // Generate invite code for current user (simplified)
   String generateInviteCode() {
     if (_currentUserId == null) return '';
-    // Create a simple invite code format: USERID-TIMESTAMP
-    final timestamp = DateTime.now().millisecondsSinceEpoch.toString().substring(7);
-    return '$_currentUserId-$timestamp';
+    // Use user ID directly as invite code
+    return _currentUserId!;
   }
 
   // Generate invite link with app store fallback
   String generateInviteLink() {
     final inviteCode = generateInviteCode();
-    // Universal link that redirects to app store if app not installed
-    return 'https://stepchallenge.app/invite?code=$inviteCode&fallback=store';
+    // 使用 custom scheme 作為主要分享連結
+    // 因為 universal links 需要真實的域名和 AASA 文件
+    return 'stepchallenge://invite?code=$inviteCode';
   }
 
-  // Generate deep link for app-to-app sharing
+  // Generate deep link for app-to-app sharing (same as invite link for now)
   String generateDeepLink() {
     final inviteCode = generateInviteCode();
     return 'stepchallenge://invite?code=$inviteCode';
   }
+  
+  // Generate shareable text with deep link
+  String generateShareableText() {
+    final inviteCode = generateInviteCode();
+    final deepLink = generateDeepLink();
+    
+    return '''🚶 加入我的 Step Challenge 好友！
 
-  // Parse invite code and extract user ID
+📱 點擊連結加入：$deepLink
+
+🔍 手動輸入邀請碼：$inviteCode
+
+一起來挑戰每日步數目標吧！🎯''';
+  }
+
+  // Parse invite code and extract user ID (simplified)
   String? parseInviteCode(String inviteCode) {
     try {
-      final parts = inviteCode.split('-');
-      if (parts.length >= 2) {
-        return parts[0];
+      // Clean up the invite code (remove whitespace, convert to uppercase)
+      final cleanCode = inviteCode.trim().toUpperCase();
+      
+      // Validate format (should be 5 alphanumeric characters)
+      if (cleanCode.length == 5 && RegExp(r'^[A-Z0-9]{5}$').hasMatch(cleanCode)) {
+        return cleanCode;
       }
     } catch (e) {
       debugPrint('Error parsing invite code: $e');

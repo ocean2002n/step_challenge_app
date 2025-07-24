@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/challenge_model.dart';
 import '../services/auth_service.dart';
+import '../services/locale_service.dart';
 import '../utils/app_theme.dart';
+import '../utils/date_formatter.dart';
 
 class CreateChallengeScreen extends StatefulWidget {
   final Challenge? challenge;
@@ -452,7 +454,8 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
   }
   
   String _formatDate(DateTime date) {
-    return '${date.year}年${date.month}月${date.day}日';
+    final localeService = context.read<LocaleService>();
+    return DateFormatter.formatBirthDate(date, localeService.locale);
   }
   
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {

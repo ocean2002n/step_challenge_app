@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:step_challenge_app/l10n/app_localizations.dart';
 import '../services/health_service.dart';
 import '../utils/app_theme.dart';
 
@@ -9,6 +10,8 @@ class StepCounterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Consumer<HealthService>(
       builder: (context, healthService, child) {
         final todaySteps = healthService.todaySteps;
@@ -37,9 +40,9 @@ class StepCounterCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      '今日步數',
-                      style: TextStyle(
+                    Text(
+                      l10n.todaySteps,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -67,11 +70,11 @@ class StepCounterCard extends StatelessWidget {
                       ),
                     ).animate().fadeIn(duration: 600.ms).slideX(),
                     const SizedBox(width: 8),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
                       child: Text(
-                        '步',
-                        style: TextStyle(
+                        l10n.stepsUnit,
+                        style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -91,10 +94,10 @@ class StepCounterCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '目標: ${dailyGoal.toString().replaceAllMapped(
+                          '${l10n.dailyGoal}: ${dailyGoal.toString().replaceAllMapped(
                             RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
                             (Match match) => '${match[1]},',
-                          )} 步',
+                          )} ${l10n.steps}',
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 14,
@@ -135,18 +138,18 @@ class StepCounterCard extends StatelessWidget {
                       color: AppTheme.accentOrange,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.check_circle,
                           color: Colors.white,
                           size: 16,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
-                          '目標達成！',
-                          style: TextStyle(
+                          l10n.goalAchieved,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -157,10 +160,10 @@ class StepCounterCard extends StatelessWidget {
                   ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.3)
                 else
                   Text(
-                    '還差 ${(dailyGoal - todaySteps).toString().replaceAllMapped(
+                    '${l10n.remainingSteps}: ${(dailyGoal - todaySteps).toString().replaceAllMapped(
                       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
                       (Match match) => '${match[1]},',
-                    )} 步達成目標',
+                    )} ${l10n.stepsToGoal}',
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 14,

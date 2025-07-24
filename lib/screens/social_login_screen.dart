@@ -18,6 +18,33 @@ class SocialLoginScreen extends StatefulWidget {
 class _SocialLoginScreenState extends State<SocialLoginScreen> {
   bool _isLoading = false;
   String? _loadingProvider;
+  bool _isAppleSignInAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAppleSignInAvailability();
+  }
+
+  Future<void> _checkAppleSignInAvailability() async {
+    try {
+      final socialAuthService = context.read<SocialAuthService>();
+      final isAvailable = await socialAuthService.isAppleSignInAvailable;
+      
+      if (mounted) {
+        setState(() {
+          _isAppleSignInAvailable = isAvailable;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error checking Apple Sign-In availability: $e');
+      if (mounted) {
+        setState(() {
+          _isAppleSignInAvailable = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +89,12 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
               
               // Social login buttons
               _buildGoogleSignInButton(l10n),
-              const SizedBox(height: 16),
               
-              _buildAppleSignInButton(l10n),
+              // 條件性顯示 Apple Sign-In 按鈕
+              if (_isAppleSignInAvailable) ...[
+                const SizedBox(height: 16),
+                _buildAppleSignInButton(l10n),
+              ],
               const SizedBox(height: 32),
               
               // Or divider
@@ -100,18 +130,6 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
                     color: AppTheme.primaryColor,
                     fontWeight: FontWeight.w600,
                   ),
-                ),
-              ),
-              
-              const SizedBox(height: 24),
-              
-              // Terms text
-              Text(
-                '繼續即表示您同意我們的服務條款和隱私政策',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
                 ),
               ),
             ],

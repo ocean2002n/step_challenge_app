@@ -243,6 +243,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remainingSteps => '剩餘步數';
 
   @override
+  String get stepsToGoal => '步達成目標';
+
+  @override
   String get goalAchievedCongrats => '太棒了！您已經達成今日目標，繼續保持健康的生活習慣！';
 
   @override
@@ -258,19 +261,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newDayMessage => '新的一天開始了！走出第一步，向目標邁進！';
 
   @override
-  String get thisWeekWalkingRecord => '本週走路紀錄';
+  String get thisWeekWalkingRecord => '本週紀錄';
 
   @override
   String get noDataAvailable => '暫無數據';
 
   @override
-  String get weeklyTotal => '本週總計';
+  String get weeklyTotal => '總計';
 
   @override
-  String get dailyAverageSteps => '日均步數';
+  String get dailyAverageSteps => '日均';
 
   @override
-  String get daysGoalAchieved => '達標天數';
+  String get daysGoalAchieved => '達標';
 
   @override
   String get stepGoalReminder => '步數目標提醒';
@@ -368,6 +371,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shareLink => '分享連結';
+
+  @override
+  String get share => '分享';
 
   @override
   String get copyLink => '複製連結';
@@ -976,4 +982,88 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get complete => '完成';
+
+  @override
+  String get qrCodeDataUnavailable => 'QR碼資料不可用';
+
+  @override
+  String get qrCodeSavedSuccess => 'QR碼已儲存到相簿';
+
+  @override
+  String get qrCodeSaveFailed => '儲存失敗，請檢查權限設定';
+
+  @override
+  String get saveError => '儲存時發生錯誤';
+
+  @override
+  String get shareQrCodeDescription => '分享或發送此QR碼給朋友，讓他們加入你的好友列表';
+
+  @override
+  String get flashlight => '閃光燈';
+
+  @override
+  String get switchCamera => '切換鏡頭';
+
+  @override
+  String get alignQrCodeToFrame => '將QR碼對準框內掃描';
+
+  @override
+  String get keepQrCodeClear => '請保持QR碼清晰可見';
+
+  @override
+  String get addingFriend => '正在添加好友...';
+
+  @override
+  String get enterInviteCodeManually => '手動輸入邀請碼';
+
+  @override
+  String get cameraPermissionNeeded => '需要相機權限才能掃描QR碼';
+
+  @override
+  String get friendAddedSuccessfully => '好友添加成功！';
+
+  @override
+  String get invalidQrCodeOrAlreadyFriends => '無效的QR碼或已經是好友';
+
+  @override
+  String get errorProcessingQrCode => '處理QR碼時發生錯誤';
+
+  @override
+  String get enterInviteCode => '輸入邀請碼';
+
+  @override
+  String get enterFriendInviteCodeDescription => '請輸入朋友分享的5位邀請碼';
+
+  @override
+  String get linkedAccounts => '已連結帳號';
+
+  @override
+  String get linked => '已連結';
+
+  @override
+  String get notLinked => '未連結';
+
+  @override
+  String get link => '連結';
+
+  @override
+  String get unlink => '解除連結';
+
+  @override
+  String get accountLinkedSuccessfully => '帳號連結成功';
+
+  @override
+  String get linkFailed => '連結失敗';
+
+  @override
+  String get linkError => '連結時發生錯誤';
+
+  @override
+  String get confirmUnlinkAccount => '確定要解除與';
+
+  @override
+  String get accountUnlinkedSuccessfully => '帳號已解除連結';
+
+  @override
+  String get unlinkFailed => '解除連結失敗';
 }

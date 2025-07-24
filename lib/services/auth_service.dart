@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'social_auth_service.dart';
+import 'crashlytics_service.dart';
 
 class AuthService extends ChangeNotifier {
   static const String _isFirstLaunchKey = 'is_first_launch';
@@ -42,51 +43,77 @@ class AuthService extends ChangeNotifier {
   
   /// 載入認證狀態
   Future<void> _loadAuthState() async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    _isFirstLaunch = prefs.getBool(_isFirstLaunchKey) ?? true;
-    _hasCompletedOnboarding = prefs.getBool(_hasCompletedOnboardingKey) ?? false;
-    _isUserRegistered = prefs.getBool(_userRegisteredKey) ?? false;
-    _userId = prefs.getString(_userIdKey);
-    
-    _nickname = prefs.getString('nickname');
-    _email = prefs.getString('email');
-    _gender = prefs.getString('gender');
-    final birthDateString = prefs.getString('birthDate');
-    if (birthDateString != null) {
-      _birthDate = DateTime.parse(birthDateString);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      _isFirstLaunch = prefs.getBool(_isFirstLaunchKey) ?? true;
+      _hasCompletedOnboarding = prefs.getBool(_hasCompletedOnboardingKey) ?? false;
+      _isUserRegistered = prefs.getBool(_userRegisteredKey) ?? false;
+      _userId = prefs.getString(_userIdKey);
+      
+      _nickname = prefs.getString('nickname');
+      _email = prefs.getString('email');
+      _gender = prefs.getString('gender');
+      final birthDateString = prefs.getString('birthDate');
+      if (birthDateString != null) {
+        _birthDate = DateTime.parse(birthDateString);
+      }
+      _height = prefs.getDouble('height');
+      _weight = prefs.getDouble('weight');
+      _profilePhotoUrl = prefs.getString('profilePhotoUrl');
+      
+      final regDateString = prefs.getString(_registrationDateKey);
+      if (regDateString != null) {
+        _registrationDate = DateTime.parse(regDateString);
+      }
+      
+      debugPrint('🔐 Auth state loaded: firstLaunch=$_isFirstLaunch, onboarded=$_hasCompletedOnboarding, registered=$_isUserRegistered');
+      
+      // Set user identifier for Crashlytics if user is registered
+      if (_isUserRegistered && _userId != null) {
+        await CrashlyticsService.setUserIdentifier(_userId!);
+      }
+      
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'Loading auth state failed');
+      debugPrint('Error loading auth state: $e');
+      // Set default values on error
+      _isFirstLaunch = true;
+      _hasCompletedOnboarding = false;
+      _isUserRegistered = false;
+      notifyListeners();
     }
-    _height = prefs.getDouble('height');
-    _weight = prefs.getDouble('weight');
-    _profilePhotoUrl = prefs.getString('profilePhotoUrl');
-    
-    final regDateString = prefs.getString(_registrationDateKey);
-    if (regDateString != null) {
-      _registrationDate = DateTime.parse(regDateString);
-    }
-    
-    debugPrint('🔐 Auth state loaded: firstLaunch=$_isFirstLaunch, onboarded=$_hasCompletedOnboarding, registered=$_isUserRegistered');
-    notifyListeners();
   }
   
   /// 標記首次啟動完成
   Future<void> markFirstLaunchCompleted() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_isFirstLaunchKey, false);
-    
-    _isFirstLaunch = false;
-    debugPrint('✅ First launch marked as completed');
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_isFirstLaunchKey, false);
+      
+      _isFirstLaunch = false;
+      debugPrint('✅ First launch marked as completed');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'Marking first launch completed failed');
+      debugPrint('Error marking first launch completed: $e');
+    }
   }
   
   /// 完成引導流程
   Future<void> completeOnboarding() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_hasCompletedOnboardingKey, true);
-    
-    _hasCompletedOnboarding = true;
-    debugPrint('✅ Onboarding completed');
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_hasCompletedOnboardingKey, true);
+      
+      _hasCompletedOnboarding = true;
+      debugPrint('✅ Onboarding completed');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'Completing onboarding failed');
+      debugPrint('Error completing onboarding: $e');
+    }
   }
   
   /// 用戶註冊
@@ -99,39 +126,48 @@ class AuthService extends ChangeNotifier {
     required double weight,
     String? profilePhotoUrl,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = _generateUserId();
-    final now = DateTime.now();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = _generateUserId();
+      final now = DateTime.now();
+      
+      // 保存註冊狀態
+      await prefs.setBool(_userRegisteredKey, true);
+      await prefs.setString(_userIdKey, userId);
+      await prefs.setString(_registrationDateKey, now.toIso8601String());
+      
+      // 保存用戶基本資料
+      await prefs.setString('nickname', nickname);
+      await prefs.setString('email', email);
+      await prefs.setString('gender', gender);
+      await prefs.setString('birthDate', birthDate.toIso8601String());
+      await prefs.setDouble('height', height);
+      await prefs.setDouble('weight', weight);
+      if (profilePhotoUrl != null) {
+        await prefs.setString('profilePhotoUrl', profilePhotoUrl);
+      }
+      
+      _isUserRegistered = true;
+      _userId = userId;
+      _registrationDate = now;
+      _nickname = nickname;
+      _email = email;
+      _gender = gender;
+      _birthDate = birthDate;
+      _height = height;
+      _weight = weight;
+      _profilePhotoUrl = profilePhotoUrl;
+      
+      // Set user identifier for Crashlytics
+      await CrashlyticsService.setUserIdentifier(userId);
     
-    // 保存註冊狀態
-    await prefs.setBool(_userRegisteredKey, true);
-    await prefs.setString(_userIdKey, userId);
-    await prefs.setString(_registrationDateKey, now.toIso8601String());
-    
-    // 保存用戶基本資料
-    await prefs.setString('nickname', nickname);
-    await prefs.setString('email', email);
-    await prefs.setString('gender', gender);
-    await prefs.setString('birthDate', birthDate.toIso8601String());
-    await prefs.setDouble('height', height);
-    await prefs.setDouble('weight', weight);
-    if (profilePhotoUrl != null) {
-      await prefs.setString('profilePhotoUrl', profilePhotoUrl);
+      debugPrint('✅ User registered successfully: $userId');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'User registration failed');
+      debugPrint('Error registering user: $e');
+      rethrow;
     }
-    
-    _isUserRegistered = true;
-    _userId = userId;
-    _registrationDate = now;
-    _nickname = nickname;
-    _email = email;
-    _gender = gender;
-    _birthDate = birthDate;
-    _height = height;
-    _weight = weight;
-    _profilePhotoUrl = profilePhotoUrl;
-    
-    debugPrint('✅ User registered successfully: $userId');
-    notifyListeners();
   }
 
   /// 使用社群登入註冊用戶
@@ -142,42 +178,51 @@ class AuthService extends ChangeNotifier {
     double? height,
     double? weight,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = _generateUserId();
-    final now = DateTime.now();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = _generateUserId();
+      final now = DateTime.now();
+      
+      // 保存註冊狀態
+      await prefs.setBool(_userRegisteredKey, true);
+      await prefs.setString(_userIdKey, userId);
+      await prefs.setString(_registrationDateKey, now.toIso8601String());
+      
+      // 保存社群登入資料
+      final nickname = socialAccount.displayName ?? socialAccount.email?.split('@').first ?? 'User';
+      final email = socialAccount.email ?? '';
+      
+      await prefs.setString('nickname', nickname);
+      await prefs.setString('email', email);
+      if (gender != null) await prefs.setString('gender', gender);
+      if (birthDate != null) await prefs.setString('birthDate', birthDate.toIso8601String());
+      if (height != null) await prefs.setDouble('height', height);
+      if (weight != null) await prefs.setDouble('weight', weight);
+      if (socialAccount.photoUrl != null) {
+        await prefs.setString('profilePhotoUrl', socialAccount.photoUrl!);
+      }
+      
+      _isUserRegistered = true;
+      _userId = userId;
+      _registrationDate = now;
+      _nickname = nickname;
+      _email = email;
+      _gender = gender;
+      _birthDate = birthDate;
+      _height = height;
+      _weight = weight;
+      _profilePhotoUrl = socialAccount.photoUrl;
+      
+      // Set user identifier for Crashlytics
+      await CrashlyticsService.setUserIdentifier(userId);
     
-    // 保存註冊狀態
-    await prefs.setBool(_userRegisteredKey, true);
-    await prefs.setString(_userIdKey, userId);
-    await prefs.setString(_registrationDateKey, now.toIso8601String());
-    
-    // 保存社群登入資料
-    final nickname = socialAccount.displayName ?? socialAccount.email?.split('@').first ?? 'User';
-    final email = socialAccount.email ?? '';
-    
-    await prefs.setString('nickname', nickname);
-    await prefs.setString('email', email);
-    if (gender != null) await prefs.setString('gender', gender);
-    if (birthDate != null) await prefs.setString('birthDate', birthDate.toIso8601String());
-    if (height != null) await prefs.setDouble('height', height);
-    if (weight != null) await prefs.setDouble('weight', weight);
-    if (socialAccount.photoUrl != null) {
-      await prefs.setString('profilePhotoUrl', socialAccount.photoUrl!);
+      debugPrint('✅ User registered with ${socialAccount.provider.name} login: $userId');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'Social login registration failed');
+      debugPrint('Error registering with social login: $e');
+      rethrow;
     }
-    
-    _isUserRegistered = true;
-    _userId = userId;
-    _registrationDate = now;
-    _nickname = nickname;
-    _email = email;
-    _gender = gender;
-    _birthDate = birthDate;
-    _height = height;
-    _weight = weight;
-    _profilePhotoUrl = socialAccount.photoUrl;
-    
-    debugPrint('✅ User registered with ${socialAccount.provider.name} login: $userId');
-    notifyListeners();
   }
   
   /// 檢查用戶是否需要完成設定
@@ -201,33 +246,39 @@ class AuthService extends ChangeNotifier {
   Future<void> initSocialLoginUser({
     required LinkedAccount socialAccount,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = _generateUserId();
-    final now = DateTime.now();
-    
-    // 保存基本註冊狀態（但不標記為完全註冊）
-    await prefs.setString(_userIdKey, userId);
-    await prefs.setString(_registrationDateKey, now.toIso8601String());
-    
-    // 保存社群登入資料
-    final nickname = socialAccount.displayName ?? socialAccount.email?.split('@').first ?? 'User';
-    final email = socialAccount.email ?? '';
-    
-    await prefs.setString('nickname', nickname);
-    await prefs.setString('email', email);
-    if (socialAccount.photoUrl != null) {
-      await prefs.setString('profilePhotoUrl', socialAccount.photoUrl!);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = _generateUserId();
+      final now = DateTime.now();
+      
+      // 保存基本註冊狀態（但不標記為完全註冊）
+      await prefs.setString(_userIdKey, userId);
+      await prefs.setString(_registrationDateKey, now.toIso8601String());
+      
+      // 保存社群登入資料
+      final nickname = socialAccount.displayName ?? socialAccount.email?.split('@').first ?? 'User';
+      final email = socialAccount.email ?? '';
+      
+      await prefs.setString('nickname', nickname);
+      await prefs.setString('email', email);
+      if (socialAccount.photoUrl != null) {
+        await prefs.setString('profilePhotoUrl', socialAccount.photoUrl!);
+      }
+      
+      // 更新內存狀態（但 _isUserRegistered 保持 false）
+      _userId = userId;
+      _registrationDate = now;
+      _nickname = nickname;
+      _email = email;
+      _profilePhotoUrl = socialAccount.photoUrl;
+      
+      debugPrint('✅ Social login user initialized: $userId (incomplete registration)');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'Social login user initialization failed');
+      debugPrint('Error initializing social login user: $e');
+      rethrow;
     }
-    
-    // 更新內存狀態（但 _isUserRegistered 保持 false）
-    _userId = userId;
-    _registrationDate = now;
-    _nickname = nickname;
-    _email = email;
-    _profilePhotoUrl = socialAccount.photoUrl;
-    
-    debugPrint('✅ Social login user initialized: $userId (incomplete registration)');
-    notifyListeners();
   }
 
   /// 完成社群登入用戶註冊
@@ -237,85 +288,106 @@ class AuthService extends ChangeNotifier {
     double? height,
     double? weight,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    // 保存完整註冊狀態
-    await prefs.setBool(_userRegisteredKey, true);
-    
-    if (gender != null) await prefs.setString('gender', gender);
-    if (birthDate != null) await prefs.setString('birthDate', birthDate.toIso8601String());
-    if (height != null) await prefs.setDouble('height', height);
-    if (weight != null) await prefs.setDouble('weight', weight);
-    
-    // 更新內存狀態
-    _isUserRegistered = true;
-    _gender = gender;
-    _birthDate = birthDate;
-    _height = height;
-    _weight = weight;
-    
-    debugPrint('✅ Social login user registration completed: $_userId');
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      // 保存完整註冊狀態
+      await prefs.setBool(_userRegisteredKey, true);
+      
+      if (gender != null) await prefs.setString('gender', gender);
+      if (birthDate != null) await prefs.setString('birthDate', birthDate.toIso8601String());
+      if (height != null) await prefs.setDouble('height', height);
+      if (weight != null) await prefs.setDouble('weight', weight);
+      
+      // 更新內存狀態
+      _isUserRegistered = true;
+      _gender = gender;
+      _birthDate = birthDate;
+      _height = height;
+      _weight = weight;
+      
+      debugPrint('✅ Social login user registration completed: $_userId');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'Completing social login registration failed');
+      debugPrint('Error completing social login registration: $e');
+      rethrow;
+    }
   }
 
   /// 更新用戶資料照片
   Future<void> updateProfilePhoto(String? photoUrl) async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    if (photoUrl != null && photoUrl.isNotEmpty) {
-      await prefs.setString('profilePhotoUrl', photoUrl);
-      _profilePhotoUrl = photoUrl;
-    } else {
-      await prefs.remove('profilePhotoUrl');
-      _profilePhotoUrl = null;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      if (photoUrl != null && photoUrl.isNotEmpty) {
+        await prefs.setString('profilePhotoUrl', photoUrl);
+        _profilePhotoUrl = photoUrl;
+      } else {
+        await prefs.remove('profilePhotoUrl');
+        _profilePhotoUrl = null;
+      }
+      
+      debugPrint('✅ Profile photo updated: $photoUrl');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'Updating profile photo failed');
+      debugPrint('Error updating profile photo: $e');
     }
-    
-    debugPrint('✅ Profile photo updated: $photoUrl');
-    notifyListeners();
   }
 
   /// 登出用戶
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    
-    _isFirstLaunch = true;
-    _hasCompletedOnboarding = false;
-    _isUserRegistered = false;
-    _userId = null;
-    _registrationDate = null;
-    _nickname = null;
-    _email = null;
-    _gender = null;
-    _birthDate = null;
-    _height = null;
-    _weight = null;
-    _profilePhotoUrl = null;
-    
-    debugPrint('🔐 User logged out');
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      
+      _isFirstLaunch = true;
+      _hasCompletedOnboarding = false;
+      _isUserRegistered = false;
+      _userId = null;
+      _registrationDate = null;
+      _nickname = null;
+      _email = null;
+      _gender = null;
+      _birthDate = null;
+      _height = null;
+      _weight = null;
+      _profilePhotoUrl = null;
+      
+      debugPrint('🔐 User logged out');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'User logout failed');
+      debugPrint('Error logging out user: $e');
+    }
   }
 
   /// 重置用戶數據（僅用於測試）
   Future<void> resetUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    
-    _isFirstLaunch = true;
-    _hasCompletedOnboarding = false;
-    _isUserRegistered = false;
-    _userId = null;
-    _registrationDate = null;
-    _nickname = null;
-    _email = null;
-    _gender = null;
-    _birthDate = null;
-    _height = null;
-    _weight = null;
-    _profilePhotoUrl = null;
-    
-    debugPrint('🔄 User data reset');
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      
+      _isFirstLaunch = true;
+      _hasCompletedOnboarding = false;
+      _isUserRegistered = false;
+      _userId = null;
+      _registrationDate = null;
+      _nickname = null;
+      _email = null;
+      _gender = null;
+      _birthDate = null;
+      _height = null;
+      _weight = null;
+      _profilePhotoUrl = null;
+      
+      debugPrint('🔄 User data reset');
+      notifyListeners();
+    } catch (e, stack) {
+      await CrashlyticsService.recordError(e, stack, reason: 'Reset user data failed');
+      debugPrint('Error resetting user data: $e');
+    }
   }
   
   /// 生成用戶ID

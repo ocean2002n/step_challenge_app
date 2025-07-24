@@ -568,40 +568,46 @@ abstract class AppLocalizations {
   /// **'Remaining steps'**
   String get remainingSteps;
 
+  /// No description provided for @stepsToGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'steps to reach goal'**
+  String get stepsToGoal;
+
   /// No description provided for @goalAchievedCongrats.
   ///
   /// In en, this message translates to:
-  /// **'Excellent! You\'ve achieved today\'s goal. Keep up the healthy lifestyle!'**
+  /// **'Goal achieved! Keep it up!'**
   String get goalAchievedCongrats;
 
   /// No description provided for @nearGoalMessage.
   ///
   /// In en, this message translates to:
-  /// **'Almost there! Just a little more walking and you\'ll succeed. Keep it up!'**
+  /// **'Almost there! Keep going!'**
   String get nearGoalMessage;
 
   /// No description provided for @halfwayMessage.
   ///
   /// In en, this message translates to:
-  /// **'You\'re halfway there! Keep pushing, the goal is within reach!'**
+  /// **'Halfway done! Keep pushing!'**
   String get halfwayMessage;
 
   /// No description provided for @goodStartMessage.
   ///
   /// In en, this message translates to:
-  /// **'Great start! Every step brings you closer to your health goal.'**
+  /// **'Great start! Keep walking!'**
   String get goodStartMessage;
 
   /// No description provided for @newDayMessage.
   ///
   /// In en, this message translates to:
-  /// **'A new day begins! Take the first step towards your goal!'**
+  /// **'New day! Take the first step!'**
   String get newDayMessage;
 
   /// No description provided for @thisWeekWalkingRecord.
   ///
   /// In en, this message translates to:
-  /// **'This Week\'s Walking Record'**
+  /// **'This Week\'s Record'**
   String get thisWeekWalkingRecord;
 
   /// No description provided for @noDataAvailable.
@@ -613,19 +619,19 @@ abstract class AppLocalizations {
   /// No description provided for @weeklyTotal.
   ///
   /// In en, this message translates to:
-  /// **'Weekly total'**
+  /// **'Total'**
   String get weeklyTotal;
 
   /// No description provided for @dailyAverageSteps.
   ///
   /// In en, this message translates to:
-  /// **'Daily average steps'**
+  /// **'Avg steps'**
   String get dailyAverageSteps;
 
   /// No description provided for @daysGoalAchieved.
   ///
   /// In en, this message translates to:
-  /// **'Days goal achieved'**
+  /// **'Goal days'**
   String get daysGoalAchieved;
 
   /// No description provided for @stepGoalReminder.
@@ -801,6 +807,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share Link'**
   String get shareLink;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 
   /// No description provided for @copyLink.
   ///
@@ -1935,6 +1947,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Complete'**
   String get complete;
+
+  /// No description provided for @qrCodeDataUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code data unavailable'**
+  String get qrCodeDataUnavailable;
+
+  /// No description provided for @qrCodeSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code saved to gallery'**
+  String get qrCodeSavedSuccess;
+
+  /// No description provided for @qrCodeSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed, please check permissions'**
+  String get qrCodeSaveFailed;
+
+  /// No description provided for @saveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Save error'**
+  String get saveError;
+
+  /// No description provided for @shareQrCodeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Share or send this QR code to friends to add them to your friends list'**
+  String get shareQrCodeDescription;
+
+  /// No description provided for @flashlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Flashlight'**
+  String get flashlight;
+
+  /// No description provided for @switchCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Camera'**
+  String get switchCamera;
+
+  /// No description provided for @alignQrCodeToFrame.
+  ///
+  /// In en, this message translates to:
+  /// **'Align QR code within the frame to scan'**
+  String get alignQrCodeToFrame;
+
+  /// No description provided for @keepQrCodeClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep QR code clear and visible'**
+  String get keepQrCodeClear;
+
+  /// No description provided for @addingFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding friend...'**
+  String get addingFriend;
+
+  /// No description provided for @enterInviteCodeManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter invite code manually'**
+  String get enterInviteCodeManually;
+
+  /// No description provided for @cameraPermissionNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Need camera permission to scan QR codes'**
+  String get cameraPermissionNeeded;
+
+  /// No description provided for @friendAddedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend added successfully!'**
+  String get friendAddedSuccessfully;
+
+  /// No description provided for @invalidQrCodeOrAlreadyFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid QR code or already friends'**
+  String get invalidQrCodeOrAlreadyFriends;
+
+  /// No description provided for @errorProcessingQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Error processing QR code'**
+  String get errorProcessingQrCode;
+
+  /// No description provided for @enterInviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter invite code'**
+  String get enterInviteCode;
+
+  /// No description provided for @enterFriendInviteCodeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the 5-digit invite code shared by your friend'**
+  String get enterFriendInviteCodeDescription;
+
+  /// No description provided for @linkedAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked Accounts'**
+  String get linkedAccounts;
+
+  /// No description provided for @linked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked'**
+  String get linked;
+
+  /// No description provided for @notLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Not linked'**
+  String get notLinked;
+
+  /// No description provided for @link.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get link;
+
+  /// No description provided for @unlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink'**
+  String get unlink;
+
+  /// No description provided for @accountLinkedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'account linked successfully'**
+  String get accountLinkedSuccessfully;
+
+  /// No description provided for @linkFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Link failed'**
+  String get linkFailed;
+
+  /// No description provided for @linkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Link error'**
+  String get linkError;
+
+  /// No description provided for @confirmUnlinkAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unlink from'**
+  String get confirmUnlinkAccount;
+
+  /// No description provided for @accountUnlinkedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'account unlinked successfully'**
+  String get accountUnlinkedSuccessfully;
+
+  /// No description provided for @unlinkFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink failed'**
+  String get unlinkFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:step_challenge_app/l10n/app_localizations.dart';
 import '../services/health_service.dart';
 import '../utils/app_theme.dart';
 
@@ -10,6 +11,8 @@ class WeeklyChartCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -20,7 +23,7 @@ class WeeklyChartCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '本週走路紀錄',
+                  l10n.thisWeekWalkingRecord,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 Icon(
@@ -35,10 +38,10 @@ class WeeklyChartCard extends StatelessWidget {
                 final weeklySteps = healthService.weeklySteps;
                 
                 if (weeklySteps.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Padding(
-                      padding: EdgeInsets.all(40),
-                      child: Text('暫無數據'),
+                      padding: const EdgeInsets.all(40),
+                      child: Text(l10n.noDataAvailable),
                     ),
                   );
                 }
@@ -82,7 +85,7 @@ class WeeklyChartCard extends StatelessWidget {
                                     return Padding(
                                       padding: const EdgeInsets.only(top: 8),
                                       child: Text(
-                                        DateFormat('E', 'zh_TW').format(date),
+                                        DateFormat('E', Localizations.localeOf(context).toString()).format(date),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,
@@ -163,7 +166,7 @@ class WeeklyChartCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    _buildWeeklyStats(context, healthService),
+                    _buildWeeklyStats(context, healthService, l10n),
                   ],
                 );
               },
@@ -174,7 +177,7 @@ class WeeklyChartCard extends StatelessWidget {
     );
   }
 
-  Widget _buildWeeklyStats(BuildContext context, HealthService healthService) {
+  Widget _buildWeeklyStats(BuildContext context, HealthService healthService, AppLocalizations l10n) {
     final totalSteps = healthService.getWeeklyTotalSteps();
     final averageSteps = healthService.getWeeklyAverageSteps();
     final goalsAchieved = healthService.getWeeklyGoalsAchieved(10000);
@@ -184,28 +187,28 @@ class WeeklyChartCard extends StatelessWidget {
       children: [
         _buildStatItem(
           context,
-          '本週總計',
+          l10n.weeklyTotal,
           '${totalSteps.toString().replaceAllMapped(
             RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
             (Match match) => '${match[1]},',
-          )} 步',
+          )} ${l10n.stepsUnit}',
           Icons.trending_up,
           AppTheme.primaryGreen,
         ),
         _buildStatItem(
           context,
-          '日均步數',
+          l10n.dailyAverageSteps,
           '${averageSteps.round().toString().replaceAllMapped(
             RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
             (Match match) => '${match[1]},',
-          )} 步',
+          )} ${l10n.stepsUnit}',
           Icons.timeline,
           AppTheme.secondaryBlue,
         ),
         _buildStatItem(
           context,
-          '達標天數',
-          '$goalsAchieved/7 天',
+          l10n.daysGoalAchieved,
+          '$goalsAchieved/7 ${l10n.days}',
           Icons.emoji_events,
           AppTheme.accentOrange,
         ),

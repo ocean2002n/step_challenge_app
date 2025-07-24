@@ -33,13 +33,13 @@ class AppLocalizationsKm extends AppLocalizations {
   String get stayActive => 'សូមរក្សាភាពសកម្មនៅថ្ងៃនេះ!';
 
   @override
-  String get todaySteps => 'ជំហានថ្ងៃនេះ';
+  String get todaySteps => 'ថ្ងៃនេះ';
 
   @override
   String get weeklyProgress => 'ការឈើនទៅមុខប្រចាំសប្តាហ៍';
 
   @override
-  String get goalProgress => 'ការឈើនទៅមុខគោលដៅ';
+  String get goalProgress => 'គោលដៅ';
 
   @override
   String get quickActions => 'សកម្មភាពលឿន';
@@ -221,7 +221,7 @@ class AppLocalizationsKm extends AppLocalizations {
   String get endingSoon => 'ជិតបញ្ចប់';
 
   @override
-  String get inProgress => 'កំពុងដំណើរការ';
+  String get inProgress => 'ដំណើរការ';
 
   @override
   String get dailyGoal => 'គោលដៅប្រចាំថ្ងៃ';
@@ -236,53 +236,52 @@ class AppLocalizationsKm extends AppLocalizations {
   String get stepsUnit => 'ជំហាន';
 
   @override
-  String get achieved => 'បានសម្រេច';
+  String get achieved => 'សម្រេច';
 
   @override
-  String get goalAchieved => 'បានសម្រេចគោលដៅ!';
+  String get goalAchieved => 'សម្រេច!';
 
   @override
-  String get keepGoing => 'បន្តខិតខំ';
+  String get keepGoing => 'បន្ត';
 
   @override
-  String get exceededGoal => 'លើសគោលដៅ';
+  String get exceededGoal => 'លើស';
 
   @override
-  String get remainingSteps => 'ជំហាននៅសល់';
+  String get remainingSteps => 'នៅសល់';
 
   @override
-  String get goalAchievedCongrats =>
-      'ល្អណាស់! អ្នកបានសម្រេចគោលដៅថ្ងៃនេះ បន្តរក្សាទម្លាប់រស់នៅដ៏សុខភាព!';
+  String get stepsToGoal => 'ជំហានដល់គោលដៅ';
 
   @override
-  String get nearGoalMessage => 'ជិតដល់គោលដៅហើយ! ដើរបន្តិចទៀតនិងនឹងជោគជ័យ!';
+  String get goalAchievedCongrats => 'ល្អណាស់! សម្រេចហើយ!';
 
   @override
-  String get halfwayMessage =>
-      'បានបញ្ចប់ពាក់កណ្តាលហើយ! បន្តប្រឹងប្រែង គោលដៅនៅមុខភ្នែក!';
+  String get nearGoalMessage => 'ជិតគោលដៅហើយ! បន្តដើរ!';
 
   @override
-  String get goodStartMessage =>
-      'ការចាប់ផ្តើមល្អ! រាល់ជំហានធ្វើឱ្យអ្នកកាន់តែជិតគោលដៅសុខភាព។';
+  String get halfwayMessage => 'ពាក់កណ្តាលហើយ! បន្ត!';
 
   @override
-  String get newDayMessage =>
-      'ថ្ងៃថ្មីចាប់ផ្តើមហើយ! ដើរជំហានដំបូងឆ្ពោះទៅរកគោលដៅ!';
+  String get goodStartMessage => 'ចាប់ផ្តើមល្អ! បន្តដើរ!';
 
   @override
-  String get thisWeekWalkingRecord => 'កំណត់ត្រាដើរប្រចាំសប្តាហ៍នេះ';
+  String get newDayMessage => 'ថ្ងៃថ្មី! ចាប់ផ្តើម!';
+
+  @override
+  String get thisWeekWalkingRecord => 'កំណត់ត្រាសប្តាហ៍';
 
   @override
   String get noDataAvailable => 'មិនមានទិន្នន័យ';
 
   @override
-  String get weeklyTotal => 'សរុបប្រចាំសប្តាហ៍';
+  String get weeklyTotal => 'សរុប';
 
   @override
-  String get dailyAverageSteps => 'ជំហានជាមធ្យមប្រចាំថ្ងៃ';
+  String get dailyAverageSteps => 'ជាមធ្យម';
 
   @override
-  String get daysGoalAchieved => 'ថ្ងៃដែលសម្រេចគោលដៅ';
+  String get daysGoalAchieved => 'ថ្ងៃសម្រេច';
 
   @override
   String get stepGoalReminder => 'ការរំលឹកគោលដៅជំហាន';
@@ -385,6 +384,9 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get shareLink => 'ចែករំលែកតំណភ្ជាប់';
+
+  @override
+  String get share => 'ចែករំលែក';
 
   @override
   String get copyLink => 'ចម្លងតំណភ្ជាប់';
@@ -1005,4 +1007,92 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get complete => 'បញ្ចប់';
+
+  @override
+  String get qrCodeDataUnavailable => 'ទិន្នន័យ QR កូដមិនអាចប្រើបាន';
+
+  @override
+  String get qrCodeSavedSuccess => 'QR កូដត្រូវបានរក្សាទុកក្នុងវិចិត្រសាល';
+
+  @override
+  String get qrCodeSaveFailed => 'រក្សាទុកបរសាជ សូមពិនិត្យការអនុញ្ញាត';
+
+  @override
+  String get saveError => 'កំហុសក្នុងការរក្សាទុក';
+
+  @override
+  String get shareQrCodeDescription =>
+      'ចែករំលែក ឬផ្ញើ QR កូដនេះទៅមិត្តភក្តិ ដើម្បីឱ្យពួកគេបន្ថែមអ្នកទៅក្នុងបញ្ជីមិត្តភក្តិ';
+
+  @override
+  String get flashlight => 'ពិលភ្លើង';
+
+  @override
+  String get switchCamera => 'ប្តូរកាមេរ៉ា';
+
+  @override
+  String get alignQrCodeToFrame => 'តម្រឹម QR កូដក្នុងស៊ុមដើម្បីស្កេន';
+
+  @override
+  String get keepQrCodeClear => 'រក្សា QR កូដឱ្យច្បាស់';
+
+  @override
+  String get addingFriend => 'កំពុងបន្ថែមមិត្តភក្តិ...';
+
+  @override
+  String get enterInviteCodeManually => 'បញ្ចូលកូដអញ្ជើញដោយដៃ';
+
+  @override
+  String get cameraPermissionNeeded =>
+      'ត្រូវការការអនុញ្ញាតកាមេរ៉ាដើម្បីស្កេន QR កូដ';
+
+  @override
+  String get friendAddedSuccessfully => 'បន្ថែមមិត្តភក្តិបានជោគជ័យ!';
+
+  @override
+  String get invalidQrCodeOrAlreadyFriends =>
+      'QR កូដមិនត្រឹមត្រូវ ឬជាមិត្តភក្តិរួចហើយ';
+
+  @override
+  String get errorProcessingQrCode => 'កំហុសក្នុងការដំណើរការ QR កូដ';
+
+  @override
+  String get enterInviteCode => 'បញ្ចូលកូដអញ្ជើញ';
+
+  @override
+  String get enterFriendInviteCodeDescription =>
+      'សូមបញ្ចូលកូដអញ្ជើញ 5 ខ្ទង់ដែលមិត្តភក្តិរបស់អ្នកបានចែករំលែក';
+
+  @override
+  String get linkedAccounts => 'គណនីដែលបានភ្ជាប់';
+
+  @override
+  String get linked => 'បានភ្ជាប់';
+
+  @override
+  String get notLinked => 'មិនបានភ្ជាប់';
+
+  @override
+  String get link => 'ភ្ជាប់';
+
+  @override
+  String get unlink => 'ផ្តាច់ការភ្ជាប់';
+
+  @override
+  String get accountLinkedSuccessfully => 'គណនីបានភ្ជាប់ដោយជោគជ័យ';
+
+  @override
+  String get linkFailed => 'ការភ្ជាប់បរាជ័យ';
+
+  @override
+  String get linkError => 'កំហុសក្នុងការភ្ជាប់';
+
+  @override
+  String get confirmUnlinkAccount => 'តើអ្នកពិតជាចង់ផ្តាច់ការភ្ជាប់ពី';
+
+  @override
+  String get accountUnlinkedSuccessfully => 'គណនីបានផ្តាច់ការភ្ជាប់ដោយជោគជ័យ';
+
+  @override
+  String get unlinkFailed => 'ការផ្តាច់ការភ្ជាប់បរាជ័យ';
 }
