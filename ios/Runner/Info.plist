@@ -75,6 +75,7 @@
 	
 	<!-- Apple Sign-In is configured via Signing & Capabilities in Xcode -->
 	
+	
 	<!-- Deep Link URL Scheme -->
 	<key>CFBundleURLTypes</key>
 	<array>
@@ -102,7 +103,23 @@
 				<string>com.googleusercontent.apps.980817000780-1s0kg6sa7mpli6cqttjk2u5p4aes83f0</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>fb-messenger-share-api</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fbYOUR_APP_ID</string>
+			</array>
+		</dict>
 	</array>
+	
+	<!-- Facebook Configuration -->
+	<key>FacebookAppID</key>
+	<string>YOUR_APP_ID</string>
+	<key>FacebookClientToken</key>
+	<string>YOUR_CLIENT_TOKEN</string>
+	<key>FacebookDisplayName</key>
+	<string>Step Challenge</string>
 	
 	<!-- Associated Domains for Universal Links -->
 	<key>com.apple.developer.associated-domains</key>

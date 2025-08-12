@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/app_theme.dart';
 import 'registration_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -180,7 +181,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ? _completeOnboarding
                     : _nextPage,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF667eea),
+                  backgroundColor: AppTheme.primaryColor,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
@@ -224,7 +225,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive ? const Color(0xFF667eea) : Colors.grey[300],
+        color: isActive ? AppTheme.primaryColor : Colors.grey[300],
         borderRadius: BorderRadius.circular(4),
       ),
     );

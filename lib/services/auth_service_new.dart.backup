@@ -1,0 +1,483 @@
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_auth_service.dart';
+import 'firestore_user_service.dart';
+import 'social_auth_service.dart';
+import 'crashlytics_service.dart';
+import '../models/firestore_user.dart';
+
+/// 整合認證服務
+/// 結合本地存儲、Firebase Auth 和 Firestore 的完整認證解決方案
+class AuthService extends ChangeNotifier {
+  static const String _isFirstLaunchKey = 'is_first_launch';
+  static const String _hasCompletedOnboardingKey = 'has_completed_onboarding';
+  static const String _userRegisteredKey = 'user_registered';
+  static const String _lastSyncTimeKey = 'last_sync_time';
+  
+  // 服務依賴
+  final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
+  final FirestoreUserService _firestoreUserService = FirestoreUserService();
+  final SocialAuthService _socialAuthService = SocialAuthService();
+  
+  // 本地狀態
+  bool _isInitialized = false;
+  bool _isFirstLaunch = true;
+  bool _hasCompletedOnboarding = false;
+  bool _isUserRegistered = false;
+  DateTime? _lastSyncTime;
+  
+  // 用戶資料（來自 Firestore）
+  FirestoreUser? _currentUser;
+  
+  // Getters for local state
+  bool get isInitialized => _isInitialized;
+  bool get isFirstLaunch => _isFirstLaunch;
+  bool get hasCompletedOnboarding => _hasCompletedOnboarding;
+  bool get isUserRegistered => _isUserRegistered;
+  DateTime? get lastSyncTime => _lastSyncTime;
+  
+  // Getters for user data (from Firestore)
+  FirestoreUser? get currentUser => _currentUser;
+  String? get userId => _currentUser?.uid;
+  DateTime? get registrationDate => _currentUser?.registrationDate;
+  String? get nickname => _currentUser?.nickname;
+  String? get email => _currentUser?.email;
+  String? get gender => _currentUser?.gender;
+  DateTime? get birthDate => _currentUser?.birthDate;
+  double? get height => _currentUser?.height;
+  double? get weight => _currentUser?.weight;
+  String? get profilePhotoUrl => _currentUser?.profilePhotoUrl;
+  
+  // Firebase 整合 getters
+  FirebaseAuthService get firebaseAuthService => _firebaseAuthService;
+  FirestoreUserService get firestoreUserService => _firestoreUserService;
+  SocialAuthService get socialAuthService => _socialAuthService;
+  bool get isFirebaseAuthenticated => _firebaseAuthService.isAuthenticated;
+  String? get firebaseUserId => _firebaseAuthService.uid;
+  User? get currentFirebaseUser => _firebaseAuthService.currentUser;
+  
+  /// 初始化認證服務
+  Future<void> initialize() async {
+    try {
+      debugPrint('🔧 Initializing AuthService...');
+      
+      // 1. 載入本地狀態（優先，這樣至少基本功能可以工作）
+      await _loadLocalState();
+      
+      // 2. 嘗試初始化 Firebase 相關服務（如果失敗不阻塞）
+      try {
+        await _firebaseAuthService.initialize();
+        await _firestoreUserService.initialize();
+        debugPrint('✅ Firebase services initialized');
+      } catch (e) {
+        debugPrint('⚠️ Firebase initialization failed (will work offline): $e');
+      }
+      
+      // 3. 初始化 Social Auth Service  
+      try {
+        await _socialAuthService.initialize();
+      } catch (e) {
+        debugPrint('⚠️ Social Auth initialization failed: $e');
+      }
+      
+      // 4. 設置監聽器
+      _setupListeners();
+      
+      // 5. 嘗試同步用戶資料（如果Firebase可用）
+      try {
+        await _syncUserData();
+      } catch (e) {
+        debugPrint('⚠️ User data sync failed: $e');
+      }
+      
+      // 6. 標記為已初始化
+      _isInitialized = true;
+      notifyListeners();
+      
+      debugPrint('✅ AuthService initialized successfully');
+    } catch (e, stack) {
+      debugPrint('❌ AuthService initialization failed: $e');
+      _isInitialized = true; // 即使失敗也要標記為初始化完成，避免無限載入
+      notifyListeners();
+      await CrashlyticsService.recordError(e, stack, reason: 'AuthService initialization failed');
+    }
+  }
+  
+  /// 設置監聽器
+  void _setupListeners() {
+    // 監聽 Firebase Auth 狀態變化
+    _firebaseAuthService.addListener(_onFirebaseAuthChanged);
+    
+    // 監聽 Firestore 用戶資料變化
+    _firestoreUserService.addListener(_onFirestoreUserChanged);
+    
+    // 監聽 Social Auth 變化
+    _socialAuthService.addListener(_onSocialAuthChanged);
+  }
+  
+  /// Firebase Auth 狀態變化處理
+  Future<void> _onFirebaseAuthChanged() async {
+    try {
+      final firebaseUser = _firebaseAuthService.currentUser;
+      
+      if (firebaseUser != null) {
+        debugPrint('🔥 Firebase user signed in: ${firebaseUser.uid}');
+        
+        // 檢查是否需要創建 Firestore 用戶資料
+        final userExists = await _firestoreUserService.userExists(firebaseUser.uid);
+        if (!userExists) {
+          await _createFirestoreUser(firebaseUser);
+        }
+        
+        // 同步社交帳戶資訊
+        await _syncSocialAccounts();
+        
+      } else {
+        debugPrint('🔥 Firebase user signed out');
+        _currentUser = null;
+      }
+      
+      notifyListeners();
+    } catch (e, stack) {
+      debugPrint('❌ Error handling Firebase auth change: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'Firebase auth change handling failed');
+    }
+  }
+  
+  /// Firestore 用戶資料變化處理
+  void _onFirestoreUserChanged() {
+    _currentUser = _firestoreUserService.currentUser;
+    
+    if (_currentUser != null) {
+      _isUserRegistered = true;
+      _saveLocalState();
+    }
+    
+    notifyListeners();
+  }
+  
+  /// Social Auth 變化處理
+  Future<void> _onSocialAuthChanged() async {
+    await _syncSocialAccounts();
+  }
+  
+  /// 載入本地狀態
+  Future<void> _loadLocalState() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      _isFirstLaunch = prefs.getBool(_isFirstLaunchKey) ?? true;
+      _hasCompletedOnboarding = prefs.getBool(_hasCompletedOnboardingKey) ?? false;
+      _isUserRegistered = prefs.getBool(_userRegisteredKey) ?? false;
+      
+      final lastSyncTimeMs = prefs.getInt(_lastSyncTimeKey);
+      _lastSyncTime = lastSyncTimeMs != null 
+          ? DateTime.fromMillisecondsSinceEpoch(lastSyncTimeMs)
+          : null;
+      
+      debugPrint('📱 Local state loaded: first launch=$_isFirstLaunch, onboarding=$_hasCompletedOnboarding, registered=$_isUserRegistered');
+    } catch (e, stack) {
+      debugPrint('❌ Error loading local state: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'Load local state failed');
+    }
+  }
+  
+  /// 保存本地狀態
+  Future<void> _saveLocalState() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      await prefs.setBool(_isFirstLaunchKey, _isFirstLaunch);
+      await prefs.setBool(_hasCompletedOnboardingKey, _hasCompletedOnboarding);
+      await prefs.setBool(_userRegisteredKey, _isUserRegistered);
+      
+      if (_lastSyncTime != null) {
+        await prefs.setInt(_lastSyncTimeKey, _lastSyncTime!.millisecondsSinceEpoch);
+      }
+      
+    } catch (e, stack) {
+      debugPrint('❌ Error saving local state: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'Save local state failed');
+    }
+  }
+  
+  /// 同步用戶資料
+  Future<void> _syncUserData() async {
+    try {
+      final firebaseUser = _firebaseAuthService.currentUser;
+      if (firebaseUser == null) return;
+      
+      // 標記同步時間
+      _lastSyncTime = DateTime.now();
+      await _saveLocalState();
+      
+      debugPrint('🔄 User data synced');
+    } catch (e, stack) {
+      debugPrint('❌ Error syncing user data: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'User data sync failed');
+    }
+  }
+  
+  /// 創建 Firestore 用戶資料
+  Future<void> _createFirestoreUser(User firebaseUser) async {
+    try {
+      debugPrint('👤 Creating Firestore user for: ${firebaseUser.uid}');
+      
+      await _firestoreUserService.createUser(
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        nickname: firebaseUser.displayName,
+        profilePhotoUrl: firebaseUser.photoURL,
+        preferences: UserPreferences().toMap(),
+      );
+      
+      debugPrint('✅ Firestore user created successfully');
+    } catch (e, stack) {
+      debugPrint('❌ Error creating Firestore user: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'Firestore user creation failed');
+    }
+  }
+  
+  /// 同步社交帳戶資訊
+  Future<void> _syncSocialAccounts() async {
+    try {
+      final linkedAccounts = _socialAuthService.linkedAccounts;
+      final socialAccountsMap = <String, dynamic>{};
+      
+      for (final account in linkedAccounts) {
+        final accountInfo = SocialAccountInfo(
+          provider: account.provider.name,
+          providerId: account.providerId,
+          email: account.email,
+          displayName: account.displayName,
+          photoUrl: account.photoUrl,
+          linkedAt: account.linkedAt,
+        );
+        socialAccountsMap[account.provider.name] = accountInfo.toMap();
+      }
+      
+      if (socialAccountsMap.isNotEmpty) {
+        await _firestoreUserService.updateUser(socialAccounts: socialAccountsMap);
+      }
+      
+    } catch (e, stack) {
+      debugPrint('❌ Error syncing social accounts: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'Social accounts sync failed');
+    }
+  }
+  
+  /// 標記首次啟動完成
+  Future<void> markFirstLaunchComplete() async {
+    _isFirstLaunch = false;
+    await _saveLocalState();
+    notifyListeners();
+    debugPrint('✅ First launch marked as complete');
+  }
+  
+  /// 標記引導完成
+  Future<void> markOnboardingComplete() async {
+    _hasCompletedOnboarding = true;
+    await _saveLocalState();
+    notifyListeners();
+    debugPrint('✅ Onboarding marked as complete');
+  }
+  
+  /// 註冊用戶
+  Future<void> registerUser({
+    required String nickname,
+    required String gender,
+    required DateTime birthDate,
+    required double height,
+    required double weight,
+    String? profilePhotoUrl,
+  }) async {
+    try {
+      debugPrint('📝 Registering user...');
+      
+      await _firestoreUserService.updateUser(
+        nickname: nickname,
+        gender: gender,
+        birthDate: birthDate,
+        height: height,
+        weight: weight,
+        profilePhotoUrl: profilePhotoUrl,
+      );
+      
+      _isUserRegistered = true;
+      await _saveLocalState();
+      
+      notifyListeners();
+      
+      debugPrint('✅ User registered successfully');
+      await CrashlyticsService.recordUserAction('user_registered');
+      
+    } catch (e, stack) {
+      debugPrint('❌ Error registering user: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'User registration failed');
+      rethrow;
+    }
+  }
+  
+  /// 更新用戶資料
+  Future<void> updateUserProfile({
+    String? nickname,
+    String? gender,
+    DateTime? birthDate,
+    double? height,
+    double? weight,
+    String? profilePhotoUrl,
+  }) async {
+    try {
+      await _firestoreUserService.updateUser(
+        nickname: nickname,
+        gender: gender,
+        birthDate: birthDate,
+        height: height,
+        weight: weight,
+        profilePhotoUrl: profilePhotoUrl,
+      );
+      
+      debugPrint('✅ User profile updated');
+      await CrashlyticsService.recordUserAction('user_profile_updated');
+      
+    } catch (e, stack) {
+      debugPrint('❌ Error updating user profile: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'User profile update failed');
+      rethrow;
+    }
+  }
+  
+  /// 更新用戶偏好設定
+  Future<void> updateUserPreferences(UserPreferences preferences) async {
+    try {
+      await _firestoreUserService.updatePreferences(preferences);
+      
+      debugPrint('✅ User preferences updated');
+      await CrashlyticsService.recordUserAction('user_preferences_updated');
+      
+    } catch (e, stack) {
+      debugPrint('❌ Error updating user preferences: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'User preferences update failed');
+      rethrow;
+    }
+  }
+  
+  /// 登出用戶
+  Future<void> logoutUser() async {
+    try {
+      debugPrint('🔓 Logging out user...');
+      
+      // 1. Firebase Auth 登出
+      await _firebaseAuthService.signOut();
+      
+      // 2. Social Auth 清理
+      await _socialAuthService.clearAllAccounts();
+      
+      // 3. 清理本地狀態（保留首次啟動和引導狀態）
+      _isUserRegistered = false;
+      _currentUser = null;
+      _lastSyncTime = null;
+      
+      await _saveLocalState();
+      notifyListeners();
+      
+      debugPrint('✅ User logged out successfully');
+      await CrashlyticsService.recordUserAction('user_logged_out');
+      
+    } catch (e, stack) {
+      debugPrint('❌ Error logging out user: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'User logout failed');
+    }
+  }
+  
+  /// 刪除用戶帳戶和所有資料
+  Future<void> deleteUserAccount() async {
+    try {
+      debugPrint('🗑️ Deleting user account...');
+      
+      final uid = _firebaseAuthService.uid;
+      if (uid == null) throw Exception('No authenticated user');
+      
+      // 1. 刪除 Firestore 用戶資料
+      await _firestoreUserService.deleteUser(uid);
+      
+      // 2. 刪除 Firebase Auth 帳戶
+      await _firebaseAuthService.deleteAccount();
+      
+      // 3. 清理所有本地資料
+      await _resetAllData();
+      
+      debugPrint('✅ User account deleted successfully');
+      await CrashlyticsService.recordUserAction('user_account_deleted');
+      
+    } catch (e, stack) {
+      debugPrint('❌ Error deleting user account: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'User account deletion failed');
+      rethrow;
+    }
+  }
+  
+  /// 重置所有資料（測試用）
+  Future<void> _resetAllData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      
+      _isFirstLaunch = true;
+      _hasCompletedOnboarding = false;
+      _isUserRegistered = false;
+      _currentUser = null;
+      _lastSyncTime = null;
+      
+      await _socialAuthService.clearAllAccounts();
+      
+      notifyListeners();
+      
+      debugPrint('🔄 All data reset');
+    } catch (e, stack) {
+      debugPrint('❌ Error resetting data: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'Reset data failed');
+    }
+  }
+  
+  /// 強制同步用戶資料
+  Future<void> forceSync() async {
+    try {
+      await _firestoreUserService.forcSync();
+      await _syncUserData();
+      debugPrint('✅ Force sync completed');
+    } catch (e, stack) {
+      debugPrint('❌ Error in force sync: $e');
+      await CrashlyticsService.recordError(e, stack, reason: 'Force sync failed');
+    }
+  }
+  
+  /// 獲取用戶統計資訊
+  Map<String, dynamic> getUserStats() {
+    final firestoreStats = _firestoreUserService.getUserStats();
+    final socialStats = {
+      'linkedSocialAccounts': _socialAuthService.linkedAccounts.length,
+      'hasGoogleAccount': _socialAuthService.hasGoogleAccount,
+      'hasAppleAccount': _socialAuthService.hasAppleAccount,
+    };
+    
+    return {
+      ...firestoreStats,
+      ...socialStats,
+      'isFirstLaunch': _isFirstLaunch,
+      'hasCompletedOnboarding': _hasCompletedOnboarding,
+      'isUserRegistered': _isUserRegistered,
+      'lastSyncTime': _lastSyncTime?.toIso8601String(),
+    };
+  }
+  
+  /// 清理資源
+  @override
+  void dispose() {
+    _firebaseAuthService.removeListener(_onFirebaseAuthChanged);
+    _firestoreUserService.removeListener(_onFirestoreUserChanged);
+    _socialAuthService.removeListener(_onSocialAuthChanged);
+    super.dispose();
+  }
+}

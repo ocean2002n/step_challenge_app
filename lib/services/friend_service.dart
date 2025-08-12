@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/friend_model.dart';
-import 'crashlytics_service.dart';
+import 'crashlytics_service_stub.dart' as crashlytics;
 
 class FriendService extends ChangeNotifier {
   static const String _friendsKey = 'friends_list';
@@ -37,7 +37,7 @@ class FriendService extends ChangeNotifier {
       // Load friends list
       await _loadFriends();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'FriendService initialization failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'FriendService initialization failed');
       debugPrint('Error initializing FriendService: $e');
     } finally {
       _isLoading = false;

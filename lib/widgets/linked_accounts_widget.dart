@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../services/social_auth_service.dart';
+import '../services/social_auth_service_simplified.dart';
 import '../utils/app_theme.dart';
 import '../l10n/app_localizations.dart';
 
@@ -70,7 +70,7 @@ class _LinkedAccountsWidgetState extends State<LinkedAccountsWidget> {
                 ),
                 const SizedBox(height: 16),
                 
-                // Google Account
+                // Google Account (disabled)
                 _buildAccountRow(
                   context: context,
                   provider: SocialProvider.google,
@@ -78,7 +78,7 @@ class _LinkedAccountsWidgetState extends State<LinkedAccountsWidget> {
                   l10n: l10n,
                 ),
                 
-                // 條件性顯示 Apple Account
+                // 條件性顯示 Apple Account (disabled)
                 if (_isAppleSignInAvailable) ...[
                   const SizedBox(height: 12),
                   _buildAccountRow(
@@ -157,21 +157,23 @@ class _LinkedAccountsWidgetState extends State<LinkedAccountsWidget> {
         // Action button
         if (isLinked) ...[
           TextButton(
-            onPressed: () => _showUnlinkDialog(context, provider, socialAuthService),
+            onPressed: null, // All disabled now
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
+              foregroundColor: Colors.grey,
             ),
             child: Text(l10n.unlink),
           ),
         ] else ...[
           ElevatedButton(
-            onPressed: () => _linkAccount(context, provider, socialAuthService),
+            onPressed: null, // All disabled now
             style: ElevatedButton.styleFrom(
-              backgroundColor: _getProviderColor(provider),
+              backgroundColor: Colors.grey[400],
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              disabledBackgroundColor: Colors.grey[400],
+              disabledForegroundColor: Colors.grey[600],
             ),
-            child: Text(l10n.link),
+            child: Text('${l10n.link} (停用)'),
           ),
         ],
       ],
@@ -216,8 +218,11 @@ class _LinkedAccountsWidgetState extends State<LinkedAccountsWidget> {
       
       if (provider == SocialProvider.google) {
         result = await socialAuthService.signInWithGoogle();
-      } else {
+      } else if (provider == SocialProvider.apple) {
         result = await socialAuthService.signInWithApple();
+      } else {
+        // Facebook removed
+        result = SocialAuthResult(success: false, error: 'Provider not supported');
       }
       
       if (result.success) {

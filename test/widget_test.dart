@@ -11,6 +11,8 @@ import 'package:step_challenge_app/main.dart';
 import 'package:step_challenge_app/services/locale_service.dart';
 import 'package:step_challenge_app/services/deep_link_service.dart';
 import 'package:step_challenge_app/services/auth_service.dart';
+import 'package:step_challenge_app/services/social_auth_service.dart';
+import 'package:step_challenge_app/services/firestore_user_service.dart';
 
 void main() {
   testWidgets('App loads successfully', (WidgetTester tester) async {
@@ -19,6 +21,8 @@ void main() {
       localeService: LocaleService(),
       deepLinkService: DeepLinkService(),
       authService: AuthService(),
+      socialAuthService: SocialAuthService(),
+      firestoreUserService: FirestoreUserService(),
     ));
 
     // Wait for the app to render

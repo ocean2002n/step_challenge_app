@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../services/locale_service.dart';
 import '../services/auth_service.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/app_theme.dart';
+import '../widgets/corporate_hero_animation.dart';
 import 'social_login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -56,57 +58,67 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     final l10n = AppLocalizations.of(context)!;
     
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF667eea),
-              Color(0xFF764ba2),
-            ],
+      body: CorporateHeroAnimation(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppTheme.primaryColor,
+                AppTheme.darkGreen,
+              ],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
-            child: Column(
-              children: [
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Column(
+                children: [
                 const Spacer(flex: 2),
                 
-                // App logo and icon
+                // App logo and icon with Hero Animation
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: SlideTransition(
                     position: _slideAnimation,
                     child: Column(
                       children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
-                              width: 2,
+                        Hero(
+                          tag: 'app_logo',
+                          child: Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 2,
+                              ),
                             ),
-                          ),
-                          child: const Icon(
-                            Icons.directions_walk,
-                            size: 60,
-                            color: Colors.white,
+                            child: const Icon(
+                              Icons.directions_walk,
+                              size: 60,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 24),
-                        Text(
-                          l10n.appTitle,
-                          style: const TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        Hero(
+                          tag: 'app_title',
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Text(
+                              l10n.appTitle,
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -163,7 +175,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       onPressed: _startOnboarding,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        foregroundColor: const Color(0xFF667eea),
+                        foregroundColor: AppTheme.primaryColor,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -181,8 +193,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   ),
                 ),
                 
-                const Spacer(flex: 1),
-              ],
+                  const Spacer(flex: 1),
+                ],
+              ),
             ),
           ),
         ),
@@ -215,7 +228,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           DropdownButtonHideUnderline(
             child: DropdownButton<Locale>(
               value: localeService.locale,
-              dropdownColor: const Color(0xFF667eea),
+              dropdownColor: AppTheme.primaryColor,
               iconEnabledColor: Colors.white,
               style: const TextStyle(
                 color: Colors.white,
@@ -266,9 +279,33 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           pageBuilder: (context, animation, secondaryAnimation) =>
               const SocialLoginScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
+            // Create a slide transition combined with fade for smoother effect
+            const begin = Offset(0.0, 0.3);
+            const end = Offset.zero;
+            const curve = Curves.easeOutCubic;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+            var offsetAnimation = animation.drive(tween);
+            
+            var fadeAnimation = Tween<double>(
+              begin: 0.0, 
+              end: 1.0,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
+            ));
+
+            return SlideTransition(
+              position: offsetAnimation,
+              child: FadeTransition(
+                opacity: fadeAnimation,
+                child: child,
+              ),
+            );
           },
-          transitionDuration: const Duration(milliseconds: 500),
+          transitionDuration: const Duration(milliseconds: 800),
         ),
       );
     }

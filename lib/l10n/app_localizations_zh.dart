@@ -711,6 +711,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get validIdRequired => '請輸入有效的證件號碼';
 
   @override
+  String get phoneNumberRequired => '請輸入手機號碼';
+
+  @override
+  String get emailRequired => '請輸入電子郵件地址';
+
+  @override
   String get validPhoneRequired => '請輸入有效的手機號碼';
 
   @override
@@ -1066,4 +1072,61 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get unlinkFailed => '解除連結失敗';
+
+  @override
+  String get emailLogin => '電子郵件登入';
+
+  @override
+  String get welcomeBack => '歡迎回來！';
+
+  @override
+  String get enterEmailForOtp => '輸入您的電子郵件地址，我們會發送驗證碼給您';
+
+  @override
+  String get sendOtp => '發送驗證碼';
+
+  @override
+  String get alreadyHaveAccount => '已有帳號？';
+
+  @override
+  String get loginNow => '立即登入';
+
+  @override
+  String get noAccount => '還沒有帳號？';
+
+  @override
+  String get registerNow => '立即註冊';
+
+  @override
+  String get otpVerification => '驗證碼確認';
+
+  @override
+  String get enterOtp => '輸入驗證碼';
+
+  @override
+  String get otpSentTo => '我們已發送6位數驗證碼至';
+
+  @override
+  String get resendOtp => '重新發送驗證碼';
+
+  @override
+  String get resendOtpIn => '重新發送驗證碼';
+
+  @override
+  String get verifyAndContinue => '驗證並繼續';
+
+  @override
+  String get changeEmail => '變更電子郵件地址';
+
+  @override
+  String get otpResent => '驗證碼已重新發送';
+
+  @override
+  String get enterComplete6DigitOtp => '請輸入完整的6位數驗證碼';
+
+  @override
+  String get emailAlreadyRegistered => '此電子郵件地址已被註冊，請使用登入功能';
+
+  @override
+  String get emailNotRegistered => '此電子郵件地址尚未註冊，請先註冊帳號';
 }

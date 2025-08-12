@@ -9,7 +9,7 @@ import '../services/friend_service.dart';
 import '../services/deep_link_service.dart';
 import '../utils/app_theme.dart';
 import '../utils/qr_code_saver.dart';
-import '../services/crashlytics_service.dart';
+import '../services/crashlytics_service_stub.dart' as crashlytics;
 
 class FriendQrScreen extends StatefulWidget {
   const FriendQrScreen({super.key});
@@ -40,7 +40,7 @@ class _FriendQrScreenState extends State<FriendQrScreen> {
     final l10n = AppLocalizations.of(context)!;
     final friendService = context.read<FriendService>();
     
-    await CrashlyticsService.recordUserAction('share_invite_link');
+    await crashlytics.CrashlyticsService.recordUserAction('share_invite_link');
     
     try {
       // 使用包含詳細說明的分享文字
@@ -64,7 +64,7 @@ class _FriendQrScreenState extends State<FriendQrScreen> {
 
   Future<void> _copyInviteLink() async {
     final l10n = AppLocalizations.of(context)!;
-    await CrashlyticsService.recordUserAction('copy_invite_link');
+    await crashlytics.CrashlyticsService.recordUserAction('copy_invite_link');
     
     if (_inviteLink != null) {
       try {
@@ -87,7 +87,7 @@ class _FriendQrScreenState extends State<FriendQrScreen> {
   // Save QR code to device gallery
   Future<void> _saveQrCodeToGallery() async {
     final l10n = AppLocalizations.of(context)!;
-    await CrashlyticsService.recordUserAction('save_qr_code_to_gallery');
+    await crashlytics.CrashlyticsService.recordUserAction('save_qr_code_to_gallery');
     
     if (_inviteLink == null) {
       ScaffoldMessenger.of(context).showSnackBar(

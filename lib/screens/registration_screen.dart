@@ -4,22 +4,28 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/auth_service.dart';
 import '../services/health_service.dart';
-import '../services/social_auth_service.dart';
+import '../services/social_auth_service_simplified.dart';
 import '../services/locale_service.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/home_screen.dart';
 import '../screens/social_login_screen.dart';
+import '../screens/email_login_screen.dart';
+import '../screens/otp_verification_screen.dart';
+import '../services/email_otp_service.dart';
 import '../utils/date_formatter.dart';
+import '../utils/app_theme.dart';
 
 
 class RegistrationScreen extends StatefulWidget {
   final int initialStep;
   final bool isSocialLogin;
+  final String? preFilledEmail;
   
   const RegistrationScreen({
     super.key,
     this.initialStep = 0,
     this.isSocialLogin = false,
+    this.preFilledEmail,
   });
 
   @override
@@ -68,6 +74,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _nicknameController.text = authService.nickname ?? '';
         _emailController.text = authService.email ?? '';
         // 不預填其他資料，讓用戶自己填寫
+      });
+    } else if (widget.preFilledEmail != null) {
+      // Pre-fill email if provided
+      setState(() {
+        _emailController.text = widget.preFilledEmail!;
       });
     }
   }
@@ -138,7 +149,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: isCompleted || isActive
-                        ? const Color(0xFF667eea)
+                        ? AppTheme.primaryColor
                         : Colors.grey[300],
                     borderRadius: BorderRadius.circular(2),
                   ),
@@ -194,7 +205,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   shape: BoxShape.circle,
                   color: Colors.grey[200],
                   border: Border.all(
-                    color: const Color(0xFF667eea),
+                    color: AppTheme.primaryColor,
                     width: 2,
                   ),
                 ),
@@ -267,6 +278,37 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               return null;
             },
           ),
+          
+          const SizedBox(height: 32),
+          
+          // Login option - more prominent
+          if (!widget.isSocialLogin) ...[
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '已有帳號？',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 16,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => _navigateToEmailLogin(),
+                    child: const Text(
+                      '立即登入',
+                      style: TextStyle(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -477,9 +519,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF667eea) : Colors.white,
+            color: isSelected ? AppTheme.primaryColor : Colors.white,
             border: Border.all(
-              color: isSelected ? const Color(0xFF667eea) : Colors.grey[300]!,
+              color: isSelected ? AppTheme.primaryColor : Colors.grey[300]!,
             ),
             borderRadius: BorderRadius.circular(12),
           ),
@@ -518,7 +560,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: ElevatedButton(
           onPressed: _isLoading ? null : _handleNextStep,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF667eea),
+            backgroundColor: AppTheme.primaryColor,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
@@ -611,6 +653,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         if (_nicknameController.text.trim().isEmpty) {
           _showErrorSnackBar(l10n.pleaseEnterNickname);
           return false;
+        }
+        if (!widget.isSocialLogin && _emailController.text.trim().isEmpty) {
+          _showErrorSnackBar(l10n.pleaseEnterEmail);
+          return false;
+        }
+        if (!widget.isSocialLogin && !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(_emailController.text.trim())) {
+          _showErrorSnackBar(l10n.pleaseEnterValidEmail);
+          return false;
+        }
+        // For non-social login, proceed to OTP verification
+        if (!widget.isSocialLogin) {
+          _sendRegistrationOTP();
+          return false; // Don't proceed to next step yet
         }
         break;
       case 1: // Personal details
@@ -835,5 +890,100 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _birthDate = selectedDate;
       });
     }
+  }
+
+  void _navigateToEmailLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const EmailLoginScreen(),
+      ),
+    );
+  }
+
+  Future<void> _sendRegistrationOTP() async {
+    setState(() => _isLoading = true);
+    
+    try {
+      final emailOtpService = context.read<EmailOtpService>();
+      final authService = context.read<AuthService>();
+      final email = _emailController.text.trim();
+      
+      // Check if user already exists
+      final userExists = await authService.checkUserExists(email);
+      if (userExists) {
+        if (mounted) {
+          _showLoginPrompt(email);
+        }
+        return;
+      }
+      
+      // Send OTP for registration
+      final result = await emailOtpService.sendOTP(email, isLogin: false);
+      
+      if (result.success && mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpVerificationScreen(
+              email: email,
+              isLogin: false,
+            ),
+          ),
+        );
+      } else if (mounted) {
+        _showErrorSnackBar(result.error ?? '發送驗證碼失敗');
+      }
+    } catch (e) {
+      if (mounted) {
+        _showErrorSnackBar('發送驗證碼時發生錯誤：$e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  void _showLoginPrompt(String email) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('帳號已存在'),
+          content: Text(
+            '電子郵件地址「$email」已被註冊。\n\n是否要使用此電子郵件地址進行登入？'
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('取消'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _navigateToLoginWithEmail(email);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('立即登入'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _navigateToLoginWithEmail(String email) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EmailLoginScreen(
+          preFilledEmail: email,
+        ),
+      ),
+    );
   }
 }

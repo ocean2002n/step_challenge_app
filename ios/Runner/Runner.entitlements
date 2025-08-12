@@ -21,13 +21,10 @@
 	</array>
 	
 	<!-- Apple Sign-In capability -->
-	<!-- 暫時註釋以避免 Provisioning Profile 問題 -->
-	<!-- 當有正確的開發者帳號和 App ID 配置時取消註釋 -->
-	<!--
+	<!-- 在模擬器上啟用以進行開發測試 -->
 	<key>com.apple.developer.applesignin</key>
 	<array>
 		<string>Default</string>
 	</array>
-	-->
 </dict>
 </plist>

@@ -731,6 +731,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validIdRequired => 'Please enter a valid ID number';
 
   @override
+  String get phoneNumberRequired => 'Please enter phone number';
+
+  @override
+  String get emailRequired => 'Please enter email address';
+
+  @override
   String get validPhoneRequired => 'Please enter a valid phone number';
 
   @override
@@ -1091,4 +1097,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unlinkFailed => 'Unlink failed';
+
+  @override
+  String get emailLogin => 'Email Login';
+
+  @override
+  String get welcomeBack => 'Welcome Back!';
+
+  @override
+  String get enterEmailForOtp =>
+      'Enter your email address and we\'ll send you a verification code';
+
+  @override
+  String get sendOtp => 'Send Verification Code';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get loginNow => 'Login Now';
+
+  @override
+  String get noAccount => 'Don\'t have an account?';
+
+  @override
+  String get registerNow => 'Register Now';
+
+  @override
+  String get otpVerification => 'OTP Verification';
+
+  @override
+  String get enterOtp => 'Enter Verification Code';
+
+  @override
+  String get otpSentTo => 'We\'ve sent a 6-digit verification code to';
+
+  @override
+  String get resendOtp => 'Resend Verification Code';
+
+  @override
+  String get resendOtpIn => 'Resend code in';
+
+  @override
+  String get verifyAndContinue => 'Verify and Continue';
+
+  @override
+  String get changeEmail => 'Change Email Address';
+
+  @override
+  String get otpResent => 'Verification code resent';
+
+  @override
+  String get enterComplete6DigitOtp =>
+      'Please enter the complete 6-digit verification code';
+
+  @override
+  String get emailAlreadyRegistered =>
+      'This email address is already registered, please use login';
+
+  @override
+  String get emailNotRegistered =>
+      'This email address is not registered, please register first';
 }

@@ -1,5 +1,5 @@
 name: step_challenge_app
-description: A health step tracking and challenge app with Google Sheets integration.
+description: A health step tracking and challenge app with Firebase integration.
 version: 1.0.0+1
 
 environment:
@@ -40,9 +40,10 @@ dependencies:
   provider: ^6.1.1
   shared_preferences: ^2.2.2
   
-  # Authentication
-  google_sign_in: ^6.1.5
+  # Authentication - Google Sign In temporarily disabled due to Firebase conflicts
+  # google_sign_in: ^6.1.5
   sign_in_with_apple: ^5.0.0
+  flutter_facebook_auth: ^6.0.4
   crypto: ^3.0.3
   
   # Utilities
@@ -50,9 +51,8 @@ dependencies:
   uuid: ^4.2.1
   image_picker: ^1.0.4
   
-  # Firebase Crashlytics - Temporarily disabled for build stability
-  # firebase_core: ^2.20.0
-  # firebase_crashlytics: ^3.4.0
+  # Firebase Core only - avoiding conflicts
+  firebase_core: ^2.32.0
 
 dev_dependencies:
   flutter_test:

@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../l10n/app_localizations.dart';
 import '../services/auth_service.dart';
-import '../services/social_auth_service.dart';
+import '../services/social_auth_service_simplified.dart';
 import '../utils/app_theme.dart';
+import '../widgets/login_background_animation.dart';
 import 'registration_screen.dart';
+import 'email_login_screen.dart';
 import 'home_screen.dart';
 
 class SocialLoginScreen extends StatefulWidget {
@@ -15,15 +17,57 @@ class SocialLoginScreen extends StatefulWidget {
   State<SocialLoginScreen> createState() => _SocialLoginScreenState();
 }
 
-class _SocialLoginScreenState extends State<SocialLoginScreen> {
+class _SocialLoginScreenState extends State<SocialLoginScreen>
+    with SingleTickerProviderStateMixin {
   bool _isLoading = false;
   String? _loadingProvider;
   bool _isAppleSignInAvailable = false;
+  
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
     _checkAppleSignInAvailability();
+    _initAnimations();
+  }
+  
+  void _initAnimations() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.5),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
+    ));
+
+    // Start animation after a small delay to let Hero animation complete
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        _animationController.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> _checkAppleSignInAvailability() async {
@@ -51,102 +95,183 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
     final l10n = AppLocalizations.of(context)!;
     
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // App logo/title
-              const Icon(
-                Icons.directions_walk,
-                size: 80,
-                color: AppTheme.primaryColor,
+      body: LoginBackgroundAnimation(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+              // App logo/title with Hero Animation
+              Hero(
+                tag: 'app_logo',
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppTheme.primaryColor.withOpacity(0.2),
+                      width: 2,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.directions_walk,
+                    size: 50,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
               ),
               const SizedBox(height: 24),
               
-              const Text(
-                'Step Challenge',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryColor,
+              Hero(
+                tag: 'app_title',
+                child: Material(
+                  color: Colors.transparent,
+                  child: const Text(
+                    'Step Challenge',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
               
-              Text(
-                '開始您的健康運動之旅',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Text(
+                  '開始您的健康運動之旅',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
                 ),
               ),
               const SizedBox(height: 48),
               
-              // Social login buttons
-              _buildGoogleSignInButton(l10n),
-              
-              // 條件性顯示 Apple Sign-In 按鈕
-              if (_isAppleSignInAvailable) ...[
-                const SizedBox(height: 16),
-                _buildAppleSignInButton(l10n),
-              ],
+              // Social login buttons with animation
+              SlideTransition(
+                position: _slideAnimation,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Column(
+                    children: [
+                      _buildGoogleSignInButton(l10n),
+                      
+                      // 條件性顯示 Apple Sign-In 按鈕
+                      if (_isAppleSignInAvailable) ...[
+                        const SizedBox(height: 16),
+                        _buildAppleSignInButton(l10n),
+                      ],
+                      
+                      // Facebook Sign-In 按鈕
+                      const SizedBox(height: 16),
+                      _buildFacebookSignInButton(l10n),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 32),
               
               // Or divider
-              Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.grey[300])),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      '或',
-                      style: TextStyle(color: Colors.grey[600]),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Row(
+                  children: [
+                    Expanded(child: Divider(color: Colors.grey[300])),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        '或',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
                     ),
-                  ),
-                  Expanded(child: Divider(color: Colors.grey[300])),
-                ],
+                    Expanded(child: Divider(color: Colors.grey[300])),
+                  ],
+                ),
               ),
               const SizedBox(height: 32),
               
-              // Traditional registration button
-              OutlinedButton(
-                onPressed: _isLoading ? null : () => _navigateToTraditionalRegistration(),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: const BorderSide(color: AppTheme.primaryColor),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  '使用電子郵件註冊',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: AppTheme.primaryColor,
-                    fontWeight: FontWeight.w600,
+              // Email registration button
+              SlideTransition(
+                position: _slideAnimation,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: OutlinedButton(
+                    onPressed: _isLoading ? null : () => _navigateToEmailRegistration(),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      side: const BorderSide(color: AppTheme.primaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      '使用電子郵件註冊',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ],
+              
+              const SizedBox(height: 24),
+              
+              // Login option
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '已有帳號？',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: _isLoading ? null : () => _navigateToEmailLogin(),
+                      child: const Text(
+                        '立即登入',
+                        style: TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+
   Widget _buildGoogleSignInButton(AppLocalizations l10n) {
-    final isGoogleLoading = _isLoading && _loadingProvider == 'google';
-    
+    // Google Sign In is disabled
     return ElevatedButton(
-      onPressed: _isLoading ? null : () => _signInWithGoogle(),
+      onPressed: null, // Disabled
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
+        backgroundColor: Colors.grey[200],
+        foregroundColor: Colors.grey[500],
+        disabledBackgroundColor: Colors.grey[200],
+        disabledForegroundColor: Colors.grey[500],
         padding: const EdgeInsets.symmetric(vertical: 16),
         side: BorderSide(color: Colors.grey[300]!),
         shape: RoundedRectangleBorder(
@@ -157,24 +282,19 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (isGoogleLoading)
-            const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          else
-            SvgPicture.asset(
-              'assets/images/google_g_logo.svg',
-              width: 20,
-              height: 20,
-            ),
+          SvgPicture.asset(
+            'assets/images/google_g_logo.svg',
+            width: 20,
+            height: 20,
+            colorFilter: ColorFilter.mode(Colors.grey[400]!, BlendMode.srcIn),
+          ),
           const SizedBox(width: 12),
           Text(
-            isGoogleLoading ? '正在登入...' : '使用 Google 繼續',
-            style: const TextStyle(
+            '使用 Google 註冊 (暫時停用)',
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
+              color: Colors.grey[500],
             ),
           ),
         ],
@@ -183,13 +303,14 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
   }
 
   Widget _buildAppleSignInButton(AppLocalizations l10n) {
-    final isAppleLoading = _isLoading && _loadingProvider == 'apple';
-    
+    // Apple Sign In is disabled
     return ElevatedButton(
-      onPressed: _isLoading ? null : () => _signInWithApple(),
+      onPressed: null, // Disabled
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.grey[600],
+        foregroundColor: Colors.grey[400],
+        disabledBackgroundColor: Colors.grey[600],
+        disabledForegroundColor: Colors.grey[400],
         padding: const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -198,27 +319,55 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (isAppleLoading)
-            const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            )
-          else
-            const Icon(Icons.apple, size: 20),
+          Icon(Icons.apple, size: 20, color: Colors.grey[400]),
           const SizedBox(width: 12),
           Text(
-            isAppleLoading ? '正在登入...' : '使用 Apple 繼續',
-            style: const TextStyle(
+            '使用 Apple 註冊 (暫時停用)',
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
+              color: Colors.grey[400],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFacebookSignInButton(AppLocalizations l10n) {
+    return ElevatedButton(
+      onPressed: _isLoading ? null : _signInWithFacebook,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF1877F2),
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      child: _loadingProvider == 'facebook'
+        ? const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.facebook, size: 20),
+              const SizedBox(width: 12),
+              Text(
+                '使用 Facebook 註冊',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
     );
   }
 
@@ -276,6 +425,33 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
     }
   }
 
+  Future<void> _signInWithFacebook() async {
+    setState(() {
+      _isLoading = true;
+      _loadingProvider = 'facebook';
+    });
+
+    try {
+      final socialAuthService = context.read<SocialAuthService>();
+      final result = await socialAuthService.signInWithFacebook();
+      
+      if (result.success && result.account != null) {
+        await _handleSocialLoginSuccess(result.account!);
+      } else {
+        _showErrorMessage(result.error ?? '登入失敗');
+      }
+    } catch (e) {
+      _showErrorMessage('Facebook 登入時發生錯誤：$e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _loadingProvider = null;
+        });
+      }
+    }
+  }
+
   Future<void> _handleSocialLoginSuccess(LinkedAccount account) async {
     final authService = context.read<AuthService>();
     
@@ -318,10 +494,17 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
     }
   }
 
-  void _navigateToTraditionalRegistration() {
+  void _navigateToEmailRegistration() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const RegistrationScreen()),
+    );
+  }
+
+  void _navigateToEmailLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
     );
   }
 

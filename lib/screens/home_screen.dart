@@ -16,6 +16,7 @@ import 'health_settings_screen.dart';
 import 'welcome_screen.dart';
 import 'create_challenge_screen.dart';
 import 'marathon_events_screen.dart';
+import 'animation_demo_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -116,7 +117,13 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: _createNewChallenge,
               child: const Icon(Icons.add),
             )
-          : null,
+          : _selectedIndex == 0 
+              ? FloatingActionButton(
+                  onPressed: _showAnimationDemo,
+                  backgroundColor: Colors.purple,
+                  child: const Icon(Icons.animation),
+                )
+              : null,
     );
   }
 
@@ -523,6 +530,15 @@ class _HomeScreenState extends State<HomeScreen> {
         _challengeListKey.currentState?.addNewChallenge(result);
       }
     });
+  }
+  
+  void _showAnimationDemo() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AnimationDemoScreen(),
+      ),
+    );
   }
 
   void _checkHealthPermissions() async {

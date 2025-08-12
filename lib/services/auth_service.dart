@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'social_auth_service.dart';
-import 'crashlytics_service.dart';
+import 'social_auth_service_simplified.dart';
+import 'crashlytics_service_stub.dart' as crashlytics;
 
 class AuthService extends ChangeNotifier {
   static const String _isFirstLaunchKey = 'is_first_launch';
@@ -71,12 +71,12 @@ class AuthService extends ChangeNotifier {
       
       // Set user identifier for Crashlytics if user is registered
       if (_isUserRegistered && _userId != null) {
-        await CrashlyticsService.setUserIdentifier(_userId!);
+        await crashlytics.CrashlyticsService.setUserIdentifier(_userId!);
       }
       
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Loading auth state failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Loading auth state failed');
       debugPrint('Error loading auth state: $e');
       // Set default values on error
       _isFirstLaunch = true;
@@ -96,7 +96,7 @@ class AuthService extends ChangeNotifier {
       debugPrint('✅ First launch marked as completed');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Marking first launch completed failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Marking first launch completed failed');
       debugPrint('Error marking first launch completed: $e');
     }
   }
@@ -111,7 +111,7 @@ class AuthService extends ChangeNotifier {
       debugPrint('✅ Onboarding completed');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Completing onboarding failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Completing onboarding failed');
       debugPrint('Error completing onboarding: $e');
     }
   }
@@ -159,12 +159,12 @@ class AuthService extends ChangeNotifier {
       _profilePhotoUrl = profilePhotoUrl;
       
       // Set user identifier for Crashlytics
-      await CrashlyticsService.setUserIdentifier(userId);
+      await crashlytics.CrashlyticsService.setUserIdentifier(userId);
     
       debugPrint('✅ User registered successfully: $userId');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'User registration failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'User registration failed');
       debugPrint('Error registering user: $e');
       rethrow;
     }
@@ -214,12 +214,12 @@ class AuthService extends ChangeNotifier {
       _profilePhotoUrl = socialAccount.photoUrl;
       
       // Set user identifier for Crashlytics
-      await CrashlyticsService.setUserIdentifier(userId);
+      await crashlytics.CrashlyticsService.setUserIdentifier(userId);
     
       debugPrint('✅ User registered with ${socialAccount.provider.name} login: $userId');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Social login registration failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Social login registration failed');
       debugPrint('Error registering with social login: $e');
       rethrow;
     }
@@ -275,7 +275,7 @@ class AuthService extends ChangeNotifier {
       debugPrint('✅ Social login user initialized: $userId (incomplete registration)');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Social login user initialization failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Social login user initialization failed');
       debugPrint('Error initializing social login user: $e');
       rethrow;
     }
@@ -309,7 +309,7 @@ class AuthService extends ChangeNotifier {
       debugPrint('✅ Social login user registration completed: $_userId');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Completing social login registration failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Completing social login registration failed');
       debugPrint('Error completing social login registration: $e');
       rethrow;
     }
@@ -331,7 +331,7 @@ class AuthService extends ChangeNotifier {
       debugPrint('✅ Profile photo updated: $photoUrl');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Updating profile photo failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Updating profile photo failed');
       debugPrint('Error updating profile photo: $e');
     }
   }
@@ -358,7 +358,7 @@ class AuthService extends ChangeNotifier {
       debugPrint('🔐 User logged out');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'User logout failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'User logout failed');
       debugPrint('Error logging out user: $e');
     }
   }
@@ -385,7 +385,7 @@ class AuthService extends ChangeNotifier {
       debugPrint('🔄 User data reset');
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Reset user data failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Reset user data failed');
       debugPrint('Error resetting user data: $e');
     }
   }
@@ -411,5 +411,54 @@ class AuthService extends ChangeNotifier {
     
     final daysSinceRegistration = DateTime.now().difference(_registrationDate!).inDays;
     return daysSinceRegistration <= 7;
+  }
+
+  /// 檢查用戶是否存在（基於電子郵件）
+  Future<bool> checkUserExists(String email) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final storedEmail = prefs.getString('email');
+      
+      // 在真實環境中，這應該是對後端 API 的調用
+      // 現在我們只檢查本地存儲的電子郵件
+      final exists = storedEmail != null && storedEmail.toLowerCase() == email.toLowerCase();
+      
+      if (kDebugMode) {
+        print('🔍 Checking user exists for $email: $exists');
+      }
+      
+      return exists;
+    } catch (e, stack) {
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Check user exists failed');
+      if (kDebugMode) {
+        print('Error checking user exists: $e');
+      }
+      return false;
+    }
+  }
+
+  /// 使用電子郵件登入用戶
+  Future<void> loginWithEmail(String email) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      // 載入用戶資料
+      await _loadAuthState();
+      
+      if (_email?.toLowerCase() == email.toLowerCase()) {
+        if (kDebugMode) {
+          print('✅ User logged in with email: $email');
+        }
+        notifyListeners();
+      } else {
+        throw Exception('用戶資料不匹配');
+      }
+    } catch (e, stack) {
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Email login failed');
+      if (kDebugMode) {
+        print('Error logging in with email: $e');
+      }
+      rethrow;
+    }
   }
 }

@@ -1402,6 +1402,18 @@ abstract class AppLocalizations {
   /// **'Please enter a valid ID number'**
   String get validIdRequired;
 
+  /// No description provided for @phoneNumberRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter phone number'**
+  String get phoneNumberRequired;
+
+  /// No description provided for @emailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter email address'**
+  String get emailRequired;
+
   /// No description provided for @validPhoneRequired.
   ///
   /// In en, this message translates to:
@@ -2115,6 +2127,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlink failed'**
   String get unlinkFailed;
+
+  /// No description provided for @emailLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Login'**
+  String get emailLogin;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back!'**
+  String get welcomeBack;
+
+  /// No description provided for @enterEmailForOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we\'ll send you a verification code'**
+  String get enterEmailForOtp;
+
+  /// No description provided for @sendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Verification Code'**
+  String get sendOtp;
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get alreadyHaveAccount;
+
+  /// No description provided for @loginNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Now'**
+  String get loginNow;
+
+  /// No description provided for @noAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get noAccount;
+
+  /// No description provided for @registerNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Now'**
+  String get registerNow;
+
+  /// No description provided for @otpVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP Verification'**
+  String get otpVerification;
+
+  /// No description provided for @enterOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Verification Code'**
+  String get enterOtp;
+
+  /// No description provided for @otpSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve sent a 6-digit verification code to'**
+  String get otpSentTo;
+
+  /// No description provided for @resendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Verification Code'**
+  String get resendOtp;
+
+  /// No description provided for @resendOtpIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in'**
+  String get resendOtpIn;
+
+  /// No description provided for @verifyAndContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify and Continue'**
+  String get verifyAndContinue;
+
+  /// No description provided for @changeEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Email Address'**
+  String get changeEmail;
+
+  /// No description provided for @otpResent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code resent'**
+  String get otpResent;
+
+  /// No description provided for @enterComplete6DigitOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the complete 6-digit verification code'**
+  String get enterComplete6DigitOtp;
+
+  /// No description provided for @emailAlreadyRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'This email address is already registered, please use login'**
+  String get emailAlreadyRegistered;
+
+  /// No description provided for @emailNotRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'This email address is not registered, please register first'**
+  String get emailNotRegistered;
 }
 
 class _AppLocalizationsDelegate

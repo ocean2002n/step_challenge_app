@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:health/health.dart';
 import '../models/daily_steps_model.dart';
-import 'crashlytics_service.dart';
+import 'crashlytics_service_stub.dart' as crashlytics;
 
 class HealthService extends ChangeNotifier {
   final Health _health = Health();
@@ -45,7 +45,7 @@ class HealthService extends ChangeNotifier {
         await Health().hasPermissions([HealthDataType.STEPS], permissions: [HealthDataAccess.READ]);
         debugPrint('✅ HealthKit available on this device');
       } catch (e, stack) {
-        await CrashlyticsService.recordError(e, stack, reason: 'HealthKit availability check failed');
+        await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'HealthKit availability check failed');
         debugPrint('❌ HealthKit not available on this device: $e');
         _generateMockData();
         notifyListeners();
@@ -79,7 +79,7 @@ class HealthService extends ChangeNotifier {
       notifyListeners();
       return _isAuthorized;
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Health service initialization failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Health service initialization failed');
       debugPrint('💥 Health initialization error: $e');
       _generateMockData();
       notifyListeners();
@@ -98,7 +98,7 @@ class HealthService extends ChangeNotifier {
         _loadHeartRateData(),
       ]);
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Loading real health data failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Loading real health data failed');
       debugPrint('Error loading real health data: $e');
       // 如果讀取失敗，使用模擬數據
       _generateMockData();
@@ -152,7 +152,7 @@ class HealthService extends ChangeNotifier {
       
       debugPrint('📊 Monthly steps loaded: This month: $_monthlySteps, Last month: $_lastMonthSteps');
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Loading monthly steps failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Loading monthly steps failed');
       debugPrint('Error loading monthly steps: $e');
       if (throwOnError) {
         rethrow;
@@ -184,7 +184,7 @@ class HealthService extends ChangeNotifier {
         debugPrint('❤️ Average heart rate today: ${averageHeartRate.toInt()} bpm');
       }
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Loading heart rate data failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Loading heart rate data failed');
       debugPrint('Error loading heart rate data: $e');
       if (throwOnError) {
         rethrow;
@@ -214,7 +214,7 @@ class HealthService extends ChangeNotifier {
 
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Loading today steps failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Loading today steps failed');
       debugPrint('Error loading today steps: $e');
       if (throwOnError) {
         rethrow; // 重新拋出錯誤
@@ -261,7 +261,7 @@ class HealthService extends ChangeNotifier {
       _weeklySteps = weeklyData.reversed.toList();
       notifyListeners();
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Loading weekly steps failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Loading weekly steps failed');
       debugPrint('Error loading weekly steps: $e');
       if (throwOnError) {
         rethrow;
@@ -307,7 +307,7 @@ class HealthService extends ChangeNotifier {
 
       return rangeData;
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Getting steps in range failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Getting steps in range failed');
       debugPrint('Error getting steps in range: $e');
       return [];
     }
@@ -337,7 +337,7 @@ class HealthService extends ChangeNotifier {
       notifyListeners();
       
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Health data sync failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Health data sync failed');
       debugPrint('💥 Health sync error: $e');
       
       // 拋出用戶友好的錯誤訊息
@@ -369,7 +369,7 @@ class HealthService extends ChangeNotifier {
         return false;
       }
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Force reauthorization failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Force reauthorization failed');
       debugPrint('💥 Force reauthorization error: $e');
       return false;
     }
@@ -388,7 +388,7 @@ class HealthService extends ChangeNotifier {
         'supportedTypes': types.map((type) => type.name).toList(),
       };
     } catch (e, stack) {
-      await CrashlyticsService.recordError(e, stack, reason: 'Checking health permissions failed');
+      await crashlytics.CrashlyticsService.recordError(e, stack, reason: 'Checking health permissions failed');
       debugPrint('Error checking health permissions: $e');
       return {
         'hasPermissions': false,

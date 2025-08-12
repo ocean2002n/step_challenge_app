@@ -8,7 +8,7 @@ import '../widgets/phone_number_field.dart';
 import '../widgets/birth_date_field.dart';
 import '../widgets/linked_accounts_widget.dart';
 import '../services/auth_service.dart';
-import '../services/social_auth_service.dart';
+import '../services/social_auth_service_simplified.dart';
 import '../utils/app_theme.dart';
 import 'friend_qr_screen.dart';
 import 'qr_scanner_screen.dart';
@@ -468,10 +468,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               labelText: l10n.phoneNumber,
               onChanged: (value) => _phoneController.text = value,
               validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  if (!RegExp(r'^[+]?[0-9]{8,15}$').hasMatch(value)) {
-                    return l10n.validPhoneRequired;
-                  }
+                // 手機號碼為必填
+                if (value == null || value.isEmpty) {
+                  return l10n.phoneNumberRequired;
+                }
+                if (!RegExp(r'^[+]?[0-9]{8,15}$').hasMatch(value)) {
+                  return l10n.validPhoneRequired;
                 }
                 return null;
               },
@@ -489,10 +491,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return l10n.validEmailRequired;
-                  }
+                // email 為必填
+                if (value == null || value.isEmpty) {
+                  return l10n.emailRequired;
+                }
+                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                  return l10n.validEmailRequired;
                 }
                 return null;
               },

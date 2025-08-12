@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import '../services/crashlytics_service.dart';
+import '../services/crashlytics_service_stub.dart' as crashlytics;
 
 class QrCodeSaver {
   /// Save QR code to device gallery
@@ -41,7 +41,7 @@ class QrCodeSaver {
 
       return result['isSuccess'] ?? false;
     } catch (e, stack) {
-      await CrashlyticsService.recordQrError('saveQrCodeToGallery', e, stack);
+      await crashlytics.CrashlyticsService.recordQrError('saveQrCodeToGallery', e, stack);
       print('Error saving QR code: $e');
       return false;
     }
@@ -148,7 +148,7 @@ class QrCodeSaver {
       
       return byteData?.buffer.asUint8List();
     } catch (e, stack) {
-      await CrashlyticsService.recordQrError('generateQrCodeWithLogo', e, stack);
+      await crashlytics.CrashlyticsService.recordQrError('generateQrCodeWithLogo', e, stack);
       print('Error generating QR code image: $e');
       return null;
     }

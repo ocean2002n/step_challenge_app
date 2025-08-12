@@ -76,7 +76,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 國碼選擇器
             InkWell(
@@ -92,24 +92,26 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
                   ),
                   color: widget.enabled ? Colors.white : Colors.grey[100],
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _selectedCountry.flag,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      _selectedCountry.dialCode,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.arrow_drop_down,
-                      color: widget.enabled ? null : Colors.grey,
-                    ),
-                  ],
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _selectedCountry.flag,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _selectedCountry.dialCode,
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        color: widget.enabled ? null : Colors.grey,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
